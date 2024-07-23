@@ -37,7 +37,6 @@ public class Order {
     private Side side;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    @JoinColumn(name = "order_id")
     private List<Trade> trades;
 
     @CreationTimestamp

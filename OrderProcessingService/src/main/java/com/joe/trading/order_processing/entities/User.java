@@ -20,8 +20,7 @@ public class User {
     @Id
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "users")
-    @JoinColumn(name = "user_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     List<Portfolio> portfolios = new ArrayList<>();
 
     @CreationTimestamp

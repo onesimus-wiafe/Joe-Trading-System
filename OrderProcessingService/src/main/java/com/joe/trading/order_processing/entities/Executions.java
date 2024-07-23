@@ -22,7 +22,7 @@ public class Executions {
     private Integer quantity;
 
     @ManyToOne
-    @JoinColumn(name = "orderBook_id")
+    @JoinColumn(name = "order_book_id")
     private OrderBook orderBook;
 
     @Override

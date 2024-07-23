@@ -23,7 +23,6 @@ public class Portfolio {
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "portfolio")
-    @JoinColumn(name="portfolio_id")
     private List<Stock> stocks = new ArrayList<>();
 
     private Double portfolioValue = (double) 0;

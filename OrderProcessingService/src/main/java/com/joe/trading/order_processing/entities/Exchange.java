@@ -1,6 +1,8 @@
 package com.joe.trading.order_processing.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +19,9 @@ public class Exchange {
     private Long id;
 
     private String url;
+
+    @Enumerated(EnumType.STRING)
+    private ExchangeState state;
 
     public Exchange(String url) {
         this.url = url;

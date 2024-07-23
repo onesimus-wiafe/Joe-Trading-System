@@ -23,8 +23,7 @@ public class OrderBook {
     private String side;
     private String type;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order_book", orphanRemoval = true)
-    @JoinColumn(name = "orderBook_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBook", orphanRemoval = true)
     private List<Executions> executions = new ArrayList();
 
     @OneToOne
