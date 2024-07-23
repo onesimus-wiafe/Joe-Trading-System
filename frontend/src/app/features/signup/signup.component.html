@@ -1,0 +1,128 @@
+<div class="flex flex-row gap-x-5 w-full h-screen">
+  <div class="w-1/2 absolute px-3 flex flex-col justify-center top-20">
+    <h1
+      class="mb-4 mt-5 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+    >
+      Welcome to JOE Trading System
+    </h1>
+
+    <p class="mb-5 mt-10 max-w-2xl">
+      Empower your financial future with our cutting-edge trading platform.
+      Whether you're a seasoned investor or just getting started, our system
+      offers the tools you need to make informed trading decisions and maximize
+      your returns.
+    </p>
+
+    <div class="mb-5 mt-10">
+      <h2 class="text-4xl font-extrabold dark:text-white mb-4">Features</h2>
+      <ul class="space-y-4 list-disc list-inside dark:text-gray-400">
+        <li>
+          Seamless Trading: Easily place, manage, and track your orders in
+          real-time.
+        </li>
+        <li>
+          Market Insights: Stay updated with the latest market data and trends.
+        </li>
+        <li>
+          Comprehensive Reports: Generate detailed profit/loss reports and
+          monitor your trading performance.
+        </li>
+        <li>
+          Secure & Reliable: Trust in our robust security measures and reliable
+          infrastructure.
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div
+    class="w-1/2 bg-gray-50 dark:bg-gray-800 absolute right-0 top-0 h-screen flex items-center justify-center"
+  >
+    <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()" class="max-w-2xl w-full mx-10">
+      <h2 class="text-4xl font-extrabold dark:text-white mb-3">Sign up</h2>
+      <p class="mb-5">
+        Sign up for a new account to access our trading platform.
+      </p>
+      <div class="gap-6 mb-6 flex flex-col">
+        <div>
+          <label
+            for="full_name"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Full Name</label
+          >
+          <input
+            type="text"
+            id="full_name"
+            formControlName="full_name"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="John Doe"
+            required
+          />
+        </div>
+        <div>
+          <label
+            for="username"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Username</label
+          >
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="johndoe"
+            required
+          />
+        </div>
+        <div>
+          <label
+            for="email"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >E-mail</label
+          >
+          <input
+            type="text"
+            id="email"
+            formControlName="email"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="johndoe@test.com"
+            required
+          />
+        </div>
+        <div>
+          <label
+            for="password"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Password</label
+          >
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="•••••••••"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="!loginForm.valid"
+          class="text-white transition-colors duration-100 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:bg-blue-400 disabled:dark:bg-blue-500 disabled:cursor-not-allowed disabled:text-center"
+        >
+          Login
+        </button>
+
+        <div>
+          <p class="mt-5 text-sm text-gray-600 dark:text-gray-400">
+            Already have an account?
+            <a
+              routerLink="/login"
+              class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >Sign in</a
+            >
+          </p>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
