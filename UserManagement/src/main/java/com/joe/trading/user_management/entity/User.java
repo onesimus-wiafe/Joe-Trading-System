@@ -11,7 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -40,11 +40,11 @@ public class User {
 
     @Column(name = "created_at",nullable = false)
     @CreatedDate
-    private Date CreatedAt;
+    private LocalDateTime CreatedAt;
 
     @Column(name = "updated_at",nullable = false)
     @LastModifiedDate
-    private Date UpdatedAt;
+    private LocalDateTime UpdatedAt;
 
     @Column(columnDefinition = " boolean default false")
     private Boolean pending_Delete;
