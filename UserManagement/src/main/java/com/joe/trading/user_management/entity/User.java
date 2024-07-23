@@ -1,5 +1,6 @@
 package com.joe.trading.user_management.entity;
 
+import com.joe.trading.user_management.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,8 +17,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name="user")
+@Entity(name = "users")
 @EntityListeners(AuditingEntityListener.class)
 public class User {
 
@@ -35,7 +35,8 @@ public class User {
     private String password;
 
     @Column(name = "account_type",nullable = false)
-    private String AccountType;
+    @Enumerated(EnumType.STRING)
+    private com.joe.trading.user_management.enums.AccountType AccountType;
 
     @Column(name = "created_at",nullable = false)
     @CreatedDate
@@ -44,4 +45,7 @@ public class User {
     @Column(name = "updated_at",nullable = false)
     @LastModifiedDate
     private Date UpdatedAt;
+
+    @Column(columnDefinition = " boolean default false")
+    private Boolean pending_Delete;
 }
