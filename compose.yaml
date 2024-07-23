@@ -6,3 +6,11 @@ services:
       NODE_ENV: production
     ports:
       - 4200:80
+  gateway-srv:
+    build:
+      context: ./GatewayService
+    ports:
+      - 8081:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
