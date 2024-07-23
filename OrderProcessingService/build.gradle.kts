@@ -23,10 +23,12 @@ repositories {
     mavenCentral()
 }
 
+// https://mvnrepository.com
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
+    implementation("org.hibernate.orm:hibernate-core:6.5.2.Final")
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
