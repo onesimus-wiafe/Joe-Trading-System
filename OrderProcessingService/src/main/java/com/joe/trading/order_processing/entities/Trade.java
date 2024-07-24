@@ -1,7 +1,7 @@
 package com.joe.trading.order_processing.entities;
 
 
-import com.joe.trading.order_processing.entities.enums.Side;
+import com.joe.trading.order_processing.entities.enums.TradeStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +23,10 @@ public class Trade {
     private Double price;
     private String ticker;
     private String side;
+    private String tradeType;
+
+    @Enumerated(EnumType.STRING)
+    private TradeStatus status;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
@@ -43,5 +47,19 @@ public class Trade {
     @Override
     public int hashCode() {
         return Objects.hash(id, quantity, price, ticker, side);
+    }
+
+    @Override
+    public String toString() {
+        return "Trade{" +
+                "quantity=" + quantity +
+                ", price=" + price +
+                ", ticker='" + ticker + '\'' +
+                ", side='" + side + '\'' +
+                ", tradeType='" + tradeType + '\'' +
+                ", status=" + status +
+                ", order=" + order +
+                ", orderBook=" + orderBook +
+                '}';
     }
 }

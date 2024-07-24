@@ -16,7 +16,7 @@ import java.util.Objects;
 public class OrderBook {
     @Id
     private String id;
-
+    private Double price;
     private String product;
     private Integer quantity;
     private Integer cumulatitiveQuantity;
@@ -50,5 +50,19 @@ public class OrderBook {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderBook{" +
+                "price=" + price +
+                ", product='" + product + '\'' +
+                ", quantity=" + quantity +
+                ", cumulatitiveQuantity=" + cumulatitiveQuantity +
+                ", side='" + side + '\'' +
+                ", type='" + type + '\'' +
+                ", executions=" + executions +
+                ", trade=" + trade +
+                '}';
     }
 }

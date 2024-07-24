@@ -1,5 +1,7 @@
 package com.joe.trading.order_processing.entities;
 
+import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
+import com.joe.trading.order_processing.entities.enums.OrderType;
 import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.entities.enums.Ticker;
 import jakarta.persistence.*;
@@ -36,18 +38,25 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private Side side;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    private List<Trade> trades;
+    private OrderType type;
+
+    @Enumerated(EnumType.STRING)
+    private AvailableExchanges exchanges;
 
     @CreationTimestamp
     private LocalDateTime createdDate;
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
-    public Order(Ticker ticker, Integer quantity, Double unitPrice) {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
+    private List<Trade> trades;
+
+    public Order(Ticker ticker, Integer quantity, Double unitPrice, Side side, AvailableExchanges exchanges) {
         this.ticker = ticker;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+        this.side = side;
+        this.exchanges = exchanges;
         this.createdDate = LocalDateTime.now();
         this.updatedOn = LocalDateTime.now();
     }
@@ -63,5 +72,19 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(id, ticker, quantity, unitPrice, side);
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "ticker=" + ticker +
+                ", quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                ", side=" + side +
+                ", exchanges=" + exchanges +
+                ", createdDate=" + createdDate +
+                ", updatedOn=" + updatedOn +
+                ", trades=" + trades +
+                '}';
     }
 }

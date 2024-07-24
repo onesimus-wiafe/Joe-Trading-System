@@ -1,5 +1,6 @@
 package com.joe.trading.order_processing.entities;
 
+import com.joe.trading.order_processing.entities.enums.ExchangeState;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,8 +17,6 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Exchange {
     @Id
-    private Long id;
-
     private String url;
 
     @Enumerated(EnumType.STRING)
@@ -25,6 +24,7 @@ public class Exchange {
 
     public Exchange(String url) {
         this.url = url;
+        this.state = ExchangeState.SUBSCRIBED;
     }
 
     @Override
@@ -37,11 +37,11 @@ public class Exchange {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Exchange exchange = (Exchange) o;
-        return Objects.equals(id, exchange.id) && Objects.equals(url, exchange.url);
+        return Objects.equals(url, exchange.url) && state == exchange.state;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, url);
+        return Objects.hash(url, state);
     }
 }
