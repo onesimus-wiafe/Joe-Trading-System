@@ -43,7 +43,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream().toList();
+        return userRepository.findAll();
     }
 }
