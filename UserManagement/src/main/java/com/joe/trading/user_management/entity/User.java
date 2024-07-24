@@ -7,9 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
-@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -36,16 +35,16 @@ public class User {
 
     @Column(name = "account_type",nullable = false)
     @Enumerated(EnumType.STRING)
-    private com.joe.trading.user_management.enums.AccountType AccountType;
+    private AccountType accountType;
 
     @Column(name = "created_at",nullable = false)
-    @CreatedDate
-    private LocalDateTime CreatedAt;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at",nullable = false)
-    @LastModifiedDate
-    private LocalDateTime UpdatedAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @Column(columnDefinition = " boolean default false")
-    private Boolean pending_Delete;
+    private Boolean pendingDelete;
 }
