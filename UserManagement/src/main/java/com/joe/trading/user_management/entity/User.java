@@ -45,6 +45,6 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @Column(columnDefinition = " boolean default false")
+    @Column(name="pending_delete", nullable=false)
     private Boolean pendingDelete;
 }
