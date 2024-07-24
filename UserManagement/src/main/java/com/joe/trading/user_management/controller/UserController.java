@@ -17,6 +17,8 @@ import com.joe.trading.user_management.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/users")
@@ -35,6 +37,12 @@ public class UserController {
     public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) throws ResourceNotFoundException {
         User user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
 }

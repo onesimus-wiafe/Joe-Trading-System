@@ -1,5 +1,7 @@
 package com.joe.trading.user_management.services.impl;
 
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +40,9 @@ public class UserServiceImpl implements UserService {
         user.setPendingDelete(false);
 
         return userRepository.save(user);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
