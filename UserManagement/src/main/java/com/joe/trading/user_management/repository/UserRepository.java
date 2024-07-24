@@ -1,7 +1,9 @@
 package com.joe.trading.user_management.repository;
 
-import com.joe.trading.user_management.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User,Long> {
+import com.joe.trading.user_management.entities.User;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByEmail(String email);
 }
