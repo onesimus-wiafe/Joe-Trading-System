@@ -46,4 +46,20 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    @Override
+    public User updateUser(Long userId, User user) throws ResourceNotFoundException {
+        User existingUser = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User does not exist"));
+
+        existingUser.setName(user.getName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setAccountType(user.getAccountType());
+        existingUser.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        existingUser.setPendingDelete(false);
+
+        return userRepository.save(existingUser);
+    }
+
+
 }
