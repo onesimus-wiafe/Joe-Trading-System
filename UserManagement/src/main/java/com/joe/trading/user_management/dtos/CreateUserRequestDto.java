@@ -30,7 +30,7 @@ public class CreateUserRequestDto {
     private AccountType accountType;
 
     public CreateUserRequestDto() {
-        this.username = null;
+        this.name = null;
         this.email = null;
         this.password = null;
         this.accountType = null;

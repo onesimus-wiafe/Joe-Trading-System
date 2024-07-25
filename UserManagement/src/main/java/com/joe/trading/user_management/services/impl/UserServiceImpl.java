@@ -2,6 +2,8 @@ package com.joe.trading.user_management.services.impl;
 
 import java.util.List;
 
+import com.joe.trading.user_management.dtos.UserDto;
+import com.joe.trading.user_management.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +50,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Long userId, User user) throws ResourceNotFoundException {
+    public UserDto updateUser(Long userId, UserDto updatedUser) throws ResourceNotFoundException {
+        User existingUser = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User does not exist"));
+
+        return UserMapper.createUserDto(existingUser);
+    }
+
+/*
+
+    @Override
+    public UserDto updateUser(Long userId, User user) throws ResourceNotFoundException {
         User existingUser = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("User does not exist"));
 
@@ -58,8 +70,10 @@ public class UserServiceImpl implements UserService {
         existingUser.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         existingUser.setPendingDelete(false);
 
-        return userRepository.save(existingUser);
+        //return userRepository.save(existingUser);
+        return UserMapper.createUserDto(existingUser);
     }
+*/
 
 
 }
