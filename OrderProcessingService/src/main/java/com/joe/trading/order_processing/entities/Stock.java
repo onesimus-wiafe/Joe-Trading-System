@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -33,6 +35,9 @@ public class Stock {
     @ManyToOne
     @JoinColumn(name = "portfolio_id")
     private Portfolio portfolio;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock")
+    private List<Order> orders = new ArrayList<>();
 
     public Stock(String ticker, Integer quantity){
         this.ticker = Ticker.valueOf(ticker);
