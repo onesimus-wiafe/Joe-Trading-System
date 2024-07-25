@@ -1,6 +1,9 @@
 package com.joe.trading.user_management.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +20,6 @@ import com.joe.trading.user_management.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-import java.util.List;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/users")
@@ -26,6 +27,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CreateUserResponseDto> createUser(
             @RequestBody @Valid CreateUserRequestDto createUserRequestDto) {
         var user = userService.createUser(createUserRequestDto);
@@ -34,12 +36,14 @@ public class UserController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN') or @userSecurity.hasUserId(authentication, #userId)")
     public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) throws ResourceNotFoundException {
         User user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);

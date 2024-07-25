@@ -27,9 +27,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(CreateUserRequestDto createUserDto) {
-        if (userRepository.findByEmail(createUserDto.getEmail()) != null) {
-            throw new EmailAlreadyExistsException("User with this email already exists");
-        }
+        userRepository.findByEmail(createUserDto.getEmail()).ifPresent(
+                user -> {
+                    throw new EmailAlreadyExistsException("Email already exists");
+                });
 
         User user = new User();
 
