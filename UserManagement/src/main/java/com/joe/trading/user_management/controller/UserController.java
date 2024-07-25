@@ -17,7 +17,6 @@ import com.joe.trading.user_management.entities.User;
 import com.joe.trading.user_management.exception.ResourceNotFoundException;
 import com.joe.trading.user_management.services.UserService;
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -28,7 +27,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    @RolesAllowed("ADMIN")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CreateUserResponseDto> createUser(
             @RequestBody @Valid CreateUserRequestDto createUserRequestDto) {
         var user = userService.createUser(createUserRequestDto);
@@ -44,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
