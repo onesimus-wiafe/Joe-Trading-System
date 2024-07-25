@@ -1,7 +1,5 @@
 package com.joe.trading.order_processing.entities.dto;
 
-import com.joe.trading.order_processing.entities.enums.Side;
-import com.joe.trading.order_processing.entities.enums.Ticker;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +16,17 @@ public class OrderRequestDTO {
     private Double unitPrice;
     private String side;
     private String exchanges = "exchange1";
-    private String type;
+    private String orderType;
 
+    @Override
+    public String toString() {
+        return "OrderRequestDTO{" +
+                "ticker='" + ticker + '\'' +
+                ", quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                ", side='" + side + '\'' +
+                ", exchanges='" + exchanges + '\'' +
+                ", type='" + orderType + '\'' +
+                '}';
+    }
 }

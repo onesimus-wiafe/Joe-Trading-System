@@ -1,5 +1,6 @@
 package com.joe.trading.order_processing.entities;
 
+import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.ExchangeState;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -20,11 +21,16 @@ public class Exchange {
     private String url;
 
     @Enumerated(EnumType.STRING)
+    @Id
+    private AvailableExchanges exchangeName;
+
+    @Enumerated(EnumType.STRING)
     private ExchangeState state;
 
-    public Exchange(String url) {
+    public Exchange(String url, AvailableExchanges exchangeName) {
         this.url = url;
         this.state = ExchangeState.SUBSCRIBED;
+        this.exchangeName = exchangeName;
     }
 
     @Override

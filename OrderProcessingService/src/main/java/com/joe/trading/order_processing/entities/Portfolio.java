@@ -44,6 +44,11 @@ public class Portfolio {
         this.state = PortfolioState.ACTIVE;
     }
 
+    public Portfolio(String portfolioName, PortfolioState state){
+        this.portfolioName = portfolioName;
+        this.state = state;
+    }
+
     public void addStock(Stock stock) {
         this.stocks.add(stock);
     }
@@ -58,6 +63,16 @@ public class Portfolio {
         if (o == null || getClass() != o.getClass()) return false;
         Portfolio portfolio = (Portfolio) o;
         return Objects.equals(id, portfolio.id) && Objects.equals(portfolioValue, portfolio.portfolioValue) && Objects.equals(portfolioName, portfolio.portfolioName) && state == portfolio.state && Objects.equals(user, portfolio.user);
+    }
+
+    @Override
+    public String toString() {
+        return "Portfolio{" +
+                "state=" + state +
+                ", portfolioName='" + portfolioName + '\'' +
+                ", portfolioValue=" + portfolioValue +
+                ", stocks=" + stocks +
+                '}';
     }
 
     @Override

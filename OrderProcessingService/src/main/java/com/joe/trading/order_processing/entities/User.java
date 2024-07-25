@@ -1,6 +1,9 @@
 package com.joe.trading.order_processing.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -41,8 +44,21 @@ public class User {
         return Objects.equals(id, user.id);
     }
 
+    public void addPortfolio(Portfolio portfolio){
+        portfolio.setUser(this);
+        this.portfolios.add(portfolio);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", portfolios=" + portfolios +
+                '}';
     }
 }

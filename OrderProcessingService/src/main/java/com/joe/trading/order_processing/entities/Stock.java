@@ -60,4 +60,13 @@ public class Stock {
     public int hashCode() {
         return Objects.hash(id, ticker, quantity, stockValue);
     }
+
+    @Override
+    public String toString() {
+        return "Stock{" +
+                "ticker=" + ticker +
+                ", quantity=" + quantity +
+                ", stockValue=" + stockValue +
+                '}';
+    }
 }

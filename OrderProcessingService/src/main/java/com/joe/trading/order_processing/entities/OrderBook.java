@@ -21,13 +21,12 @@ public class OrderBook {
     private Integer quantity;
     private Integer cumulatitiveQuantity;
     private String side;
-    private String type;
+    private String orderType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBook", orphanRemoval = true)
     private List<Executions> executions = new ArrayList();
 
     @OneToOne
-    @JoinColumn(name = "trade_id")
     private Trade trade;
 
     public OrderBook(String product, String id, Integer quantity, String side, String type) {
@@ -35,7 +34,7 @@ public class OrderBook {
         this.id = id;
         this.quantity = quantity;
         this.side = side;
-        this.type = type;
+        this.orderType = type;
         this.cumulatitiveQuantity = 0;
     }
 
@@ -60,7 +59,7 @@ public class OrderBook {
                 ", quantity=" + quantity +
                 ", cumulatitiveQuantity=" + cumulatitiveQuantity +
                 ", side='" + side + '\'' +
-                ", type='" + type + '\'' +
+                ", type='" + orderType + '\'' +
                 ", executions=" + executions +
                 ", trade=" + trade +
                 '}';

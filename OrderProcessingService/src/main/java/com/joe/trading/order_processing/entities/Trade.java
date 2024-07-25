@@ -25,6 +25,10 @@ public class Trade {
     private String side;
     private String tradeType;
 
+    @OneToOne
+    @JoinColumn(name = "exchange_url")
+    private Exchange exchange;
+
     @Enumerated(EnumType.STRING)
     private TradeStatus status;
 

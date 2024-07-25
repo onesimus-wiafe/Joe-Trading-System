@@ -3,6 +3,7 @@ package com.joe.trading.order_processing.controllers;
 import com.joe.trading.order_processing.entities.Order;
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
+import com.joe.trading.order_processing.entities.enums.OrderType;
 import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.entities.enums.Ticker;
 import com.joe.trading.order_processing.services.OrderService;
@@ -22,13 +23,17 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> sendOrder(@RequestBody OrderRequestDTO request){
+
+        System.out.println(request);
+
         // OrderRequest should also have a field for portfolio Id.
         Order order = new Order(
                 Ticker.valueOf(request.getTicker().toUpperCase()),
                 request.getQuantity(),
                 request.getUnitPrice(),
                 Side.valueOf(request.getSide().toUpperCase()),
-                AvailableExchanges.valueOf(request.getExchanges().toUpperCase())
+                AvailableExchanges.valueOf(request.getExchanges().toUpperCase()),
+                OrderType.valueOf(request.getOrderType())
         );
         Order ord = orderService.saveOrder(order);
 

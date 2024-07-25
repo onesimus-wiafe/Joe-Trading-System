@@ -12,8 +12,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,10 +21,10 @@ import java.util.Objects;
  * Based on the kind of trades we make, an order can have many trades that are fulfilled to make it complete.
  *
  */
-@Getter
-@Setter
 @Entity(name = "orders")
 @NoArgsConstructor
+@Getter
+@Setter
 public class Order {
     @Id
     private Long id;
@@ -38,7 +36,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private Side side;
 
-    private OrderType type;
+    @Enumerated(EnumType.STRING)
+    private OrderType orderType;
 
     @Enumerated(EnumType.STRING)
     private AvailableExchanges exchanges;
@@ -51,12 +50,15 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private List<Trade> trades;
 
-    public Order(Ticker ticker, Integer quantity, Double unitPrice, Side side, AvailableExchanges exchanges) {
+    public Order
+            (Ticker ticker, Integer quantity, Double unitPrice,
+             Side side, AvailableExchanges exchanges, OrderType type) {
         this.ticker = ticker;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.side = side;
         this.exchanges = exchanges;
+        this.orderType = type;
         this.createdDate = LocalDateTime.now();
         this.updatedOn = LocalDateTime.now();
     }
@@ -82,8 +84,7 @@ public class Order {
                 ", unitPrice=" + unitPrice +
                 ", side=" + side +
                 ", exchanges=" + exchanges +
-                ", createdDate=" + createdDate +
-                ", updatedOn=" + updatedOn +
+                ", orderType=" + orderType +
                 ", trades=" + trades +
                 '}';
     }
