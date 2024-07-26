@@ -1,4 +1,4 @@
-package com.joe.trading.order_processing.entities.dao;
+package com.joe.trading.order_processing.repositories.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package com.joe.trading.order_processing.services.validation.handler;
 
-import com.joe.trading.order_processing.entities.dao.MarketDataDao;
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.enums.Side;
+import com.joe.trading.order_processing.repositories.dao.MarketDataDao;
 
 import java.util.List;
 
@@ -16,8 +16,6 @@ public class QuantityValidator extends ValidationHandler{
         this.side = side;
         this.marketData = data;
     }
-
-    // fetch market data from cache
 
     @Override
     public OrderRequestDTO validate(OrderRequestDTO orderRequestDTO) {

@@ -2,6 +2,7 @@ package com.joe.trading.order_processing.controllers;
 
 import com.joe.trading.order_processing.entities.Order;
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
+import com.joe.trading.order_processing.entities.dto.OrderResponseDTO;
 import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.OrderType;
 import com.joe.trading.order_processing.entities.enums.Side;
@@ -11,6 +12,8 @@ import com.joe.trading.order_processing.services.validation.OrderValidationServi
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/order")
@@ -25,8 +28,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> sendOrder(@RequestBody OrderRequestDTO request){
-
+    public ResponseEntity<OrderResponseDTO> sendOrder(@RequestBody OrderRequestDTO request){
+        OrderResponseDTO response = new OrderResponseDTO();
         // USER EVENT QUEUE
 
         // Validating Order;
@@ -37,11 +40,14 @@ public class OrderController {
             order = buildValidatedOrder(request);
         }
         else {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new Order());
+            response.setMessage("Order Validation Did Not Pass");
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(response);
         }
 
 
-        Order response = orderService.saveOrder(order);
+        response = orderService.saveOrder(order);
+
+        response.setMessage("New Order Created");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -58,7 +64,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public String get(){
-        return "HERE!!";
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrders(){
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 }

@@ -17,7 +17,7 @@ public class OrderRequestDTO {
     private Integer quantity;
     private Double unitPrice;
     private String side;
-    private String exchanges = "exchange1";
+    private String exchanges = "exchange2";
     private String orderType;
     private Boolean isValidated = false;
 

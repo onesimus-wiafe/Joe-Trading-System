@@ -4,12 +4,13 @@ import com.joe.trading.order_processing.entities.Exchange;
 import com.joe.trading.order_processing.entities.Order;
 import com.joe.trading.order_processing.entities.OrderBook;
 import com.joe.trading.order_processing.entities.Trade;
-import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
+import com.joe.trading.order_processing.entities.dto.OrderResponseDTO;
 import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.repositories.ExchangeRepository;
 import com.joe.trading.order_processing.repositories.OrderRepository;
 import com.joe.trading.order_processing.repositories.TradeRepository;
+import com.joe.trading.order_processing.repositories.UserRepository;
 import com.joe.trading.order_processing.services.validation.OrderValidationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -33,18 +34,20 @@ public class OrderServiceImpl implements OrderService {
     private final ExchangeRepository exchangeRepo;
 
     private final TradeRepository tradeRepo;
+    private final UserRepository userRepository;
 
     @Value("${exchange.private.api.key}")
     String privateApiKey;
 
-    public OrderServiceImpl(OrderValidationService orderValidationService, OrderRepository orderRepo, ExchangeRepository exchangeRepo, TradeRepository tradeRepo) {
+    public OrderServiceImpl(OrderValidationService orderValidationService, OrderRepository orderRepo, ExchangeRepository exchangeRepo, TradeRepository tradeRepo, UserRepository userRepository) {
         this.orderValidation = orderValidationService;
         this.orderRepo = orderRepo;
         this.exchangeRepo = exchangeRepo;
         this.tradeRepo = tradeRepo;
+        this.userRepository = userRepository;
     }
 
-    public Order saveOrder(Order order){
+    public OrderResponseDTO saveOrder(Order order){
         // Order has been validated,
         // The validation process will define the exchanges available for trades
         // We get all open trades from the valid exchanges
@@ -68,9 +71,17 @@ public class OrderServiceImpl implements OrderService {
         // TODO: run algorithm on one exchange
         // TODO: validation failed
 
-        return order;
+
+        return order.toOrderResponseDTO();
     }
 
+    @Override
+    public List<OrderResponseDTO> getAllOrders() {
+        List<Order> orders = orderRepo.findAll();
+        return orders.stream().map(Order::toOrderResponseDTO).toList();
+    }
+
+    // TODO: MOVE TO MARKET DATA SERVICE;
     private List<OrderBook> tempMethodGetOrderBookFromExchange(String url, String ticker, String side, String type){
         String exchangeUrl = url + "/orderbook/" + ticker.toUpperCase();
 

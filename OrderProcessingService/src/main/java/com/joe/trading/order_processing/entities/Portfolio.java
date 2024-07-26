@@ -27,6 +27,8 @@ public class Portfolio {
 
     private Double portfolioValue = (double) 0;
     private String portfolioName;
+
+    @Enumerated(EnumType.STRING)
     private PortfolioState state;
 
     @ManyToOne

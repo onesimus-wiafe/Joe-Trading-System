@@ -21,7 +21,6 @@ public class Exchange {
     private String url;
 
     @Enumerated(EnumType.STRING)
-    @Id
     private AvailableExchanges exchangeName;
 
     @Enumerated(EnumType.STRING)
