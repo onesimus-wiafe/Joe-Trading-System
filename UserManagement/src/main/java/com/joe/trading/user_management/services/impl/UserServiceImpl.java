@@ -45,8 +45,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(UserMapper::createUserDto).toList();
     }
 
     @Override

@@ -10,6 +10,6 @@ import com.joe.trading.user_management.exception.ResourceNotFoundException;
 public interface UserService {
     User createUser(CreateUserRequestDto createUserDto);
     User getUserById(Long userId) throws ResourceNotFoundException;
-    List<User> getAllUsers();
+    List<UserDto> getAllUsers();
     UserDto updateUser(Long userId, UserDto updatedUser) throws ResourceNotFoundException;
 }
