@@ -11,7 +11,9 @@ public class UserMapper {
                 user.getName(),
                 user.getEmail(),
                 user.getAccountType(),
-                user.getPendingDelete()
+                user.getPendingDelete(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
         );
     }
 

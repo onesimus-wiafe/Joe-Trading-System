@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,4 +19,6 @@ public class UserDto {
     private String email;
     private AccountType accountType;
     private Boolean pendingDelete;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
