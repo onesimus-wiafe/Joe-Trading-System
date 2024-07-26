@@ -20,8 +20,6 @@ public class FundsValidator extends ValidationHandler{
 
     private OrderRequestDTO validateFunds(OrderRequestDTO orderRequestDTO){
 
-        // get user and make sure their funds is enough for the order.
-
         if (this.user == null) {
             super.setNext(null);
             orderRequestDTO.setIsValidated(Boolean.FALSE);

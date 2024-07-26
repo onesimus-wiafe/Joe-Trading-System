@@ -1,5 +1,6 @@
 package com.joe.trading.order_processing.entities;
 
+import com.joe.trading.order_processing.entities.dto.OrderResponseDTO;
 import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.OrderType;
 import com.joe.trading.order_processing.entities.enums.Side;
@@ -52,7 +53,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Stock stock;
 
     public Order
             (Ticker ticker, Integer quantity, Double unitPrice,
@@ -78,6 +79,18 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(id, ticker, quantity, unitPrice, side);
+    }
+
+    public OrderResponseDTO toOrderResponseDTO(){
+        OrderResponseDTO out = new OrderResponseDTO();
+        out.setTicker(String.valueOf(this.getTicker()));
+        out.setQuantity(this.getQuantity());
+        out.setUnitPrice(this.getUnitPrice());
+        out.setSide(String.valueOf(this.getSide()));
+        out.setOrderType(String.valueOf(this.getOrderType()));
+        out.setStrategy("SPLIT");
+
+        return out;
     }
 
     @Override
