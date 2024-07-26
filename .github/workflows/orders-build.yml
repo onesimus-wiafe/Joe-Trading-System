@@ -34,8 +34,8 @@ jobs:
 
     - name: Run tests
       working-directory: OrderProcessingService
-      run: ./gradlew test
+      run: bash ./gradlew test
 
     - name: Build with Gradle
       working-directory: OrderProcessingService
-      run: ./gradlew build
+      run: bash ./gradlew build

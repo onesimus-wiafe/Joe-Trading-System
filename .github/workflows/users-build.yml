@@ -34,8 +34,8 @@ jobs:
 
     - name: Run tests
       working-directory: UserManagement
-      run: ./gradlew test
+      run: bash ./gradlew test
 
     - name: Build with Gradle
       working-directory: UserManagement
-      run: ./gradlew build
+      run: bash ./gradlew build
