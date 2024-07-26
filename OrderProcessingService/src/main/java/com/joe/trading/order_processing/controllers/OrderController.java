@@ -9,6 +9,7 @@ import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.entities.enums.Ticker;
 import com.joe.trading.order_processing.services.OrderService;
 import com.joe.trading.order_processing.services.validation.OrderValidationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class OrderController {
     private final OrderValidationService validationService;
     private final OrderService orderService;
 
+    @Autowired
     public OrderController(OrderValidationService validationService, OrderService orderService) {
         this.validationService = validationService;
         this.orderService = orderService;

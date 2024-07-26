@@ -10,8 +10,7 @@ import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.repositories.ExchangeRepository;
 import com.joe.trading.order_processing.repositories.OrderRepository;
 import com.joe.trading.order_processing.repositories.TradeRepository;
-import com.joe.trading.order_processing.repositories.UserRepository;
-import com.joe.trading.order_processing.services.validation.OrderValidationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -27,24 +26,20 @@ public class OrderServiceImpl implements OrderService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final OrderValidationService orderValidation;
-
     private final OrderRepository orderRepo;
 
     private final ExchangeRepository exchangeRepo;
 
     private final TradeRepository tradeRepo;
-    private final UserRepository userRepository;
 
     @Value("${exchange.private.api.key}")
     String privateApiKey;
 
-    public OrderServiceImpl(OrderValidationService orderValidationService, OrderRepository orderRepo, ExchangeRepository exchangeRepo, TradeRepository tradeRepo, UserRepository userRepository) {
-        this.orderValidation = orderValidationService;
+    @Autowired
+    public OrderServiceImpl(OrderRepository orderRepo, ExchangeRepository exchangeRepo, TradeRepository tradeRepo) {
         this.orderRepo = orderRepo;
         this.exchangeRepo = exchangeRepo;
         this.tradeRepo = tradeRepo;
-        this.userRepository = userRepository;
     }
 
     public OrderResponseDTO saveOrder(Order order){
