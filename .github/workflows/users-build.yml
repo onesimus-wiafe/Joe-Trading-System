@@ -3,10 +3,10 @@ name: Build and Test User Management Service
 on:
   pull_request:
     paths:
-      - 'UserManagment/**'
+      - 'UserManagement/**'
   push:
     paths:
-      - 'UserManagment/**'
+      - 'UserManagement/**'
 
 jobs:
   build:
@@ -26,16 +26,16 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-            UserManagment/.gradle/caches
-            UserManagment/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('UserManagment/**/*.gradle*') }}
+            UserManagement/.gradle/caches
+            UserManagement/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('UserManagement/**/*.gradle*') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
 
     - name: Run tests
-      working-directory: UserManagment
+      working-directory: UserManagement
       run: ./gradlew test
 
     - name: Build with Gradle
-      working-directory: UserManagment
+      working-directory: UserManagement
       run: ./gradlew build
