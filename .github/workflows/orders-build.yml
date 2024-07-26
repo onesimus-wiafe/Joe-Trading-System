@@ -19,7 +19,8 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
-        distribution: 'temurin'
+        distribution: 'microsoft'
+        java-version: '17'
 
     - name: Cache Gradle packages
       uses: actions/cache@v4
