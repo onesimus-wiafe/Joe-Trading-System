@@ -49,6 +49,10 @@ jobs:
 
     - name: Run tests
       working-directory: OrderProcessingService
+      env:
+        DB_URL: jdbc:postgresql://localhost:5432/usermanagement
+        DB_USERNAME: postgres
+        DB_PASSWORD: postgres
       run: bash ./gradlew test
 
     - name: Build with Gradle
