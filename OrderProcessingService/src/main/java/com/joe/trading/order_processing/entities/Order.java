@@ -50,6 +50,10 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private List<Trade> trades;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
     public Order
             (Ticker ticker, Integer quantity, Double unitPrice,
              Side side, AvailableExchanges exchanges, OrderType type) {

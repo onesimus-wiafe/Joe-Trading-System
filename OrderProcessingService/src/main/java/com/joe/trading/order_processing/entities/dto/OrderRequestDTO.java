@@ -12,11 +12,14 @@ import lombok.Setter;
 public class OrderRequestDTO {
 
     private String ticker;
+    private Long userId;
+    private Long portfolioId;
     private Integer quantity;
     private Double unitPrice;
     private String side;
     private String exchanges = "exchange1";
     private String orderType;
+    private Boolean isValidated = false;
 
     @Override
     public String toString() {

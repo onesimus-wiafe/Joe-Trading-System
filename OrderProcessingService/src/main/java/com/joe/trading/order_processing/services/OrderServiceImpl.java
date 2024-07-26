@@ -4,11 +4,13 @@ import com.joe.trading.order_processing.entities.Exchange;
 import com.joe.trading.order_processing.entities.Order;
 import com.joe.trading.order_processing.entities.OrderBook;
 import com.joe.trading.order_processing.entities.Trade;
+import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.repositories.ExchangeRepository;
 import com.joe.trading.order_processing.repositories.OrderRepository;
 import com.joe.trading.order_processing.repositories.TradeRepository;
+import com.joe.trading.order_processing.services.validation.OrderValidationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    private final OrderValidationService orderValidation;
+
     private final OrderRepository orderRepo;
 
     private final ExchangeRepository exchangeRepo;
@@ -33,7 +37,8 @@ public class OrderServiceImpl implements OrderService {
     @Value("${exchange.private.api.key}")
     String privateApiKey;
 
-    public OrderServiceImpl(OrderRepository orderRepo, ExchangeRepository exchangeRepo, TradeRepository tradeRepo) {
+    public OrderServiceImpl(OrderValidationService orderValidationService, OrderRepository orderRepo, ExchangeRepository exchangeRepo, TradeRepository tradeRepo) {
+        this.orderValidation = orderValidationService;
         this.orderRepo = orderRepo;
         this.exchangeRepo = exchangeRepo;
         this.tradeRepo = tradeRepo;

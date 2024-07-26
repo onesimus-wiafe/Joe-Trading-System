@@ -23,6 +23,8 @@ public class User {
     @Id
     private Long id;
 
+    private Double totalFunds;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     List<Portfolio> portfolios = new ArrayList<>();
 
