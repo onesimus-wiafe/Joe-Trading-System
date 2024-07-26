@@ -54,7 +54,7 @@ jobs:
         DB_URL: jdbc:postgresql://postgres:5432/usermanagement
         DB_USERNAME: postgres
         DB_PASSWORD: postgres
-      run: bash ./gradlew test
+      run: bash ./gradlew test -Dspring.profiles.active=test
 
     - name: Build with Gradle
       working-directory: OrderProcessingService
