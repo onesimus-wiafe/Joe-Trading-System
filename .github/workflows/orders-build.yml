@@ -1,0 +1,40 @@
+name: Build and Test Order Processing Service
+
+on:
+  pull_request:
+    paths:
+      - 'OrderProcessingService/**'
+  push:
+    paths:
+      - 'OrderProcessingService/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+            OrderProcessingService/.gradle/caches
+            OrderProcessingService/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('OrderProcessingService/**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Run tests
+      working-directory: OrderProcessingService
+      run: ./gradlew test
+
+    - name: Build with Gradle
+      working-directory: OrderProcessingService
+      run: ./gradlew build
