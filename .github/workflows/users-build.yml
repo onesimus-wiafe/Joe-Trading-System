@@ -1,0 +1,41 @@
+name: Build and Test User Management Service
+
+on:
+  pull_request:
+    paths:
+      - 'UserManagment/**'
+  push:
+    paths:
+      - 'UserManagment/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'microsoft'
+        java-version: '17'
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+            UserManagment/.gradle/caches
+            UserManagment/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('UserManagment/**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Run tests
+      working-directory: UserManagment
+      run: ./gradlew test
+
+    - name: Build with Gradle
+      working-directory: UserManagment
+      run: ./gradlew build
