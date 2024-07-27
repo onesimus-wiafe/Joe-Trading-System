@@ -3,7 +3,7 @@ package com.joe.trading.user_management.services.impl;
 import java.util.List;
 
 import com.joe.trading.user_management.dtos.UpdateUserDto;
-import com.joe.trading.user_management.dtos.UserDto;
+import com.joe.trading.user_management.dtos.UserResponseDto;
 import com.joe.trading.user_management.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public List<UserDto> getAllUsers() {
+    public List<UserResponseDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream().map(UserMapper::createUserDto).toList();
     }

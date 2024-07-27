@@ -3,7 +3,7 @@ package com.joe.trading.user_management.controller;
 import java.util.List;
 
 import com.joe.trading.user_management.dtos.UpdateUserDto;
-import com.joe.trading.user_management.dtos.UserDto;
+import com.joe.trading.user_management.dtos.UserResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -41,8 +41,8 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        List<UserDto> users = userService.getAllUsers();
+    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+        List<UserResponseDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
