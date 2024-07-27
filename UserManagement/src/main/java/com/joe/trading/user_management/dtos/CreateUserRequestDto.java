@@ -15,7 +15,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CreateUserRequestDto {
+<<<<<<< HEAD
     @NotEmpty(message = "Username is required")
+=======
+    @NotEmpty(message = "Name is required")
+>>>>>>> 24209e6aa821187065ccf0f0fa0d0917bc50e156
     private String name;
 
     @Email(message = "Email is invalid")
