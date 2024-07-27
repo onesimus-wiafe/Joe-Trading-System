@@ -18,6 +18,7 @@ import com.joe.trading.user_management.dtos.CreateUserResponseDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserResponseDto;
 import com.joe.trading.user_management.entities.User;
+import com.joe.trading.user_management.enums.AccountType;
 import com.joe.trading.user_management.exception.ResourceNotFoundException;
 import com.joe.trading.user_management.mapper.UserMapper;
 import com.joe.trading.user_management.services.UserService;
@@ -64,10 +65,11 @@ public class UserController {
         var principal = auth.getPrincipal();
         if (principal instanceof User) {
             var user = (User) principal;
-            if (user.getAccountType().name().equals("USER") && updatedUser.getAccountType().name().equals("ADMIN")) {
+            if (user.getAccountType().equals(AccountType.USER) && updatedUser.getAccountType().equals(AccountType.ADMIN)) {
                 throw new IllegalArgumentException("You are not authorized to update user to admin");
             }
         } else {
+            // TODO: Throw a custom exception, if the principal is not an instance of User
             throw new IllegalArgumentException("You are not authorized to update user");
         }
 

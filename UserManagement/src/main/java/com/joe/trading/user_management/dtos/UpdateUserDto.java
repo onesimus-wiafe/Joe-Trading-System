@@ -26,7 +26,6 @@ public class UpdateUserDto {
     @Email(message = "Email is invalid")
     private String email;
 
-
     private Optional<String> password = Optional.empty();
 
     private AccountType accountType = AccountType.USER;

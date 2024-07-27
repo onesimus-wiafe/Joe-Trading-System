@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import com.joe.trading.user_management.dtos.UserResponseDto;
 import com.joe.trading.user_management.entities.User;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
     UserResponseDto userToUserResponseDto(User user);
 
