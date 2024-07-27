@@ -2,15 +2,11 @@ package com.joe.trading.user_management.controller;
 
 import java.util.List;
 
+import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
 import com.joe.trading.user_management.dtos.CreateUserResponseDto;
@@ -50,9 +46,9 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping("{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable ("id") Long userId, @RequestBody UserDto existingUser) throws ResourceNotFoundException {
-        UserDto userDto = userService.updateUser(userId,existingUser);
+    @PutMapping("{id}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable ("id") Long userId) throws ResourceNotFoundException {
+        UserDto userDto = userService.updateUser(userId);
         return ResponseEntity.ok(userDto);
     }
 

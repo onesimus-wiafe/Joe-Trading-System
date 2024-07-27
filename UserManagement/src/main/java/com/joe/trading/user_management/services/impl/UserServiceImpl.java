@@ -2,6 +2,7 @@ package com.joe.trading.user_management.services.impl;
 
 import java.util.List;
 
+import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserDto;
 import com.joe.trading.user_management.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,30 +52,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Long userId, UserDto updatedUser) throws ResourceNotFoundException {
+    public UpdateUserDto updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException {
         User existingUser = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("User does not exist"));
 
-        return UserMapper.createUserDto(existingUser);
+        existingUser.setName(updatedUser.getName());
+        existingUser.setEmail(updatedUser.getEmail());
+        existingUser.setAccountType(updatedUser.getAccountType());
+        existingUser.setPasswordHash(passwordEncoder.encode(updatedUser.getPasswordHash()));
+        existingUser.setPendingDelete(updatedUser.getPendingDelete());
+
+        userRepository.save(existingUser);
+
+        return updatedUser;
     }
-
-/*
-
-    @Override
-    public UserDto updateUser(Long userId, User user) throws ResourceNotFoundException {
-        User existingUser = userRepository.findById(userId).orElseThrow(
-                () -> new ResourceNotFoundException("User does not exist"));
-
-        existingUser.setName(user.getName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setAccountType(user.getAccountType());
-        existingUser.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        existingUser.setPendingDelete(false);
-
-        //return userRepository.save(existingUser);
-        return UserMapper.createUserDto(existingUser);
-    }
-*/
 
 
 }
