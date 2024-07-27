@@ -2,13 +2,11 @@ package com.joe.trading.user_management.services.impl;
 
 import java.util.List;
 
-import com.joe.trading.user_management.dtos.UpdateUserDto;
-import com.joe.trading.user_management.dtos.UserResponseDto;
-import com.joe.trading.user_management.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
+import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.entities.User;
 import com.joe.trading.user_management.exception.ResourceNotFoundException;
 import com.joe.trading.user_management.exceptions.EmailAlreadyExistsException;
@@ -46,9 +44,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public List<UserResponseDto> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream().map(UserMapper::createUserDto).toList();
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
@@ -66,6 +63,4 @@ public class UserServiceImpl implements UserService {
 
         return updatedUser;
     }
-
-
 }

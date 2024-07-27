@@ -12,6 +12,7 @@ import com.joe.trading.user_management.dtos.CreateUserRequestDto;
 import com.joe.trading.user_management.dtos.CreateUserResponseDto;
 import com.joe.trading.user_management.entities.User;
 import com.joe.trading.user_management.exception.ResourceNotFoundException;
+import com.joe.trading.user_management.mapper.UserMapper;
 import com.joe.trading.user_management.services.UserService;
 
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/api/users")
 public class UserController {
     private UserService userService;
+    private UserMapper userMapper;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -42,8 +44,8 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
-        List<UserResponseDto> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(userMapper.usersToUserResponseDtos(users));
     }
 
     @PutMapping("{id}")

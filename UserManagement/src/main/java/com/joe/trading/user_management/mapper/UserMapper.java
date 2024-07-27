@@ -1,20 +1,19 @@
 package com.joe.trading.user_management.mapper;
 
+import java.util.List;
+
+import org.mapstruct.Mapper;
+
 import com.joe.trading.user_management.dtos.UserResponseDto;
 import com.joe.trading.user_management.entities.User;
 
-public class UserMapper {
+@Mapper
+public interface UserMapper {
+    UserResponseDto userToUserResponseDto(User user);
 
-    public static UserResponseDto createUserDto(User user){
-        return new UserResponseDto(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getAccountType(),
-                user.getPendingDelete(),
-                user.getCreatedAt(),
-                user.getUpdatedAt()
-        );
-    }
+    User userResponseDtoToUser(UserResponseDto userResponseDto);
 
+    List<UserResponseDto> usersToUserResponseDtos(List<User> users);
+
+    List<User> userResponseDtosToUsers(List<UserResponseDto> userResponseDtos);
 }
