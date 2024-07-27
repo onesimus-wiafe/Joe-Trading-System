@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
-import com.joe.trading.user_management.dtos.CreateUserResponseDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserResponseDto;
 import com.joe.trading.user_management.entities.User;
@@ -35,11 +34,11 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CreateUserResponseDto> createUser(
+    public ResponseEntity<UserResponseDto> createUser(
             @RequestBody @Valid CreateUserRequestDto createUserRequestDto) {
         var user = userService.createUser(createUserRequestDto);
 
-        return ResponseEntity.ok(new CreateUserResponseDto(user.getName(), user.getEmail(), user.getAccountType()));
+        return ResponseEntity.ok(userMapper.userToUserResponseDto(user));
     }
 
     @GetMapping("{id}")

@@ -10,5 +10,5 @@ import lombok.Setter;
 public class LoginResponseDto {
     private String token;
     private Long expiresIn;
-    private CreateUserResponseDto user;
+    private UserResponseDto user;
 }
