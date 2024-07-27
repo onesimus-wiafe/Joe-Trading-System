@@ -1,5 +1,6 @@
 package com.joe.trading.user_management.services.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.joe.trading.user_management.dtos.UpdateUserDto;
@@ -59,8 +60,11 @@ public class UserServiceImpl implements UserService {
         existingUser.setName(updatedUser.getName());
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setAccountType(updatedUser.getAccountType());
-        existingUser.setPasswordHash(passwordEncoder.encode(updatedUser.getPasswordHash()));
+        //existingUser.setPasswordHash(passwordEncoder.encode(updatedUser.getPasswordHash()));
         existingUser.setPendingDelete(updatedUser.getPendingDelete());
+        //existingUser.setCreatedAt(existingUser.getCreatedAt());
+        existingUser.setUpdatedAt(LocalDateTime.now());
+
 
         userRepository.save(existingUser);
 

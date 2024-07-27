@@ -15,9 +15,7 @@ import java.time.LocalDateTime;
 public class UpdateUserDto {
     private String name;
     private String email;
-    private String passwordHash;
+    //private String passwordHash;
     private AccountType accountType;
     private Boolean pendingDelete;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }
