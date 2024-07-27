@@ -19,7 +19,7 @@ import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserResponseDto;
 import com.joe.trading.user_management.entities.User;
 import com.joe.trading.user_management.enums.AccountType;
-import com.joe.trading.user_management.exception.ResourceNotFoundException;
+import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
 import com.joe.trading.user_management.mapper.UserMapper;
 import com.joe.trading.user_management.services.UserService;
 

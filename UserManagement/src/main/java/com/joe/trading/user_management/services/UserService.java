@@ -5,7 +5,7 @@ import java.util.List;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.exception.ResourceNotFoundException;
+import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
 
 public interface UserService {
     User createUser(CreateUserRequestDto createUserDto);

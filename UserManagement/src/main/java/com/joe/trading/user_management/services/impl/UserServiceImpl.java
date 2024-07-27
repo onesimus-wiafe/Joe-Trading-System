@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.exception.ResourceNotFoundException;
 import com.joe.trading.user_management.exceptions.EmailAlreadyExistsException;
+import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
 import com.joe.trading.user_management.repository.UserRepository;
 import com.joe.trading.user_management.services.UserService;
 
