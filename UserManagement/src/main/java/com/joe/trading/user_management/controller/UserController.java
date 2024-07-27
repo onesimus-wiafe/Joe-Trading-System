@@ -43,9 +43,9 @@ public class UserController {
 
     @GetMapping("{id}")
     @PreAuthorize("hasRole('ADMIN') or principal.id == #userId")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) throws ResourceNotFoundException {
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable("id") Long userId) throws ResourceNotFoundException {
         User user = userService.getUserById(userId);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userMapper.userToUserResponseDto(user));
     }
 
     @GetMapping
@@ -57,7 +57,7 @@ public class UserController {
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ADMIN') or principal.id == #userId")
-    public ResponseEntity<UpdateUserDto> updateUser(@PathVariable("id") Long userId,
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable("id") Long userId,
             @Valid @RequestBody UpdateUserDto updatedUser) throws ResourceNotFoundException, IllegalArgumentException {
         var auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -72,8 +72,8 @@ public class UserController {
             throw new IllegalArgumentException("You are not authorized to update user");
         }
 
-        UpdateUserDto userDto = userService.updateUser(userId, updatedUser);
-        return ResponseEntity.ok(userDto);
+        User userDto = userService.updateUser(userId, updatedUser);
+        return ResponseEntity.ok(userMapper.userToUserResponseDto(userDto));
     }
 
 }

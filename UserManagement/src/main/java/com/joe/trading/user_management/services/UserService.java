@@ -11,5 +11,5 @@ public interface UserService {
     User createUser(CreateUserRequestDto createUserDto);
     User getUserById(Long userId) throws ResourceNotFoundException;
     List<User> getAllUsers();
-    UpdateUserDto updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException;
+    User updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException;
 }

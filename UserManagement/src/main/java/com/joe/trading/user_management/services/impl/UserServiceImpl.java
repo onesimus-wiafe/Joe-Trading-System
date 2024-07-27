@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UpdateUserDto updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException {
+    public User updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException {
         User existingUser = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("User does not exist"));
 
@@ -62,6 +62,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(existingUser);
 
-        return updatedUser;
+        return existingUser;
     }
 }
