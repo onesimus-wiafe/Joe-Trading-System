@@ -56,8 +56,9 @@ public class UserServiceImpl implements UserService {
         existingUser.setName(updatedUser.getName());
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setAccountType(updatedUser.getAccountType());
-        existingUser.setPasswordHash(passwordEncoder.encode(updatedUser.getPasswordHash()));
-        existingUser.setPendingDelete(updatedUser.getPendingDelete());
+
+        updatedUser.getPassword().ifPresent(
+                password -> existingUser.setPasswordHash(passwordEncoder.encode(password)));
 
         userRepository.save(existingUser);
 
