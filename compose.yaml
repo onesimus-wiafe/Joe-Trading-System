@@ -19,13 +19,14 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - 5672:5672
+      # - 5672:5672
       - 15672:15672
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
+    restart: unless-stopped
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
   user-srv:
     build:
@@ -47,6 +48,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: joetrading
+    restart: unless-stopped
+    volumes:
+      - user_data:/var/lib/postgresql/data
 
   order-srv:
     build:
@@ -66,7 +70,25 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: joetrading
+    restart: unless-stopped
+    volumes:
+      - order_data:/var/lib/postgresql/data
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    # ports:
+    #   - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
 
 
 volumes:
   rabbitmq_data:
+  user_data:
+  order_data:
+  prom_data:
