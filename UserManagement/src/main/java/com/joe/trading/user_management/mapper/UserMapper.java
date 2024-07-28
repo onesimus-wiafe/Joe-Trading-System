@@ -11,9 +11,5 @@ import com.joe.trading.user_management.entities.User;
 public interface UserMapper {
     UserResponseDto userToUserResponseDto(User user);
 
-    User userResponseDtoToUser(UserResponseDto userResponseDto);
-
     List<UserResponseDto> usersToUserResponseDtos(List<User> users);
-
-    List<User> userResponseDtosToUsers(List<UserResponseDto> userResponseDtos);
 }
