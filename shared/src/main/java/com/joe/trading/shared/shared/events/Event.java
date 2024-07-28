@@ -1,4 +1,4 @@
-package com.joe.trading.shared.shared.nats.events;
+package com.joe.trading.shared.shared.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
