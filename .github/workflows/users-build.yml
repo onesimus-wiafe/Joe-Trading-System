@@ -4,9 +4,6 @@ on:
   pull_request:
     paths:
       - 'UserManagement/**'
-  push:
-    paths:
-      - 'UserManagement/**'
 
 jobs:
   build:
