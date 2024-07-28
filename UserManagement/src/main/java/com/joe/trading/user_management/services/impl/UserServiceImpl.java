@@ -1,11 +1,7 @@
 package com.joe.trading.user_management.services.impl;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import com.joe.trading.user_management.dtos.UpdateUserDto;
-import com.joe.trading.user_management.dtos.UserDto;
-import com.joe.trading.user_management.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,34 +44,19 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public List<UserDto> getAllUsers() {
+    public List<User> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(UserMapper::createUserDto).toList();
+        return users;
     }
 
     @Override
-<<<<<<< HEAD
-    public UpdateUserDto updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException {
-=======
     public User updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException {
->>>>>>> 24209e6aa821187065ccf0f0fa0d0917bc50e156
         User existingUser = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("User does not exist"));
 
         existingUser.setName(updatedUser.getName());
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setAccountType(updatedUser.getAccountType());
-<<<<<<< HEAD
-        //existingUser.setPasswordHash(passwordEncoder.encode(updatedUser.getPasswordHash()));
-        existingUser.setPendingDelete(updatedUser.getPendingDelete());
-        //existingUser.setCreatedAt(existingUser.getCreatedAt());
-        existingUser.setUpdatedAt(LocalDateTime.now());
-
-
-        userRepository.save(existingUser);
-
-        return updatedUser;
-=======
 
         updatedUser.getPassword().ifPresent(
                 password -> existingUser.setPasswordHash(passwordEncoder.encode(password)));
@@ -83,6 +64,5 @@ public class UserServiceImpl implements UserService {
         userRepository.save(existingUser);
 
         return existingUser;
->>>>>>> 24209e6aa821187065ccf0f0fa0d0917bc50e156
     }
 }
