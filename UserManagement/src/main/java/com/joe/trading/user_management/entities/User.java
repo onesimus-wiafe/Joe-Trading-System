@@ -1,9 +1,11 @@
 package com.joe.trading.user_management.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,13 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.joe.trading.user_management.enums.AccountType;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -59,6 +54,9 @@ public class User implements UserDetails {
 
     @Column(name = "pending_delete", nullable = false, columnDefinition = "boolean default false")
     private Boolean pendingDelete;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Portfolio> portfolios = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
