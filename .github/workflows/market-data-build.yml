@@ -33,5 +33,4 @@ jobs:
       run: bash ./gradlew :MarketDataService:test -Dspring.profiles.active=test
 
     - name: Build with Gradle
-      working-directory: MarketDataService
       run: bash ./gradlew :MarketDataService:build

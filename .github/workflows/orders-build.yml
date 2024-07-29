@@ -53,5 +53,4 @@ jobs:
       run: bash ./gradlew :OrderProcessingService:test -Dspring.profiles.active=test
 
     - name: Build with Gradle
-      working-directory: OrderProcessingService
       run: bash ./gradlew :OrderProcessingService:build

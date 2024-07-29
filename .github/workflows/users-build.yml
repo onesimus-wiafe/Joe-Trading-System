@@ -53,5 +53,4 @@ jobs:
       run: bash ./gradlew :UserManagement:test -Dspring.profiles.active=test
 
     - name: Build with Gradle
-      working-directory: UserManagement
       run: bash ./gradlew :UserManagement:build
