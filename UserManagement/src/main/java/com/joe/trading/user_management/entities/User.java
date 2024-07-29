@@ -55,7 +55,7 @@ public class User implements UserDetails {
     @Column(name = "pending_delete", nullable = false, columnDefinition = "boolean default false")
     private Boolean pendingDelete;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<Portfolio> portfolios = new ArrayList<>();
 
     @Override

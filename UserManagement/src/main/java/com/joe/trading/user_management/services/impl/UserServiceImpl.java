@@ -2,6 +2,7 @@ package com.joe.trading.user_management.services.impl;
 
 import java.util.List;
 
+import com.joe.trading.user_management.entities.Portfolio;
 import com.joe.trading.user_management.repository.PortfolioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import com.joe.trading.user_management.repository.UserRepository;
 import com.joe.trading.user_management.services.UserService;
 
 import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -67,4 +69,5 @@ public class UserServiceImpl implements UserService {
 
         return existingUser;
     }
+
 }
