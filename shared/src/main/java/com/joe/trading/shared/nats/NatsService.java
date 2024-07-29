@@ -1,4 +1,4 @@
-package com.joe.trading.shared.shared.nats;
+package com.joe.trading.shared.nats;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joe.trading.shared.shared.events.Event;
+import com.joe.trading.shared.events.Event;
 
 import io.nats.client.Connection;
 import io.nats.client.Dispatcher;

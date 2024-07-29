@@ -1,4 +1,4 @@
-package com.joe.trading.shared.shared.events;
+package com.joe.trading.shared.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 plugins {
 	id("java")
-	id("org.springframework.boot") version "3.3.2"
+	id("org.springframework.boot") version "3.3.2" apply false
 	id("io.spring.dependency-management") version "1.1.6"
 }
 
@@ -9,18 +9,18 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
-}
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
 
 repositories {
 	mavenCentral()
+}
+
+dependencyManagement {
+	imports {
+		mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+	}
 }
 
 dependencies {
@@ -33,6 +33,6 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.named("test") {
-	useJUnitPlatform()
+tasks.withType<Test> {
+  useJUnitPlatform()
 }
