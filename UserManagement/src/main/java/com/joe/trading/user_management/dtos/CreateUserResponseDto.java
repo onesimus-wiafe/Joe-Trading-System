@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CreateUserResponseDto {
-    private final String username;
+    private final String name;
     private final String email;
     private final AccountType accountType;
 }

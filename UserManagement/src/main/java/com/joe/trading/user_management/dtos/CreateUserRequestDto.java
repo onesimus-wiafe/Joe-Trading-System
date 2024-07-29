@@ -15,8 +15,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CreateUserRequestDto {
-    @NotEmpty(message = "Username is required")
-    private String username;
+    @NotEmpty(message = "Name is required")
+    private String name;
 
     @Email(message = "Email is invalid")
     @NotBlank(message = "Email is required")
@@ -30,7 +30,7 @@ public class CreateUserRequestDto {
     private AccountType accountType;
 
     public CreateUserRequestDto() {
-        this.username = null;
+        this.name = null;
         this.email = null;
         this.password = null;
         this.accountType = null;

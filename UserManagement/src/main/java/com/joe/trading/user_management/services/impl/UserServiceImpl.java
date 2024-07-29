@@ -6,9 +6,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
+import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.exception.ResourceNotFoundException;
 import com.joe.trading.user_management.exceptions.EmailAlreadyExistsException;
+import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
 import com.joe.trading.user_management.repository.UserRepository;
 import com.joe.trading.user_management.services.UserService;
 
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
 
-        user.setName(createUserDto.getUsername());
+        user.setName(createUserDto.getName());
         user.setEmail(createUserDto.getEmail());
         user.setAccountType(createUserDto.getAccountType());
         user.setPasswordHash(passwordEncoder.encode(createUserDto.getPassword()));
@@ -44,22 +45,24 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        return users;
     }
 
     @Override
-    public User updateUser(Long userId, User user) throws ResourceNotFoundException {
+    public User updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException {
         User existingUser = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("User does not exist"));
 
-        existingUser.setName(user.getName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setAccountType(user.getAccountType());
-        existingUser.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        existingUser.setPendingDelete(false);
+        existingUser.setName(updatedUser.getName());
+        existingUser.setEmail(updatedUser.getEmail());
+        existingUser.setAccountType(updatedUser.getAccountType());
 
-        return userRepository.save(existingUser);
+        updatedUser.getPassword().ifPresent(
+                password -> existingUser.setPasswordHash(passwordEncoder.encode(password)));
+
+        userRepository.save(existingUser);
+
+        return existingUser;
     }
-
-
 }

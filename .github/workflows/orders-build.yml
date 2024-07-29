@@ -4,9 +4,6 @@ on:
   pull_request:
     paths:
       - 'OrderProcessingService/**'
-  push:
-    paths:
-      - 'OrderProcessingService/**'
 
 jobs:
   build:

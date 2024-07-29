@@ -1,4 +1,4 @@
-package com.joe.trading.user_management.exception;
+package com.joe.trading.user_management.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
