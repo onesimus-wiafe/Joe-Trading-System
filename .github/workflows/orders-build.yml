@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: eclipse-temurin:17-jdk-jammy
 
     services:
       postgres:
@@ -46,14 +45,12 @@ jobs:
           ${{ runner.os }}-gradle-
 
     - name: Run tests
-      working-directory: OrderProcessingService
       env:
         DB_URL: jdbc:postgresql://postgres:5432/usermanagement
         DB_USERNAME: postgres
         DB_PASSWORD: postgres
         API_KEY: 1234-5678-9012
-      run: bash ./gradlew test -Dspring.profiles.active=test
+      run: bash ./gradlew :OrderProcessingService:test -Dspring.profiles.active=test
 
     - name: Build with Gradle
-      working-directory: OrderProcessingService
-      run: bash ./gradlew build
+      run: bash ./gradlew :OrderProcessingService:build

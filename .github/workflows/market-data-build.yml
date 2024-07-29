@@ -1,0 +1,36 @@
+name: Build and Test Market Data Service
+
+on:
+  pull_request:
+    paths:
+      - 'MarketDataService/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'microsoft'
+        java-version: '17'
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+            MarketDataService/.gradle/caches
+            MarketDataService/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('MarketDataService/**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Run tests
+      run: bash ./gradlew :MarketDataService:test -Dspring.profiles.active=test
+
+    - name: Build with Gradle
+      run: bash ./gradlew :MarketDataService:build
