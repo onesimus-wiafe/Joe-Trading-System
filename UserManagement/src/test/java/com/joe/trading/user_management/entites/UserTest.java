@@ -3,6 +3,8 @@ package com.joe.trading.user_management.entites;
 import com.joe.trading.user_management.entities.User;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTest {
@@ -17,5 +19,5 @@ public class UserTest {
 
         assertEquals(1L,user.getId());
     }
-
+    
 }
