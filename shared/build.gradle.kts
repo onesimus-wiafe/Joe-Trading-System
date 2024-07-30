@@ -25,6 +25,7 @@ dependencyManagement {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot")
+	implementation("org.springframework.boot:spring-boot-autoconfigure")
 	implementation("io.nats:jnats:2.19.1")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
 	compileOnly("org.projectlombok:lombok")
