@@ -1,19 +1,24 @@
 package com.joe.trading.marketdataservice.controllers;
 
+import com.joe.trading.marketdataservice.model.OpenOrderDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/md")
+@RestController
+@RequestMapping("/md/webhook")
 public class MarketDataWebhookController {
 
-    @PostMapping("/webhook")
-    public void receiveUpdate(@RequestBody String payload){
+    @PostMapping
+    public OpenOrderDTO receiveUpdate(@RequestBody OpenOrderDTO payload){
 
         System.out.println("Received Subscription Update: " + payload);
-
-        return;
+        return payload;
     }
+
+    @GetMapping
+    public String getUpdate(){
+        return "Here! Here!";
+    }
+    
 
 }
