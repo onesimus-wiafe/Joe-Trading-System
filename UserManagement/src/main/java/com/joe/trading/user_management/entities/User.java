@@ -1,7 +1,6 @@
 package com.joe.trading.user_management.entities;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -53,10 +52,10 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt;
 
     @Column(name = "pending_delete", nullable = false, columnDefinition = "boolean default false")
-    private Boolean pendingDelete;
+    private Boolean pendingDelete = false;
 
-    @OneToMany(mappedBy = "user")
-    private List<Portfolio> portfolios = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    private transient List<Portfolio> portfolios;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

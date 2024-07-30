@@ -1,67 +1,80 @@
 package com.joe.trading.user_management.entites;
 
-import com.joe.trading.user_management.entities.Portfolio;
-import com.joe.trading.user_management.entities.User;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.joe.trading.user_management.entities.Portfolio;
+import com.joe.trading.user_management.entities.User;
+import com.joe.trading.user_management.enums.AccountType;
+import com.joe.trading.user_management.repository.PortfolioRepository;
+import com.joe.trading.user_management.repository.UserRepository;
+
+@DataJpaTest
 public class UserTest {
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PortfolioRepository portfolioRepository;
+
     @Test
-    void testCreateUser(){
+    @Transactional
+    void testAddUserPortfolio() {
         User user = new User();
-        user.setId(1L);
         user.setName("testuser");
         user.setEmail("test@example.com");
         user.setPasswordHash("password");
+        user.setAccountType(AccountType.USER);
+        user.setPendingDelete(false);
 
-        assertEquals(1L,user.getId());
-    }
-
-
-    @Test
-    void testUpdateUser(){
-        User user = new User();
-        user.setId(2L);
-        user.setName("testuser");
-        user.setEmail("test@example.com");
-        user.setPasswordHash("password");
-
-        user.setName("user2");
-        assertEquals("user2",user.getName());
-    }
-
-    @Test
-    void testUserCreatedAt(){
-        User user = new User();
-        user.setId(1L);
-        user.setName("user2");
-        user.setEmail("test@example.com");
-        user.setPasswordHash("password");
-        LocalDateTime now = LocalDateTime.now();
-        user.setCreatedAt(now);
-
-        assertEquals(now,user.getCreatedAt());
-    }
-    @Test
-    void testAddUserPortfolio(){
-        User user = new User();
-        user.setId(1L);
-        user.setName("testuser");
-        user.setEmail("test@example.com");
-        user.setPasswordHash("password");
         Portfolio p1 = new Portfolio();
-        p1.setId(1L);
         p1.setName("T stocks");
         p1.setUser(user);
-        var port_l = user.getPortfolios();
-        System.out.println(port_l);
 
+        user.setPortfolios(List.of(p1));
+
+        userRepository.save(user);
 
         assertNotNull(user.getPortfolios());
-        //assertEquals(1,user.getPortfolios().size());
+        assertEquals(1, user.getPortfolios().size());
+        assertEquals(p1.getUser().getId(), user.getId());
+    }
+
+    @Test
+    @Transactional
+    void testDeleteUserWithPortfolio() {
+        User user = new User();
+        user.setName("testuser");
+        user.setEmail("test@email.com");
+        user.setPasswordHash("password");
+        user.setAccountType(AccountType.USER);
+        user.setPendingDelete(false);
+
+        Portfolio p1 = new Portfolio();
+        p1.setName("T stocks");
+        p1.setUser(user);
+
+        user.setPortfolios(List.of(p1));
+        
+        userRepository.save(user);
+        portfolioRepository.save(p1);
+
+        assertEquals(1, userRepository.count());
+        assertEquals(1, portfolioRepository.count());
+
+        userRepository.delete(user);
+
+        assertThrows(DataIntegrityViolationException.class, () -> userRepository.flush());
     }
 }
