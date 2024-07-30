@@ -1,9 +1,11 @@
 package com.joe.trading.user_management.entites;
 
-import java.time.LocalDateTime;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,13 +18,8 @@ import com.joe.trading.user_management.enums.AccountType;
 import com.joe.trading.user_management.repository.PortfolioRepository;
 import com.joe.trading.user_management.repository.UserRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DataJpaTest
 public class UserTest {
-
-    @Autowired
-    private EntityManager entityManager;
 
     @Autowired
     private UserRepository userRepository;
@@ -70,7 +67,7 @@ public class UserTest {
         p1.setUser(user);
 
         user.setPortfolios(List.of(p1));
-        
+
         userRepository.save(user);
         portfolioRepository.save(p1);
 
@@ -98,28 +95,19 @@ public class UserTest {
         p1.setName("T stocks");
         p1.setUser(user);
 
-        //user.setPortfolios(List.of(p1));
+        user.setPortfolios(List.of(p1));
 
         portfolioRepository.save(p1);
 
-        User aSave = userRepository.findByEmail(user.getEmail()).get();
-
-        System.out.println(user.getPortfolios().size());
-
-        List<Portfolio> ps = portfolioRepository.findAll();
-
         assertEquals(1, portfolioRepository.count());
+        assertEquals(1, userRepository.count());
 
         portfolioRepository.delete(p1);
         portfolioRepository.flush();
 
-        assertEquals(0, portfolioRepository.count());  // delete portfolio
-        System.out.println(user.getId());
-        System.out.println(user.getPortfolios().size());
-        User user1 = userRepository.findByEmail("test@email.com").get();
-        System.out.println(p1);
-        //assertEquals(0, user1.getPortfolios().size());   //user has no portfolio
+        assertEquals(0, portfolioRepository.count()); // delete portfolio
+
         userRepository.delete(user);
-        assertEquals(0,userRepository.count());
+        assertEquals(0, userRepository.count());
     }
 }
