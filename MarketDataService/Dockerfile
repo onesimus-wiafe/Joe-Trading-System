@@ -1,5 +1,5 @@
 # Please build the Dockerfile from the main directory of the project using the following command:
-# docker build -f OrderProcessingService/Dockerfile -t joe-trading/order-srv .
+# docker build -f MarketDataService/Dockerfile -t joe-trading/market-srv .
 
 FROM eclipse-temurin:17-jdk-alpine AS deps
 
@@ -21,23 +21,23 @@ FROM deps AS build
 
 WORKDIR /build
 
-COPY ./OrderProcessingService/src ./OrderProcessingService/src/
+COPY ./MarketDataService/src ./MarketDataService/src/
 COPY ./shared/src ./shared/src/
 
-RUN ./gradlew :OrderProcessingService:build -x test --no-daemon && \
-    mv OrderProcessingService/build/libs/$(./gradlew :OrderProcessingService:properties -q | grep '^name:' | awk '{print $2}')-$(./gradlew :OrderProcessingService:properties -q | grep '^version:' | awk '{print $2}').jar ./app.jar
+RUN ./gradlew :MarketDataService:build -x test --no-daemon && \
+  mv MarketDataService/build/libs/$(./gradlew :MarketDataService:properties -q | grep '^name:' | awk '{print $2}')-$(./gradlew :MarketDataService:properties -q | grep '^version:' | awk '{print $2}').jar ./app.jar
 
 FROM eclipse-temurin:17-jre-alpine AS final
 
 ARG UID=10001
 RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    appuser
+  --disabled-password \
+  --gecos "" \
+  --home "/nonexistent" \
+  --shell "/sbin/nologin" \
+  --no-create-home \
+  --uid "${UID}" \
+  appuser
 USER appuser
 
 COPY --from=build /build/app.jar app.jar
