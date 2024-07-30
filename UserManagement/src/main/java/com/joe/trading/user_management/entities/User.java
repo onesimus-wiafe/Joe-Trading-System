@@ -1,6 +1,7 @@
 package com.joe.trading.user_management.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class User implements UserDetails {
     private Boolean pendingDelete = false;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    private transient List<Portfolio> portfolios;
+    private transient List<Portfolio> portfolios = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -90,5 +91,20 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", passwordHash='" + passwordHash + '\'' +
+                ", accountType=" + accountType +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", pendingDelete=" + pendingDelete +
+                ", portfolios=" + portfolios +
+                '}';
     }
 }
