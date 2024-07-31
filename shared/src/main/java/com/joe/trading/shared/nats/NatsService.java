@@ -3,7 +3,7 @@ package com.joe.trading.shared.nats;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,17 +15,15 @@ import io.nats.client.Dispatcher;
 import io.nats.client.Nats;
 
 @Service
+@EnableConfigurationProperties(NatsProperties.class)
 public class NatsService {
-
-    @Value("${nats.url}")
-    private String natsUrl;
 
     private Connection natsConnection;
     private ObjectMapper objectMapper;
 
-    public NatsService(ObjectMapper objectMapper) throws IOException, InterruptedException {
+    public NatsService(ObjectMapper objectMapper, NatsProperties natsProperties) throws IOException, InterruptedException {
         this.objectMapper = objectMapper;
-        natsConnection = Nats.connect(natsUrl);
+        natsConnection = Nats.connect(natsProperties.getUrl());
     }
 
     public void publish(Event event, Object data) throws JsonProcessingException {
