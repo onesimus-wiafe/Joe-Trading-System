@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GatewayService/GatewayService.iml" filepath="$PROJECT_DIR$/GatewayService/GatewayService.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/Joe-Trading-System.iml" filepath="$PROJECT_DIR$/.idea/Joe-Trading-System.iml" />
-      <module fileurl="file://$PROJECT_DIR$/frontend/frontend.iml" filepath="$PROJECT_DIR$/frontend/frontend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/order_processing.main.iml" filepath="$PROJECT_DIR$/.idea/modules/order_processing.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MarketDataService/JOETrading.MarketDataService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/MarketDataService/JOETrading.MarketDataService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OrderProcessingService/JOETrading.OrderProcessingService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/OrderProcessingService/JOETrading.OrderProcessingService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/UserManagement/JOETrading.UserManagement.main.iml" filepath="$PROJECT_DIR$/.idea/modules/UserManagement/JOETrading.UserManagement.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared/JOETrading.shared.main.iml" filepath="$PROJECT_DIR$/.idea/modules/shared/JOETrading.shared.main.iml" />
     </modules>
   </component>
 </project>

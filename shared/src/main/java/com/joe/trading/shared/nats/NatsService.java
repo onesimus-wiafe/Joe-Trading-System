@@ -16,7 +16,7 @@ import io.nats.client.Dispatcher;
 import io.nats.client.Nats;
 
 @Service
-@ConditionalOnProperty(value = "nats.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "nats.enabled", havingValue = "true", matchIfMissing = true)
 public class NatsService {
 
     @Value("${nats.url}")
