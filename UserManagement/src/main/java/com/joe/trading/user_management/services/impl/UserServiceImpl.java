@@ -1,7 +1,5 @@
 package com.joe.trading.user_management.services.impl;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -98,10 +96,4 @@ public class UserServiceImpl implements UserService {
 
         return existingUser;
     }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
 }

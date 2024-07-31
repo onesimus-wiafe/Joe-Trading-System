@@ -1,7 +1,5 @@
 package com.joe.trading.user_management.services;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
@@ -17,8 +15,5 @@ public interface UserService {
 
     Page<User> getUsers(UserFilterRequestDto filterRequestDto);
 
-    List<User> getAllUsers();
-
     User updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException;
-
 }
