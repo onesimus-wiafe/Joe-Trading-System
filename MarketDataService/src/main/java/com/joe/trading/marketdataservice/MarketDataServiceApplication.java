@@ -31,7 +31,7 @@ public class MarketDataServiceApplication {
             // get market data from Exchange 1;
             marketDataList.addAll(mdService.getAllMarketDataFromExchange("exchange1"));
             // get market data from Exchange 2;
-            marketDataList.addAll(mdService.getAllMarketDataFromExchange("exchange2"))
+            marketDataList.addAll(mdService.getAllMarketDataFromExchange("exchange2"));
 
         };
     }
