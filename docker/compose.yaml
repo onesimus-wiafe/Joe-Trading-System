@@ -1,15 +1,19 @@
 services:
   frontend:
+    image: joe-trading/frontend
     build:
-      context: ./frontend
+      context: ../frontend
+      dockerfile: Dockerfile
     environment:
       NODE_ENV: production
-    # ports:
-    #   - 4200:80
+    ports:
+      - 4200:80
 
   gateway-srv:
+    image: joe-trading/gateway-srv
     build:
-      context: ./GatewayService
+      context: ../GatewayService
+      dockerfile: Dockerfile
     ports:
       - 8080:80
     environment:
@@ -29,8 +33,10 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
 
   user-srv:
+    image: joe-trading/user-srv
     build:
-      context: ./UserManagement
+      context: ../
+      dockerfile: UserManagement/Dockerfile
     environment:
       - DB_URL=jdbc:postgresql://user-srv-db:5432/joetrading
       - DB_USERNAME=postgres
@@ -53,8 +59,10 @@ services:
       - user_data:/var/lib/postgresql/data
 
   order-srv:
+    image: joe-trading/order-srv
     build:
-      context: ./OrderProcessingService
+      context: ../
+      dockerfile: OrderProcessingService/Dockerfile
     environment:
       - DB_URL=jdbc:postgresql://order-srv-db:5432/joetrading
       - DB_USERNAME=postgres
@@ -73,6 +81,32 @@ services:
     restart: unless-stopped
     volumes:
       - order_data:/var/lib/postgresql/data
+
+  report-srv:
+    image: joe-trading/report-srv
+    build:
+      context: ../
+      dockerfile: ReportService/Dockerfile
+    environment:
+      - DB_URL=jdbc:postgresql://order-srv-db:5432/joetrading
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - SERVER_PORT=80
+    depends_on:
+      - order-srv-db
+
+  market-srv:
+    image: joe-trading/market-srv
+    build:
+      context: ../
+      dockerfile: MarketDataService/Dockerfile
+    environment:
+      - DB_URL=jdbc:postgresql://order-srv-db:5432/joetrading
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - SERVER_PORT=80
+    depends_on:
+      - order-srv-db
 
   prometheus:
     image: prom/prometheus
@@ -97,6 +131,11 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=grafana
     volumes:
       - ./grafana:/etc/grafana/provisioning/datasources
+
+  nats:
+    image: nats
+    # ports:
+    #   - 8222:8222
 
 
 volumes:

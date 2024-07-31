@@ -1,0 +1,55 @@
+name: Build and Test Report Service
+
+on:
+  pull_request:
+    paths:
+      - 'ReportService/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: reportservice
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'microsoft'
+        java-version: '17'
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+            ReportService/.gradle/caches
+            ReportService/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('ReportService/**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Run tests
+      env:
+        DB_URL: jdbc:postgresql://postgres:5432/reportservice
+        DB_USERNAME: postgres
+        DB_PASSWORD: postgres
+      run: bash ./gradlew :ReportService:test -Dspring.profiles.active=test
+
+    - name: Build with Gradle
+      run: bash ./gradlew :ReportService:build
