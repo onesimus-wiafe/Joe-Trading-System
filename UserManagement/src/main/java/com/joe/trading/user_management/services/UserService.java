@@ -16,4 +16,6 @@ public interface UserService {
     Page<User> getUsers(UserFilterRequestDto filterRequestDto);
 
     User updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException;
+
+    void deleteUser(Long userId) throws ResourceNotFoundException;
 }

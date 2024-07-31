@@ -58,6 +58,21 @@ public class GlobalExceptionHandler {
             errorDetail.setProperty("description", "The HTTP method is not supported");
         }
 
+        if (exception instanceof ResourceNotFoundException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), exception.getMessage());
+            errorDetail.setProperty("description", "The resource was not found");
+        }
+
+        if (exception instanceof EmailAlreadyExistsException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(409), exception.getMessage());
+            errorDetail.setProperty("description", "The email already exists");
+        }
+
+        if (exception instanceof UserDeletionException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(409), exception.getMessage());
+            errorDetail.setProperty("description", "The user cannot be deleted");
+        }
+
         if (errorDetail == null) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
             errorDetail.setProperty("description", "Unknown internal server error.");
