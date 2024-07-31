@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
+import com.joe.trading.user_management.dtos.PaginatedResponseDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserFilterRequestDto;
-import com.joe.trading.user_management.dtos.UserListResponseDto;
 import com.joe.trading.user_management.dtos.UserResponseDto;
 import com.joe.trading.user_management.entities.User;
 import com.joe.trading.user_management.enums.AccountType;
@@ -54,11 +54,13 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserListResponseDto> getAllUsers(UserFilterRequestDto filterRequestDto) {
+    public ResponseEntity<PaginatedResponseDto<UserResponseDto>> getAllUsers(UserFilterRequestDto filterRequestDto) {
         Page<User> pagedUsers = userService.getUsers(filterRequestDto);
 
         List<UserResponseDto> userResponseDtos = userMapper.usersToUserResponseDtos(pagedUsers.getContent());
-        UserListResponseDto userListResponseDto = new UserListResponseDto(userResponseDtos, pagedUsers.getTotalPages(),
+        PaginatedResponseDto<UserResponseDto> userListResponseDto = new PaginatedResponseDto<>(
+                userResponseDtos,
+                pagedUsers.getTotalPages(),
                 pagedUsers.getTotalElements(), pagedUsers.getNumber());
 
         return ResponseEntity.ok(userListResponseDto);

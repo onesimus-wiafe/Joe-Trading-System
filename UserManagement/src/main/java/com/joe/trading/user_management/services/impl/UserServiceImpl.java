@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
         }
 
         Pageable pageable = PageRequest.of(
-                filterRequestDto.getPage(),
+                filterRequestDto.getPage() - 1,
                 filterRequestDto.getSize(),
                 filterRequestDto.getSortDir().equalsIgnoreCase("desc")
                         ? Sort.by(filterRequestDto.getSortBy()).descending()

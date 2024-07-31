@@ -13,8 +13,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserListResponseDto {
-    private List<UserResponseDto> users;
+public class PaginatedResponseDto<T> {
+    private List<T> data;
     private int totalPages;
     private long totalElements;
     private int currentPage;

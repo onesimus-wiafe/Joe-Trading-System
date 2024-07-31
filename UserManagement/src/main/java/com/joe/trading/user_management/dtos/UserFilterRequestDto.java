@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.joe.trading.user_management.enums.AccountType;
 
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +23,13 @@ public class UserFilterRequestDto {
     private LocalDateTime createdFrom;
     private LocalDateTime createdTo;
     private AccountType accountType;
-    private int page = 0;
+
+    @Min(value = 1, message = "Page number must be greater than 0")
+    private int page = 1;
+
+    @Min(value = 1, message = "Page size must be greater than 0")
     private int size = 10;
     private String sortBy = "id";
+
     private String sortDir = "asc";
 }
