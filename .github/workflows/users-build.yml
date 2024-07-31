@@ -46,11 +46,11 @@ jobs:
 
     - name: Run tests
       env:
-        DB_URL: jdbc:postgresql://postgres:5432/usermanagement
+        DB_URL: jdbc:postgresql://localhost:5432/usermanagement
         DB_USERNAME: postgres
         DB_PASSWORD: postgres
-        JWT_SECRET: ${{ github.sha }}
-      run: bash ./gradlew :UserManagement:test -Dspring.profiles.active=test
+        JWT_SECRET: secret
+      run: bash ./gradlew :UserManagement:test
 
     - name: Build with Gradle
       run: bash ./gradlew :UserManagement:build
