@@ -1,9 +1,11 @@
 package com.joe.trading.user_management.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,13 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.joe.trading.user_management.enums.AccountType;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -58,7 +53,10 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt;
 
     @Column(name = "pending_delete", nullable = false, columnDefinition = "boolean default false")
-    private Boolean pendingDelete;
+    private Boolean pendingDelete = false;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    private transient List<Portfolio> portfolios = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -93,5 +91,20 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", passwordHash='" + passwordHash + '\'' +
+                ", accountType=" + accountType +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", pendingDelete=" + pendingDelete +
+                ", portfolios=" + portfolios +
+                '}';
     }
 }

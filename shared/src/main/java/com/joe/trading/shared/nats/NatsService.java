@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,6 +16,7 @@ import io.nats.client.Dispatcher;
 import io.nats.client.Nats;
 
 @Service
+@ConditionalOnProperty(value = "nats.enabled", havingValue = "true")
 public class NatsService {
 
     @Value("${nats.url}")
