@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum Event {
     USER_CREATED("user.created"),
     USER_UPDATED("user.updated"),
-    USER_DELETED("user.deleted");
+    USER_DELETED("user.deleted");New_OrdrNEW
 
     private final String value;
 }
