@@ -5,15 +5,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.joe.trading.shared.events.Event;
+import com.joe.trading.shared.nats.NatsService;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserFilterRequestDto;
+import com.joe.trading.user_management.entities.Portfolio;
 import com.joe.trading.user_management.entities.User;
 import com.joe.trading.user_management.exceptions.EmailAlreadyExistsException;
 import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
+import com.joe.trading.user_management.exceptions.UserDeletionException;
+import com.joe.trading.user_management.repository.PortfolioRepository;
 import com.joe.trading.user_management.repository.UserRepository;
 import com.joe.trading.user_management.services.UserService;
 import com.joe.trading.user_management.specifications.UserSpecifications;
@@ -24,7 +32,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
+    private PortfolioRepository portfolioRepository;
     private PasswordEncoder passwordEncoder;
+    private NatsService natsService;
 
     public User getUserById(Long userId) throws ResourceNotFoundException {
         return userRepository.findById(userId).orElseThrow(
@@ -95,5 +105,28 @@ public class UserServiceImpl implements UserService {
         userRepository.save(existingUser);
 
         return existingUser;
+    }
+
+    @Override
+    public void deleteUser(Long userId) throws RuntimeException, ResourceNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User does not exist"));
+        List<Portfolio> portfolios = portfolioRepository.findByUserId(userId);
+
+        if (portfolios.isEmpty()) {
+            userRepository.deleteById(userId);
+        }
+
+        portfolios.forEach(
+                portfolio -> {
+                    try {
+                        natsService.publish(Event.DELETE_PORTFOLIO_REQUEST, portfolio);
+                    } catch (JsonProcessingException e) {
+                        throw new UserDeletionException("Error deleting user");
+                    }
+                });
+
+        user.setPendingDelete(true);
+        userRepository.save(user);
     }
 }
