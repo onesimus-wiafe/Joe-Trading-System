@@ -46,7 +46,6 @@ public class AuthServiceImpl implements AuthService {
 
         // the transactional outbox pattern is ideal for addressing the problem of data consistency across multiple services.
         try {
-            //System.out.println("Here in the natsService test");
             natsService.publish(Event.USER_CREATED, userMapper.userEventDto(user));
         } catch (JsonProcessingException e) {
             throw new UserDeletionException("Error registering new user");
