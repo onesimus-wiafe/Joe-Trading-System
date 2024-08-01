@@ -109,6 +109,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long userId) throws RuntimeException, ResourceNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User does not exist"));
         List<Portfolio> portfolios = portfolioRepository.findByUserId(userId);
 
         if (portfolios.isEmpty()) {
@@ -123,9 +125,6 @@ public class UserServiceImpl implements UserService {
                         throw new UserDeletionException("Error deleting user");
                     }
                 });
-
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new ResourceNotFoundException("User does not exist"));
 
         user.setPendingDelete(true);
         userRepository.save(user);
