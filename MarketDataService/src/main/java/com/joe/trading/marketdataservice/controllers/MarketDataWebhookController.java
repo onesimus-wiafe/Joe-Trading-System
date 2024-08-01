@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/md/webhook")
 public class MarketDataWebhookController {
 
-    private NatsService natsService;
+    private final NatsService natsService;
 
     @Autowired
     public MarketDataWebhookController(NatsService natsService){
