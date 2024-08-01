@@ -1,5 +1,10 @@
 package com.joe.trading.user_management.services.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.joe.trading.shared.events.Event;
+import com.joe.trading.shared.nats.NatsService;
+import com.joe.trading.user_management.exceptions.UserDeletionException;
+import com.joe.trading.user_management.mapper.UserMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +26,8 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private NatsService natsService;
+    private UserMapper userMapper;
 
     @Override
     public User register(RegisterRequestDto registerRequestDto) {
@@ -36,6 +43,14 @@ public class AuthServiceImpl implements AuthService {
         user.setAccountType(AccountType.USER);
         user.setPasswordHash(passwordEncoder.encode(registerRequestDto.getPassword()));
         user.setPendingDelete(false);
+
+        // the transactional outbox pattern is ideal for addressing the problem of data consistency across multiple services.
+        try {
+            //System.out.println("Here in the natsService test");
+            natsService.publish(Event.USER_CREATED, userMapper.userEventDto(user));
+        } catch (JsonProcessingException e) {
+            throw new UserDeletionException("Error registering new user");
+        }
 
         return userRepository.save(user);
     }

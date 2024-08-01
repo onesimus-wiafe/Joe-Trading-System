@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -15,6 +14,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 
+import com.joe.trading.shared.dtos.UserEventDto;
+import com.joe.trading.shared.events.Event;
+import com.joe.trading.shared.nats.NatsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,9 @@ class UserControllerTest {
 
     @MockBean
     private UserMapper userMapper;
+
+    @MockBean
+    private NatsService natsService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -115,6 +120,7 @@ class UserControllerTest {
     void createUser_shouldReturnUserResponseDto_whenRequestIsValid() throws Exception {
         when(userService.createUser(any(CreateUserRequestDto.class))).thenReturn(clientUser);
         when(userMapper.userToUserResponseDto(any(User.class))).thenReturn(userResponseDto);
+        doNothing().when(natsService).publish(any(), any());
 
         mockMvc.perform(post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -122,6 +128,8 @@ class UserControllerTest {
                 .content(objectMapper.writeValueAsString(createUserRequestDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(userResponseDto)));
+
+        verify(natsService, times(1)).publish(any(Event.class), any(UserEventDto.class));
     }
 
     @Test
