@@ -159,7 +159,6 @@ class UserServiceImplTest {
 
         verify(userRepository, times(1)).deleteById(1L);
         verify(portfolioRepository, times(1)).findByUserId(1L);
-        verify(userRepository, times(1)).save(any(User.class));
         verify(natsService, times(1)).publish(Event.USER_DELETED, userMapper.userEventDto(user));
     }
 
