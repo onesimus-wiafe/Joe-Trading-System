@@ -15,7 +15,8 @@ public enum Event {
 
     MARKET_DATA_UPDATE("market.data.update"),
 
-    DELETE_PORTFOLIO_REQUEST("portfolio.delete.request");
+    DELETE_PORTFOLIO_REQUEST("portfolio.delete.request"),
+    FULL_ORDER_BOOK("orderbook.complete");
 
     private final String value;
 }
