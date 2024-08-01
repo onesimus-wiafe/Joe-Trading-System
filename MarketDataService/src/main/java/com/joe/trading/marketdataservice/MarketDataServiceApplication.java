@@ -1,39 +1,37 @@
 package com.joe.trading.marketdataservice;
 
-import com.joe.trading.marketdataservice.model.MarketData;
-import com.joe.trading.marketdataservice.services.MarketDataService;
+import com.joe.trading.marketdataservice.services.MarketDataServiceImpl;
+import com.joe.trading.marketdataservice.services.orderbook.OrderBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.joe.trading")
 public class MarketDataServiceApplication {
-
-    private final MarketDataService mdService;
-
-    @Autowired
-    public MarketDataServiceApplication(MarketDataService mdService) {
-        this.mdService = mdService;
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(MarketDataServiceApplication.class, args);
     }
 
-    public CommandLineRunner startupMDRunner(){
+    @Component
+    public static class StartupRunner implements CommandLineRunner {
 
-        return args -> {
-            List<MarketData> marketDataList = new ArrayList<>();
-            // get market data from Exchange 1;
-            marketDataList.addAll(mdService.getAllMarketDataFromExchange("exchange1"));
-            // get market data from Exchange 2;
-            marketDataList.addAll(mdService.getAllMarketDataFromExchange("exchange2"));
+        private final MarketDataServiceImpl mdService;
+        private final OrderBookService orderBookService;
 
-        };
+        @Autowired
+        public StartupRunner(MarketDataServiceImpl mdService, OrderBookService orderBookService) {
+            this.mdService = mdService;
+            this.orderBookService = orderBookService;
+        }
+
+        @Override
+        public void run(String... args) throws Exception {
+            mdService.buildInitialCacheEntry();
+            orderBookService.publishOrderBook();
+        }
     }
 
 }
