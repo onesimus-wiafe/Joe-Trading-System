@@ -2,7 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/UserManagement/JOETrading.UserManagement.main.iml" filepath="$PROJECT_DIR$/.idea/modules/UserManagement/JOETrading.UserManagement.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MarketDataService/JOETrading.MarketDataService.iml" filepath="$PROJECT_DIR$/.idea/modules/MarketDataService/JOETrading.MarketDataService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MarketDataService/JOETrading.MarketDataService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/MarketDataService/JOETrading.MarketDataService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MarketDataService/JOETrading.MarketDataService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/MarketDataService/JOETrading.MarketDataService.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OrderProcessingService/JOETrading.OrderProcessingService.iml" filepath="$PROJECT_DIR$/.idea/modules/OrderProcessingService/JOETrading.OrderProcessingService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OrderProcessingService/JOETrading.OrderProcessingService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/OrderProcessingService/JOETrading.OrderProcessingService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OrderProcessingService/JOETrading.OrderProcessingService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/OrderProcessingService/JOETrading.OrderProcessingService.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared/JOETrading.shared.iml" filepath="$PROJECT_DIR$/.idea/modules/shared/JOETrading.shared.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared/JOETrading.shared.main.iml" filepath="$PROJECT_DIR$/.idea/modules/shared/JOETrading.shared.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared/JOETrading.shared.test.iml" filepath="$PROJECT_DIR$/.idea/modules/shared/JOETrading.shared.test.iml" />
     </modules>
   </component>
 </project>
