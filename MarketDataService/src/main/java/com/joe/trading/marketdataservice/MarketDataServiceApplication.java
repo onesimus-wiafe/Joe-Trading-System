@@ -1,27 +1,37 @@
 package com.joe.trading.marketdataservice;
 
-import com.joe.trading.marketdataservice.services.MarketDataService;
+import com.joe.trading.marketdataservice.services.MarketDataServiceImpl;
+import com.joe.trading.marketdataservice.services.orderbook.OrderBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Component;
 
 @SpringBootApplication(scanBasePackages = "com.joe.trading")
 public class MarketDataServiceApplication {
-
-    private final MarketDataService mdService;
-    @Autowired
-    public MarketDataServiceApplication(MarketDataService mdService) {
-        this.mdService = mdService;
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(MarketDataServiceApplication.class, args);
     }
 
-    public CommandLineRunner startupMDRunner(){
+    @Component
+    public static class StartupRunner implements CommandLineRunner {
 
-        return args -> mdService.buildInitialCacheEntry();
+        private final MarketDataServiceImpl mdService;
+        private final OrderBookService orderBookService;
+
+        @Autowired
+        public StartupRunner(MarketDataServiceImpl mdService, OrderBookService orderBookService) {
+            this.mdService = mdService;
+            this.orderBookService = orderBookService;
+        }
+
+        @Override
+        public void run(String... args) throws Exception {
+            mdService.buildInitialCacheEntry();
+            orderBookService.publishOrderBook();
+        }
     }
 
 }
