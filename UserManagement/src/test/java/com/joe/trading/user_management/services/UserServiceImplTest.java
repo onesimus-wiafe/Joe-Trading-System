@@ -145,6 +145,7 @@ class UserServiceImplTest {
     @Test
     void deleteUser_shouldDeleteUser_whenNoPortfoliosExist() throws ResourceNotFoundException {
         when(portfolioRepository.findByUserId(1L)).thenReturn(Collections.emptyList());
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         userService.deleteUser(1L);
 
@@ -171,6 +172,7 @@ class UserServiceImplTest {
     void deleteUser_shouldThrowUserDeletionException_whenNatsServiceFails() throws Exception {
         Portfolio portfolio = new Portfolio();
         when(portfolioRepository.findByUserId(1L)).thenReturn(Collections.singletonList(portfolio));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         doThrow(new JsonProcessingException("Error") {
         }).when(natsService).publish(any(Event.class), any());
 
