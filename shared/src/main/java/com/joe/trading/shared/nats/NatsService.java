@@ -3,6 +3,7 @@ package com.joe.trading.shared.nats;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import io.nats.client.Nats;
 
 @Service
 @EnableConfigurationProperties(NatsProperties.class)
+@ConditionalOnProperty(value = "nats.enabled", havingValue = "true")
 public class NatsService {
 
     private Connection natsConnection;
