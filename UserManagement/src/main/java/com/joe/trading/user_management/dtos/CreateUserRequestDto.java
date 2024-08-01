@@ -9,11 +9,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class CreateUserRequestDto {
     @NotEmpty(message = "Name is required")
     private String name;
@@ -28,11 +32,4 @@ public class CreateUserRequestDto {
 
     @NotNull(message = "Account type is required")
     private AccountType accountType;
-
-    public CreateUserRequestDto() {
-        this.name = null;
-        this.email = null;
-        this.password = null;
-        this.accountType = null;
-    }
 }
