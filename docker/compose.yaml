@@ -138,6 +138,11 @@ services:
     # ports:
     #   - 4222:4222
 
+  nats-ui:
+    image: sphqxe/nats-webui
+    ports:
+      - 8081:80
+
 
 volumes:
   rabbitmq_data:
