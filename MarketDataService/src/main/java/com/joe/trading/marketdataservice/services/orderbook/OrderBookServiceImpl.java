@@ -2,6 +2,7 @@ package com.joe.trading.marketdataservice.services.orderbook;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.joe.trading.marketdataservice.model.OrderBook;
+import com.joe.trading.marketdataservice.services.enums.Exchange;
 import com.joe.trading.marketdataservice.services.enums.Ticker;
 import com.joe.trading.shared.events.Event;
 import com.joe.trading.shared.nats.NatsService;
@@ -21,6 +22,7 @@ public class OrderBookServiceImpl implements OrderBookService{
 
     private final String exchange1Url = "https://exchange.matraining.com";
     private final String exchange2Url = "https://exchange2.matraining.com";
+    private final Map<String, List<OrderBook>> fullOrderBook = new HashMap<>();
 
     @Autowired
     public OrderBookServiceImpl(NatsService natsService, RestTemplate restTemplate) {
@@ -30,21 +32,45 @@ public class OrderBookServiceImpl implements OrderBookService{
 
     @Override
     public void publishOrderBook() throws JsonProcessingException {
-
-        Map<String, List<OrderBook>> fullOrderBook = new HashMap<>();
-
         Arrays.stream(Ticker.values()).toList().forEach(
                 ticker -> {
                     String product = ticker.toString();
 
-                    fullOrderBook.putAll(getOpenOrders(product));
-                    fullOrderBook.putAll(getClosedOrders(product));
-                    fullOrderBook.putAll(getCancelledOrders(product));
+                    try {
+                        this.publishOrderBook(product);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
         );
+    }
 
-        System.out.println(fullOrderBook);
-        natsService.publish(Event.FULL_ORDER_BOOK, fullOrderBook);
+    @Override
+    public void publishOrderBook(String product) throws JsonProcessingException{
+        fullOrderBook.putAll(getOpenOrders(product));
+        fullOrderBook.putAll(getClosedOrders(product));
+        fullOrderBook.putAll(getCancelledOrders(product));
+
+        switch (Ticker.valueOf(product.toUpperCase())){
+            case IBM -> this.publishOne(Event.IBM_ORDER_BOOK);
+            case AAPL -> this.publishOne(Event.AAPL_ORDER_BOOK);
+            case AMZN -> this.publishOne(Event.AMZN_ORDER_BOOK);
+            case MSFT -> this.publishOne(Event.MSFT_ORDER_BOOK);
+            case NFLX -> this.publishOne(Event.NFLX_ORDER_BOOK);
+            case ORCL -> this.publishOne(Event.ORCL_ORDER_BOOK);
+            case TSLA -> this.publishOne(Event.TSLA_ORDER_BOOK);
+            case GOOGL -> this.publishOne(Event.GOOGL_ORDER_BOOK);
+        }
+    }
+
+
+    private void publishOne(Event event){
+        try {
+            natsService.publish(event, fullOrderBook);
+            fullOrderBook.clear();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<OrderBook> getFromExchange(String baseUrl, String ticker, String state){

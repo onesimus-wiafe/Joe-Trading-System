@@ -122,8 +122,6 @@ public class MarketDataServiceImpl implements MarketDataService {
 
         natsService.publish(Event.MARKET_DATA_UPDATE, marketDataMap);
 
-        marketDataList.forEach(System.out::println);
-
         this.saveToCache(marketDataMap);
     }
 }
