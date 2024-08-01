@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.joe.trading.user_management.entities.Portfolio;
@@ -19,6 +20,7 @@ import com.joe.trading.user_management.repository.PortfolioRepository;
 import com.joe.trading.user_management.repository.UserRepository;
 
 @DataJpaTest
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class UserTest {
 
     @Autowired
