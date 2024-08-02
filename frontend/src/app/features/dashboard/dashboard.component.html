@@ -1,1 +1,22 @@
-<p>dashboard works!</p>
+<app-drawer> </app-drawer>
+
+<div class="w-full inline-flex flex-nowrap">
+  <ul
+  class="flex items-center justify-center md:justify-start [&_li]:mx-4 animate-infinite-scroll"
+  >
+    @for (stock of stocks; track stock.symbol) {
+    <li>
+      <app-stock-price-card [stock]="stock" />
+    </li>
+    }
+  </ul>
+  <ul
+    class="flex items-center justify-center md:justify-start [&_li]:mx-4 animate-infinite-scroll"
+  >
+    @for (stock of stocks; track stock.symbol) {
+    <li>
+      <app-stock-price-card [stock]="stock" />
+    </li>
+    }
+  </ul>
+</div>
