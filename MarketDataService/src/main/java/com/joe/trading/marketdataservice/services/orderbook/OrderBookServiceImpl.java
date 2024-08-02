@@ -2,17 +2,18 @@ package com.joe.trading.marketdataservice.services.orderbook;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.joe.trading.marketdataservice.model.OrderBook;
-import com.joe.trading.marketdataservice.services.enums.Exchange;
 import com.joe.trading.marketdataservice.services.enums.Ticker;
 import com.joe.trading.shared.events.Event;
 import com.joe.trading.shared.nats.NatsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderBookServiceImpl implements OrderBookService{

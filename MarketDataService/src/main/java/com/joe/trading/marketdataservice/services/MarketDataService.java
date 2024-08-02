@@ -3,7 +3,6 @@ package com.joe.trading.marketdataservice.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.joe.trading.marketdataservice.model.MarketData;
 
-import java.util.List;
 import java.util.Map;
 
 public interface MarketDataService {
