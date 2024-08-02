@@ -115,17 +115,4 @@ public class OrderBookServiceImpl implements OrderBookService{
 
         return result;
     }
-
-
-    private List<OrderBook> getBuyOrders(List<OrderBook> orders){
-        return orders.stream().filter(order -> order.getSide().equals("BUY")).toList();
-    }
-
-    private List<OrderBook> getSellOrders(List<OrderBook> orders){
-        return orders.stream().filter(order -> order.getSide().equals("SELL")).toList();
-    }
 }
-
-/**
- *
- */

@@ -21,7 +21,7 @@ public class OrderBook {
     private String side;
     private String orderType;
 
-    private List<Executions> executions = new ArrayList();
+    private List<Executions> executions = new ArrayList<>();
 
     public OrderBook(String product, String id, Integer quantity, String side, String type) {
         this.product = product;
