@@ -1,5 +1,6 @@
 package com.joe.trading.user_management.services.impl;
 
+import com.joe.trading.user_management.mapper.UserMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService {
     private PortfolioRepository portfolioRepository;
     private PasswordEncoder passwordEncoder;
     private NatsService natsService;
+    private UserMapper userMapper;
 
     public User getUserById(Long userId) throws ResourceNotFoundException {
         return userRepository.findById(userId).orElseThrow(
@@ -55,6 +57,14 @@ public class UserServiceImpl implements UserService {
         user.setAccountType(createUserDto.getAccountType());
         user.setPasswordHash(passwordEncoder.encode(createUserDto.getPassword()));
         user.setPendingDelete(false);
+
+        // the transactional outbox pattern is ideal for addressing the problem of data
+        // consistency across multiple services.
+        try {
+            natsService.publish(Event.USER_CREATED, userMapper.userEventDto(user));
+        } catch (JsonProcessingException e) {
+            throw new UserDeletionException("Error creating user");
+        }
 
         return userRepository.save(user);
     }
@@ -103,6 +113,11 @@ public class UserServiceImpl implements UserService {
                 password -> existingUser.setPasswordHash(passwordEncoder.encode(password)));
 
         userRepository.save(existingUser);
+        try {
+            natsService.publish(Event.USER_UPDATED, userMapper.userEventDto(existingUser));
+        } catch (JsonProcessingException e) {
+            throw new UserDeletionException("Error updating user");
+        }
 
         return existingUser;
     }
@@ -115,6 +130,12 @@ public class UserServiceImpl implements UserService {
 
         if (portfolios.isEmpty()) {
             userRepository.deleteById(userId);
+            try {
+                natsService.publish(Event.USER_DELETED, userMapper.userEventDto(user));
+            } catch (JsonProcessingException e) {
+                throw new UserDeletionException("Error deleting user");
+            }
+            return;
         }
 
         portfolios.forEach(

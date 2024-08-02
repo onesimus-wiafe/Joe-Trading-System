@@ -30,6 +30,7 @@ import com.joe.trading.user_management.enums.AccountType;
 import com.joe.trading.user_management.exceptions.EmailAlreadyExistsException;
 import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
 import com.joe.trading.user_management.exceptions.UserDeletionException;
+import com.joe.trading.user_management.mapper.UserMapper;
 import com.joe.trading.user_management.repository.PortfolioRepository;
 import com.joe.trading.user_management.repository.UserRepository;
 import com.joe.trading.user_management.services.impl.UserServiceImpl;
@@ -44,6 +45,9 @@ class UserServiceImplTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private UserMapper userMapper;
 
     @Mock
     private NatsService natsService;
@@ -97,7 +101,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createUser_shouldCreateAndReturnUser_whenRequestIsValid() {
+    void createUser_shouldCreateAndReturnUser_whenRequestIsValid() throws JsonProcessingException {
         when(userRepository.findByEmail(createUserRequestDto.getEmail())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(createUserRequestDto.getPassword())).thenReturn("hashed_password");
         when(userRepository.save(any(User.class))).thenReturn(user);
@@ -107,19 +111,21 @@ class UserServiceImplTest {
         assertThat(createdUser).isEqualTo(user);
         verify(userRepository, times(1)).findByEmail(createUserRequestDto.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
+        verify(natsService, times(1)).publish(Event.USER_CREATED, userMapper.userEventDto(user));
     }
 
     @Test
-    void createUser_shouldThrowEmailAlreadyExistsException_whenEmailAlreadyExists() {
+    void createUser_shouldThrowEmailAlreadyExistsException_whenEmailAlreadyExists() throws JsonProcessingException {
         when(userRepository.findByEmail(createUserRequestDto.getEmail())).thenReturn(Optional.of(user));
 
         assertThrows(EmailAlreadyExistsException.class, () -> userService.createUser(createUserRequestDto));
         verify(userRepository, times(1)).findByEmail(createUserRequestDto.getEmail());
         verify(userRepository, times(0)).save(any(User.class));
+        verify(natsService, times(0)).publish(any(Event.class), any());
     }
 
     @Test
-    void updateUser_shouldUpdateAndReturnUser_whenRequestIsValid() throws ResourceNotFoundException {
+    void updateUser_shouldUpdateAndReturnUser_whenRequestIsValid() throws ResourceNotFoundException, JsonProcessingException {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.encode(updateUserDto.getPassword().get())).thenReturn("new_hashed_password");
 
@@ -131,19 +137,21 @@ class UserServiceImplTest {
         assertThat(updatedUser.getPasswordHash()).isEqualTo("new_hashed_password");
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(1)).save(user);
+        verify(natsService, times(1)).publish(Event.USER_UPDATED, userMapper.userEventDto(user));
     }
 
     @Test
-    void updateUser_shouldThrowResourceNotFoundException_whenUserDoesNotExist() {
+    void updateUser_shouldThrowResourceNotFoundException_whenUserDoesNotExist() throws JsonProcessingException {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> userService.updateUser(1L, updateUserDto));
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(0)).save(any(User.class));
+        verify(natsService, times(0)).publish(any(Event.class), any());
     }
 
     @Test
-    void deleteUser_shouldDeleteUser_whenNoPortfoliosExist() throws ResourceNotFoundException {
+    void deleteUser_shouldDeleteUser_whenNoPortfoliosExist() throws ResourceNotFoundException, JsonProcessingException {
         when(portfolioRepository.findByUserId(1L)).thenReturn(Collections.emptyList());
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
@@ -151,6 +159,7 @@ class UserServiceImplTest {
 
         verify(userRepository, times(1)).deleteById(1L);
         verify(portfolioRepository, times(1)).findByUserId(1L);
+        verify(natsService, times(1)).publish(Event.USER_DELETED, userMapper.userEventDto(user));
     }
 
     @Test
@@ -166,6 +175,9 @@ class UserServiceImplTest {
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(1)).save(user);
         assertThat(user.getPendingDelete()).isTrue();
+        verify(portfolioRepository, times(1)).findByUserId(1L);
+        verify(userRepository, times(0)).deleteById(1L);
+        verify(natsService, times(1)).publish(Event.DELETE_PORTFOLIO_REQUEST, portfolio);
     }
 
     @Test

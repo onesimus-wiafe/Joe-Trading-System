@@ -3,6 +3,7 @@ package com.joe.trading.user_management.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,11 +20,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.joe.trading.shared.dtos.UserEventDto;
+import com.joe.trading.shared.events.Event;
+import com.joe.trading.shared.nats.NatsService;
 import com.joe.trading.user_management.dtos.LoginRequestDto;
 import com.joe.trading.user_management.dtos.RegisterRequestDto;
 import com.joe.trading.user_management.entities.User;
 import com.joe.trading.user_management.enums.AccountType;
 import com.joe.trading.user_management.exceptions.EmailAlreadyExistsException;
+import com.joe.trading.user_management.mapper.UserMapper;
 import com.joe.trading.user_management.repository.UserRepository;
 import com.joe.trading.user_management.services.impl.AuthServiceImpl;
 
@@ -37,6 +43,12 @@ class AuthServiceImplTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private NatsService natsService;
+
+    @Mock
+    private UserMapper userMapper;
 
     @InjectMocks
     private AuthServiceImpl authService;
@@ -67,16 +79,19 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void register_shouldCreateAndReturnUser_whenRequestIsValid() {
+    void register_shouldCreateAndReturnUser_whenRequestIsValid() throws JsonProcessingException {
         when(userRepository.findByEmail(registerRequestDto.getEmail())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(registerRequestDto.getPassword())).thenReturn("hashed_password");
         when(userRepository.save(any(User.class))).thenReturn(user);
+        var userEventDto = new UserEventDto();
+        when(userMapper.userEventDto(any(User.class))).thenReturn(userEventDto);
 
         User createdUser = authService.register(registerRequestDto);
 
         assertThat(createdUser).isEqualTo(user);
         verify(userRepository, times(1)).findByEmail(registerRequestDto.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
+        verify(natsService, times(1)).publish(Event.USER_CREATED, userEventDto);
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.joe.trading.user_management.mapper;
 
 import java.util.List;
 
+import com.joe.trading.shared.dtos.UserEventDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -16,4 +17,6 @@ public interface UserMapper {
     UserResponseDto userToUserResponseDto(User user);
 
     List<UserResponseDto> usersToUserResponseDtos(List<User> users);
+
+    UserEventDto userEventDto(User user);
 }
