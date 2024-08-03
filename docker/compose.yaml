@@ -43,14 +43,17 @@ services:
       - DB_PASSWORD=postgres
       - JWT_SECRET=3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
       - SERVER_PORT=80
-      - NATS_URL=nats://localhost:4222
+      - NATS_URL=nats://nats:4222
     depends_on:
       - user-srv-db
+      - nats
+    ports:
+      - 8081:80
 
   user-srv-db:
     image: postgres:16
-    # ports:
-    #   - 5432:5432
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -72,6 +75,8 @@ services:
       - API_KEY=$API_KEY
     depends_on:
       - order-srv-db
+    ports:
+      - 8082:80
 
   order-srv-db:
     image: postgres:16
@@ -89,12 +94,24 @@ services:
       context: ../
       dockerfile: ReportService/Dockerfile
     environment:
-      - DB_URL=jdbc:postgresql://order-srv-db:5432/joetrading
+      - DB_URL=jdbc:postgresql://report-srv-db:5432/joetrading
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
       - SERVER_PORT=80
     depends_on:
-      - order-srv-db
+      - report-srv-db
+    ports:
+      - 8083:80
+
+  report-srv-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: joetrading
+    restart: unless-stopped
+    volumes:
+      - report_data:/var/lib/postgresql/data
 
   market-srv:
     image: joe-trading/market-srv
@@ -106,16 +123,26 @@ services:
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
       - SERVER_PORT=80
+      - NATS_URL=nats://nats:4222
+      - REDIS_HOST=market-srv-cache
     depends_on:
-      - order-srv-db
+      - nats
+      - market-srv-cache
+    ports:
+      - 8084:80
+
+  market-srv-cache:
+    image: redis:alpine
+    ports:
+      - 6379:6379
 
   prometheus:
     image: prom/prometheus
     container_name: prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
-    # ports:
-    #   - 9090:9090
+    ports:
+      - 9090:9090
     restart: unless-stopped
     volumes:
       - ./prometheus:/etc/prometheus
@@ -135,16 +162,17 @@ services:
 
   nats:
     image: nats
-    # ports:
-    #   - 4222:4222
-
-  nats-ui:
-    image: sphqxe/nats-webui
     ports:
-      - 8081:80
+      - 4222:4222
+
+  # nats-ui:
+  #   image: sphqxe/nats-webui
+  #   ports:
+  #     - 8081:80
 
 volumes:
   rabbitmq_data:
   user_data:
   order_data:
   prom_data:
+  report_data:
