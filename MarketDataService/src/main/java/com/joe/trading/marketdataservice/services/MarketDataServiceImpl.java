@@ -8,7 +8,7 @@ import com.joe.trading.marketdataservice.services.enums.Exchange;
 import com.joe.trading.shared.events.Event;
 import com.joe.trading.shared.nats.NatsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,54 +25,54 @@ public class MarketDataServiceImpl implements MarketDataService {
     private final String exchange2Url = "https://exchange2.matraining.com";
 
     @Autowired
-    public MarketDataServiceImpl(MarketDataRepo repo, RestTemplate restTemplate, NatsService natsService){
+    public MarketDataServiceImpl(MarketDataRepo repo, RestTemplate restTemplate, NatsService natsService) {
         this.repo = repo;
         this.restTemplate = restTemplate;
         this.natsService = natsService;
     }
 
-    public void saveToCache(MarketData marketData){
+    public void saveToCache(MarketData marketData) {
         this.repo.saveMarketData(marketData, marketData.getTICKER());
     }
 
-    public void saveToCache(Map<String, MarketData> marketDataMap){
+    public void saveToCache(Map<String, MarketData> marketDataMap) {
         this.repo.saveAll(marketDataMap);
     }
 
-    public MarketData getFromCache(String ticker){
+    public MarketData getFromCache(String ticker) {
         return this.repo.getMarketData(ticker);
     }
 
-    public Map<String, MarketData> getAllFromCache(){
+    public Map<String, MarketData> getAllFromCache() {
         return this.repo.getAll();
     }
 
-    public void clearCache(){
+    public void clearCache() {
         this.repo.clearCache();
     }
 
-    public void updateMarketData(MarketData marketData){
+    public void updateMarketData(MarketData marketData) {
         this.repo.updateMarketData(marketData);
     }
 
-    public MarketData getMarketDataFromExchange(String exchange, String ticker){
-        String endOfUrl = "/pd/"+ ticker.toUpperCase();
-        return switch (Exchange.valueOf(exchange)){
-            case EXCHANGE1 -> this.getOneFromExchange(exchange1Url+endOfUrl);
-            case EXCHANGE2 -> this.getOneFromExchange(exchange2Url+endOfUrl);
+    public MarketData getMarketDataFromExchange(String exchange, String ticker) {
+        String endOfUrl = "/pd/" + ticker.toUpperCase();
+        return switch (Exchange.valueOf(exchange.toUpperCase())) {
+            case EXCHANGE1 -> this.getOneFromExchange(exchange1Url + endOfUrl);
+            case EXCHANGE2 -> this.getOneFromExchange(exchange2Url + endOfUrl);
         };
     }
 
-    private List<MarketData> getAllMarketDataFromExchange(String exchange){
+    private List<MarketData> getAllMarketDataFromExchange(String exchange) {
         String endOfUrl = "/pd";
-        return switch (Exchange.valueOf(exchange.toUpperCase())){
-            case EXCHANGE1 -> this.getFromExchange(exchange1Url+endOfUrl, "EX1");
-            case EXCHANGE2 -> this.getFromExchange(exchange2Url+endOfUrl, "EX2");
+        return switch (Exchange.valueOf(exchange.toUpperCase())) {
+            case EXCHANGE1 -> this.getFromExchange(exchange1Url + endOfUrl, "EX1");
+            case EXCHANGE2 -> this.getFromExchange(exchange2Url + endOfUrl, "EX2");
 
         };
     }
 
-    private List<MarketData> getFromExchange(String url, String exchange){
+    private List<MarketData> getFromExchange(String url, String exchange) {
         ResponseEntity<Object[]> response = restTemplate.getForEntity(
                 url, Object[].class
         );
@@ -84,14 +84,15 @@ public class MarketDataServiceImpl implements MarketDataService {
         return result;
     }
 
-    private MarketData getOneFromExchange(String url){
+    private MarketData getOneFromExchange(String url) {
         ResponseEntity<Object> response = restTemplate.getForEntity(
                 url, Object.class
         );
+
         return mapObject(response.getBody());
     }
 
-    private MarketData mapObject(Object object){
+    private MarketData mapObject(Object object) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         MarketData data;
@@ -104,11 +105,36 @@ public class MarketDataServiceImpl implements MarketDataService {
         return null;
     }
 
+    public void initialSubscriptionCheck() {
+
+        String subscriptionUrl = exchange1Url + "/pd/subscription";
+        ResponseEntity<String[]> response = restTemplate.getForEntity(subscriptionUrl, String[].class);
+
+        List<String> subList = Arrays.asList(response.getBody());
+
+        String mdsUrl = "https://webhook.site/0aac56b5-d439-40ed-a29b-ec92896136e5";
+        boolean isSubbed = subList.contains(mdsUrl);
+
+        if (!isSubbed) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> request = new HttpEntity<>(mdsUrl, headers);
+
+            restTemplate.exchange(
+                    subscriptionUrl,
+                    HttpMethod.POST,
+                    request,
+                    Boolean.class
+            );
+        }
+    }
+
     public void buildInitialCacheEntry() throws JsonProcessingException {
+
+        this.clearCache();
+
         List<MarketData> marketDataList = new ArrayList<>();
-        // get market data from Exchange 1;
         marketDataList.addAll(this.getAllMarketDataFromExchange("exchange1"));
-        // get market data from Exchange 2;
         marketDataList.addAll(this.getAllMarketDataFromExchange("exchange2"));
 
         // change to cache agreeable format.
@@ -121,8 +147,6 @@ public class MarketDataServiceImpl implements MarketDataService {
         });
 
         natsService.publish(Event.MARKET_DATA_UPDATE, marketDataMap);
-
-        marketDataList.forEach(System.out::println);
 
         this.saveToCache(marketDataMap);
     }

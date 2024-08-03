@@ -14,4 +14,5 @@ public interface MarketDataService {
     void updateMarketData(MarketData marketData);
     MarketData getMarketDataFromExchange(String exchange, String ticker);
     void buildInitialCacheEntry() throws JsonProcessingException;
+    void initialSubscriptionCheck();
 }
