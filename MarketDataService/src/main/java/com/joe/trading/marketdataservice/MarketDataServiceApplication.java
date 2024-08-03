@@ -29,6 +29,7 @@ public class MarketDataServiceApplication {
 
         @Override
         public void run(String... args) throws Exception {
+            mdService.initialSubscriptionCheck();
             mdService.buildInitialCacheEntry();
             orderBookService.publishOrderBook();
         }
