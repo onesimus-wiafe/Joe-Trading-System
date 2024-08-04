@@ -1,0 +1,55 @@
+<div class="navbar bg-base-100 shadow-lg">
+  <div class="flex-none">
+    <label for="my-drawer" type="button" class="btn btn-square btn-ghost">
+      <ng-icon name="heroBars3" size="24" />
+    </label>
+  </div>
+  <div class="flex-1">
+    <a class="btn btn-ghost text-xl overflow-ellipsis whitespace-nowrap"
+      >JOE Trading System</a
+    >
+  </div>
+  <div class="flex">
+    <input type="text" placeholder="Search" class="input input-bordered w-full max-w-xs" />
+    <div class="flex-none">
+      <button title="Search" type="button" class="btn btn-circle btn-ghost">
+        <ng-icon name="heroMagnifyingGlass" size="24"  />
+      </button>
+      <button
+        title="Notifications"
+        type="button"
+        class="btn btn-circle btn-ghost"
+      >
+        <ng-icon name="heroBell" size="24" />
+      </button>
+    </div>
+    <div class="flex-none dropdown dropdown-end">
+      <button type="button" class="btn btn-ghost flex flex-col">
+        <div class="avatar">
+          <div class="w-8 rounded-full">
+            <img
+              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+              alt="avatar"
+            />
+          </div>
+        </div>
+        <span class="whitespace-nowrap">Jane Doe</span>
+      </button>
+      <ul
+        class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+      >
+        <li>
+          <a><ng-icon name="heroUser" size="24" />Profile</a>
+        </li>
+        <li>
+          <a
+            ><ng-icon
+              name="heroArrowRightStartOnRectangle"
+              size="24"
+            />Logout</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

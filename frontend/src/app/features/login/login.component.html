@@ -38,30 +38,42 @@
     class="w-1/2 bg-gray-50 dark:bg-gray-800 absolute right-0 top-0 h-screen flex items-center justify-center"
   >
     <form
-      [formGroup]="signupForm"
+      [formGroup]="loginForm"
       (ngSubmit)="handleSubmit()"
       class="max-w-2xl w-full mx-10"
     >
-
       <h2 class="text-4xl font-extrabold dark:text-white mb-3">Login</h2>
       <p class="mb-5">
-        Enter your username and password to access your trading dashboard.
+        Enter your email and password to access your trading dashboard.
       </p>
       <div class="gap-6 mb-6 flex flex-col">
         <div>
           <label
-            for="username"
+            for="email"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Username</label
+            >Email</label
           >
           <input
-            type="text"
-            id="username"
-            formControlName="username"
+            type="email"
+            id="email"
+            formControlName="email"
             class="input input-bordered w-full"
+            [class.input-error]="
+              loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+            "
             placeholder="johndoe"
             required
           />
+          @if ( loginForm.get('email')?.touched &&
+          loginForm.get('email')?.invalid ) {
+          <small class="text-red-500 text-sm mt-1">
+            {{
+              loginForm.get("email")?.errors?.['required']
+                ? "Email is required"
+                : "Invalid email"
+            }}
+          </small>
+          }
         </div>
         <div>
           <label
@@ -74,17 +86,27 @@
             id="password"
             formControlName="password"
             class="input input-bordered w-full"
+            [class.input-error]="
+              loginForm.get('password')?.touched &&
+              loginForm.get('password')?.invalid
+            "
             placeholder="•••••••••"
             required
           />
+          @if ( loginForm.get('password')?.touched &&
+          loginForm.get('password')?.invalid ) {
+          <small class="text-red-500 text-sm mt-1">
+            Password is required
+          </small>
+          }
         </div>
 
         <button
           type="submit"
-          [disabled]="!signupForm.valid"
+          [disabled]="!loginForm.valid"
           class="btn btn-primary"
         >
-          Sign up
+          Login
         </button>
 
         <div>

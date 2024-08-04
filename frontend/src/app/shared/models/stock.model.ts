@@ -5,3 +5,4 @@ export type Stock = {
   change: number;
   pic: string;
 }
+

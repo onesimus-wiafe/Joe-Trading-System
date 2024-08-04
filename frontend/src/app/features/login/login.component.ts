@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import {
-  FormGroup,
   FormControl,
-  Validators,
+  FormGroup,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import { LoginSchema } from '../../shared/models/auth.model';
+import * as v from 'valibot';
 
 @Component({
   selector: 'app-login',
@@ -15,13 +18,34 @@ import {
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-  signupForm = new FormGroup({
-    username: new FormControl('', [Validators.required]),
+  loginForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
   });
 
+  constructor(private authService: AuthService) {}
+
   handleSubmit() {
-    console.log("handleSubmit() called")
-    console.log(this.signupForm.value);
+    const result = v.safeParse(LoginSchema, this.loginForm.value);
+    if (result.success) {
+      this.authService.login(result.output).subscribe({
+        error: (error) => {
+          
+        },
+      });
+    } else {
+      console.error(result.issues);
+    }
+  }
+
+  getErrorMessage(control: FormControl) {
+    if (control.hasError('required')) {
+      return 'You must enter a value';
+    }
+    if (control.hasError('email')) {
+      return 'Not a valid email';
+    }
+
+    return '';
   }
 }

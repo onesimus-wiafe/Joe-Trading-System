@@ -1,8 +1,4 @@
-<!-- NAVBAR -->
-
-<div class="navbar bg-neutral">
-  <p>Hey soul sister</p>
-</div>
+<app-navbar />
 
 <!-- DRAWER -->
 <div class="drawer">
@@ -10,12 +6,47 @@
   <div class="drawer-content">
     <ng-content></ng-content>
   </div>
-  <div class="drawer-side">
-    <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-    <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-      <!-- Sidebar content here -->
-      <li><a>Sidebar Item 1</a></li>
-      <li><a>Sidebar Item 2</a></li>
-    </ul>
+  <div class="drawer-side z-10">
+    <label
+      for="my-drawer"
+      aria-label="close sidebar"
+      class="drawer-overlay"
+    ></label>
+    <div class="min-h-full bg-base-200 p-4 flex flex-col">
+      <h1>This is my content</h1>
+      <ul class="menu text-base-content h-full rounded-box w-80">
+        <li>
+          <a routerLink="/dashboard">
+            <ng-icon name="heroSquares2x2" size="24" />
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a>
+            <ng-icon name="heroBuildingOffice2" size="24" />
+            Portfolio
+          </a>
+        </li>
+        <li>
+          <a>
+            <ng-icon name="heroReceiptRefund" size="24" />
+            Trade History
+          </a>
+        </li>
+      </ul>
+      <div class="flex-grow"></div>
+        <div class="divider"></div>
+      <div class="flex-none space-x-3 mb-3">
+        <ng-icon name="heroMoon" size="24" />
+        <input
+          aria-label="toggle theme"
+          type="checkbox"
+          [checked]="theme() === 'light'"
+          (change)="toggleTheme($event)"
+          class="toggle"
+        />
+        <ng-icon name="heroSun" size="24" />
+      </div>
+    </div>
   </div>
 </div>

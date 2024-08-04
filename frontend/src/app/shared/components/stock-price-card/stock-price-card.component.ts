@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { remixArrowDownSFill, remixArrowUpSFill } from '@ng-icons/remixicon';
-import { Stock } from './stock.model';
+import { Stock } from '../../models/stock.model';
 
 @Component({
   selector: 'app-stock-price-card',
