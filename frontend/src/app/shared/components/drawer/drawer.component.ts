@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroBuildingOffice2,
@@ -7,12 +8,13 @@ import {
   heroSquares2x2,
   heroSun,
 } from '@ng-icons/heroicons/outline';
+import { ThemeService } from '../../../core/services/theme.service';
 import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-drawer',
   standalone: true,
-  imports: [NavbarComponent, NgIconComponent],
+  imports: [NavbarComponent, NgIconComponent, RouterLink],
   providers: [
     provideIcons({
       heroSquares2x2,
@@ -25,26 +27,14 @@ import { NavbarComponent } from '../../navbar/navbar.component';
   templateUrl: './drawer.component.html',
   styleUrl: './drawer.component.css',
 })
-export class DrawerComponent implements OnInit {
-  theme = signal<'light' | 'dark'>('light');
-
-  ngOnInit(): void {
-    let systemIsDarkTheme = window.matchMedia(
-      '(prefers-color-scheme: dark)'
-    ).matches;
-    const theme = localStorage.getItem('theme') as 'light' | 'dark';
-    !!theme
-      ? this.theme.set(theme)
-      : this.theme.set(systemIsDarkTheme ? 'dark' : 'light');
-
-    document.querySelector('html')?.setAttribute('data-theme', theme);
+export class DrawerComponent {
+  constructor(private themeService: ThemeService) {
   }
 
+  theme = computed(() => this.themeService.theme());
+
   toggleTheme($event: Event) {
-    const theme = ($event.target as HTMLInputElement).checked
-      ? 'light'
-      : 'dark';
-    localStorage.setItem('theme', theme);
-    document.querySelector('html')?.setAttribute('data-theme', theme);
+    $event.preventDefault();
+    this.themeService.toggleTheme();
   }
 }
