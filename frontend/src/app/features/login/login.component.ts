@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LoginSchema } from '../../shared/models/auth.model';
 import * as v from 'valibot';
@@ -23,15 +23,18 @@ export class LoginComponent {
     password: new FormControl('', [Validators.required]),
   });
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  handleSubmit() {
+  loading = computed(() => this.authService.loading);
+
+  login() {
     const result = v.safeParse(LoginSchema, this.loginForm.value);
     if (result.success) {
       this.authService.login(result.output).subscribe({
-        error: (error) => {
-          
+        next: (response) => {
+          this.router.navigate(['/dashboard']);
         },
+        error: (error) => {},
       });
     } else {
       console.error(result.issues);

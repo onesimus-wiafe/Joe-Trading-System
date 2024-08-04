@@ -81,7 +81,9 @@
         </svg>
       </div>
       <div class="stat-title">Trade Totals</div>
-      <div class="stat-value">Donut chart of all (open/canceled/closed) trades</div>
+      <div class="stat-value">
+        Donut chart of all (open/canceled/closed) trades
+      </div>
       <div class="stat-desc">↘︎ 90 (14%)</div>
     </div>
   </div>
@@ -90,56 +92,12 @@
     <div class="w-3/4">
       <canvasjs-chart
         [options]="stockChartOptions()"
-        [styles]="{ width: '100%', height: '360px' }"
+        [styles]="{ width: '100%', height: '100%' }"
       ></canvasjs-chart>
     </div>
-    <form class="w-1/4 px-3 flex flex-col space-y-3">
-      <h2 class="card-title">Trade</h2>
-      <select
-        aria-label="Select Portfolio"
-        class="select select-bordered w-full select-sm"
-      >
-        <option disabled selected>Portfolio</option>
-        <option>Han Solo</option>
-        <option>Greedo</option>
-      </select>
-      <select
-        aria-label="Select Stock"
-        class="select select-bordered w-full select-sm"
-      >
-        <option disabled selected>Stock</option>
-        <option>Han Solo</option>
-        <option>Greedo</option>
-      </select>
-      <select
-        aria-label="Select Trade Type"
-        class="select select-bordered w-full select-sm"
-      >
-        <option disabled selected>Trade Type</option>
-        <option>Market</option>
-        <option>Limit</option>
-      </select>
-      <select
-        aria-label="Select Side"
-        class="select select-bordered w-full select-sm"
-      >
-        <option disabled selected>Side</option>
-        <option>BUY</option>
-        <option>SELL</option>
-      </select>
-      <input
-        type="text"
-        aria-label="Amount"
-        class="input input-bordered w-full select-sm"
-        placeholder="Amount"
-      />
-      <input
-        type="text"
-        aria-label="Quantity"
-        class="input input-bordered w-full select-sm"
-        placeholder="Quantity"
-      />
-      <button type="submit" class="btn btn-primary">Trade</button>
-    </form>
+
+    <div class="w-1/4">
+      <app-order-form />
+    </div>
   </div>
 </div>

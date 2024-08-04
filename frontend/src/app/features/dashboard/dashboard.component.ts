@@ -5,6 +5,7 @@ import { DrawerComponent } from '../../shared/components/drawer/drawer.component
 import { StockPriceCardComponent } from '../../shared/components/stock-price-card/stock-price-card.component';
 import { Stock } from '../../shared/models/stock.model';
 import { ThemeService } from '../../core/services/theme.service';
+import { OrderFormComponent } from "../../shared/components/order-form/order-form.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +15,8 @@ import { ThemeService } from '../../core/services/theme.service';
     StockPriceCardComponent,
     CurrencyPipe,
     CanvasJSAngularChartsModule,
-  ],
+    OrderFormComponent
+],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })

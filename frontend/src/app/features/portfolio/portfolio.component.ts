@@ -15,6 +15,7 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 import { Portfolio, PortfolioState } from '../../shared/models/portfolio.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-portfolio',
@@ -25,6 +26,7 @@ import { Portfolio, PortfolioState } from '../../shared/models/portfolio.model';
     PaginationComponent,
     ReactiveFormsModule,
     DatePipe,
+    RouterLink,
   ],
   templateUrl: './portfolio.component.html',
   styleUrl: './portfolio.component.css',

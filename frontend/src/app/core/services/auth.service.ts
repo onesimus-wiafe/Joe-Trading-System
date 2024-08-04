@@ -17,18 +17,26 @@ export class AuthService {
 
   authInfo = signal<AuthResponse | null>(null);
   role = computed(() => this.authInfo()?.user.accountType);
-  expiration = computed(() => {
+
+  loading = signal<boolean>(false);
+
+  private expiration() {
     const expiresAt = JSON.parse(localStorage.getItem('expires_at')!) as number;
     return expiresAt;
-  });
+  }
 
   login(data: Login) {
+    this.loading.set(true);
     return this.http
       .post<AuthResponse>('http://localhost:3003/api/v1/auth/login', data)
       .pipe(
         tap({
           next: (auth) => {
             this.setSession(auth);
+            this.loading.set(false);
+          },
+          error: () => {
+            this.loading.set(false);
           },
         }),
         shareReplay()
@@ -45,9 +53,11 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('auth');
+    localStorage.removeItem('expires_at');
+    this.authInfo.set(null);
   }
 
-  public isLoggedIn() {
+  isLoggedIn() {
     return new Date().getTime() < this.expiration();
   }
 

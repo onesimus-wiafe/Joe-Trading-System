@@ -1,0 +1,80 @@
+<form
+  class="w-full px-3 flex flex-col"
+  (ngSubmit)="handleSubmit()"
+  [formGroup]="orderForm"
+>
+  <h2 class="card-title">Trade</h2>
+  <div class="flex flex-col">
+    <div>
+      <label for="portfolio" class="label text-sm">Portfolio</label>
+      <select
+        id="portfolio"
+        class="select select-bordered w-full select-sm"
+        formControlName="portfolio"
+      >
+        <option>Portfolio 1</option>
+        <option>Portfolio 2</option>
+      </select>
+    </div>
+    <div>
+      <label for="stock" class="label text-sm">Stock</label>
+      <select
+        id="stock"
+        class="select select-bordered w-full select-sm"
+        formControlName="stock"
+      >
+        <option value="MSFT">Microsoft</option>
+        <option value="NFLX">Netflix</option>
+        <option value="GOOGL">Google</option>
+        <option value="AAPL">Apple</option>
+        <option value="TSLA">Tesla</option>
+        <option value="IBM">IBM</option>
+        <option value="ORCL">Oracle</option>
+        <option value="AMZN">Amazon</option>
+      </select>
+    </div>
+    <div>
+      <label for="tradeType" class="label text-sm">Trade Type</label>
+      <select
+        id="tradeType"
+        class="select select-bordered w-full select-sm"
+        formControlName="tradeType"
+      >
+        <option value="MARKET">Market</option>
+        <option value="LIMIT">Limit</option>
+      </select>
+    </div>
+    <div>
+      <label for="side" class="label text-sm">Side</label>
+      <select
+        id="side"
+        class="select select-bordered w-full select-sm"
+        formControlName="side"
+      >
+        <option value="BUY">Buy</option>
+        <option value="SELL">Sell</option>
+      </select>
+    </div>
+    <div>
+      <label for="price" class="label text-sm">Price</label>
+      <input
+        id="price"
+        type="text"
+        class="input input-bordered w-full select-sm"
+        placeholder="Price"
+        formControlName="price"
+      />
+    </div>
+    <div class="mb-5">
+      <label for="quantity" class="label text-sm">Quantity</label>
+      <input
+        id="quantity"
+        type="text"
+        class="input input-bordered w-full select-sm"
+        placeholder="Quantity"
+        formControlName="quantity"
+      />
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Trade</button>
+</form>

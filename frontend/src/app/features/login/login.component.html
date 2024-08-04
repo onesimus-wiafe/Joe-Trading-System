@@ -39,7 +39,7 @@
   >
     <form
       [formGroup]="loginForm"
-      (ngSubmit)="handleSubmit()"
+      (ngSubmit)="login()"
       class="max-w-2xl w-full mx-10"
     >
       <h2 class="text-4xl font-extrabold dark:text-white mb-3">Login</h2>
@@ -106,7 +106,9 @@
           [disabled]="!loginForm.valid"
           class="btn btn-primary"
         >
-          Login
+          @if(loading()) {
+          <span class="loading loading-spinner"></span>
+          } Login
         </button>
 
         <div>

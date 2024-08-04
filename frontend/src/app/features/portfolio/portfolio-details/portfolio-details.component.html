@@ -1,10 +1,10 @@
 <div class="mx-5 mt-5">
   <div class="flex justify-between items-center shadow-md rounded-md p-5">
     <div class="prose">
-      <h1>Portfolio</h1>
+      <h1>{{ portfolio.portfolioName }}</h1>
     </div>
     <button type="button" (click)="showDialog()" class="btn btn-primary btn-sm">
-      New Portfolio
+      Place Order
     </button>
     <dialog
       id="my_modal_1"
@@ -22,8 +22,8 @@
         </button>
         <h3 class="text-lg font-bold">Create New Portfolio</h3>
         <form
-          class="mt-4 flex flex-col space-y-3"
           [formGroup]="portfolioForm"
+          class="mt-4 flex flex-col space-y-3"
           (ngSubmit)="createPortfolio()"
         >
           <div>
@@ -40,7 +40,7 @@
               {{
                 portfolioForm.get("portfolioName")?.errors?.['required']
                   ? "Portfolio name is required"
-                  : "Minimum of 3 characters required"
+                  : "Invalid portfolio name"
               }}
             </small>
             }
@@ -63,53 +63,52 @@
     <table class="table">
       <thead>
         <tr>
+          <th>Symbol</th>
           <th>Name</th>
-          <th>Description</th>
-          <th>Total Value</th>
-          <th>State</th>
-          <th>Date Created</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Change</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        @for (portfolio of portfolios; track portfolio.id) {
+        @for (stock of stocks; track stock.symbol) {
         <tr class="hover">
-          <td>{{ portfolio.portfolioName }}</td>
-          <td>{{ portfolio.description }}</td>
-          <td>{{ 123 | currency }}</td>
-          <td>
-            @switch (portfolio.state) { @case ('ACTIVE') {
-            <div class="badge badge-success gap-2">Active</div>
-            } @case ('INACTIVE') {
-            <div class="badge badge-error gap-2">Inactive</div>
-            } @default {
-            <div class="badge badge-info gap-2">Default</div>
-            } }
+          <td class="flex items-center space-x-1">
+            <img class="w-8" src="{{ stock.pic }}" alt="{{ stock.name }}" />
+            <span>
+              {{ stock.symbol }}
+            </span>
           </td>
-          <td>{{ portfolio.createdDate| date }}</td>
+          <td>{{ stock.name }}</td>
+          <td>{{ stock.price | currency }}</td>
+          <td>
+            {{ stock.quantity }}
+          </td>
+          <td>
+            <span
+              [class.text-success]="stock.change > 0"
+              [class.text-error]="stock.change < 0"
+            >
+              {{ stock.change | percent }}
+            </span>
+          </td>
           <td>
             <div class="flex space-x-2">
-              <a
-                title="View"
+              <button
+                title="Buy"
                 type="button"
-                [routerLink]="['/portfolios', portfolio.id]"
                 class="btn btn-neutral btn-sm btn-square btn-outline"
               >
-                <ng-icon name="heroEye" size="18" />
-            </a>
-              <button
-                title="Edit"
-                type="button"
-                class="btn btn-primary btn-sm btn-square btn-outline"
-              >
-                <ng-icon name="heroPencil" size="18" />
+                <ng-icon name="heroPlus" size="18" />
               </button>
               <button
-                title="Delete"
+                title="Sell"
                 type="button"
-                class="btn btn-error btn-sm btn-square btn-outline"
+                class="btn btn-primary btn-sm btn-square btn-outline"
+                [disabled]="stock.quantity <= 0"
               >
-                <ng-icon name="heroTrash" size="18" />
+                <ng-icon name="heroMinus" size="18" />
               </button>
             </div>
           </td>
