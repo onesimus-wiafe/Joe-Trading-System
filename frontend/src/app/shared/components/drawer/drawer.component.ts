@@ -7,6 +7,7 @@ import {
   heroReceiptRefund,
   heroSquares2x2,
   heroSun,
+  heroUser,
 } from '@ng-icons/heroicons/outline';
 import { ThemeService } from '../../../core/services/theme.service';
 import { NavbarComponent } from '../../navbar/navbar.component';
@@ -22,6 +23,7 @@ import { NavbarComponent } from '../../navbar/navbar.component';
       heroReceiptRefund,
       heroMoon,
       heroSun,
+      heroUser
     }),
   ],
   templateUrl: './drawer.component.html',

@@ -6,7 +6,7 @@ export const LoginSchema = v.object({
   password: v.string(),
 });
 
-export type Login = v.InferInput<typeof LoginSchema>;
+export type Login = v.InferOutput<typeof LoginSchema>;
 
 export const RegisterSchema = v.object({
   name: v.string(),
@@ -14,7 +14,7 @@ export const RegisterSchema = v.object({
   password: v.string(),
 });
 
-export type Register = v.InferInput<typeof RegisterSchema>;
+export type Register = v.InferOutput<typeof RegisterSchema>;
 
 export const CreateUserSchema = v.object({
   name: v.pipe(v.string(), v.minLength(3, 'Name must be at least 3 characters')),
@@ -23,7 +23,7 @@ export const CreateUserSchema = v.object({
   accountType: v.enum(AccountType),
 });
 
-export type CreateUser = v.InferInput<typeof CreateUserSchema>;
+export type CreateUser = v.InferOutput<typeof CreateUserSchema>;
 
 export const AuthResponseSchema = v.object({
   token: v.string(),
@@ -31,4 +31,4 @@ export const AuthResponseSchema = v.object({
   user: UserSchema,
 });
 
-export type AuthResponse = v.InferInput<typeof AuthResponseSchema>;
+export type AuthResponse = v.InferOutput<typeof AuthResponseSchema>;

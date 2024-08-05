@@ -44,6 +44,11 @@ export const routes: Routes = [
             (m) => m.TradeHistoryComponent
           ),
       },
+      {
+        path: 'users',
+        loadComponent: () =>
+          import('./features/users-list/users-list.component').then((m) => m.UsersListComponent),
+      }
     ],
   },
   {

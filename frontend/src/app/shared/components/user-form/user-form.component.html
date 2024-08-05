@@ -1,0 +1,69 @@
+<form
+  class="mt-4 flex flex-col space-y-3"
+  [formGroup]="userForm"
+  (ngSubmit)="handleSubmit()"
+>
+  <h3 class="text-lg font-bold">
+    {{ isEdit() ? "Edit User" : "Create User" }}
+  </h3>
+  <div>
+    <input
+      type="text"
+      aria-label="Name"
+      class="input input-bordered w-full select-sm"
+      placeholder="Name"
+      formControlName="name"
+    />
+    @if ( userForm.get('name')?.touched && userForm.get('name')?.invalid ) {
+    <small class="text-red-500 text-sm mt-1">
+      {{
+                userForm.get("name")?.errors?.['required']
+                  ? "Name is required"
+                  : "Minimum of 3 characters required"
+      }}
+    </small>
+    }
+  </div>
+  <div>
+    <input
+      type="text"
+      aria-label="Email"
+      class="input input-bordered w-full select-sm"
+      placeholder="Email"
+      formControlName="email"
+    />
+    @if ( userForm.get('email')?.touched && userForm.get('email')?.invalid ) {
+    <small class="text-red-500 text-sm mt-1">
+      {{
+                userForm.get("email")?.errors?.['required']
+                  ? "Email is required"
+                  : "Invalid email"
+      }}
+    </small>
+    }
+  </div>
+  <div>
+    <input
+      type="password"
+      aria-label="Password"
+      class="input input-bordered w-full select-sm"
+      placeholder="Password"
+      formControlName="password"
+    />
+    @if ( userForm.get('password')?.touched && userForm.get('password')?.invalid
+    ) {
+    <small class="text-red-500 text-sm mt-1">
+      {{
+                userForm.get("password")?.errors?.['required']
+                  ? "Password is required"
+                  : "Minimum of 6 characters required"
+      }}
+    </small>
+    }
+  </div>
+  <div class="modal-action">
+    <button type="submit" class="btn">
+      {{ isEdit() ? "Update" : "Create" }}
+    </button>
+  </div>
+</form>

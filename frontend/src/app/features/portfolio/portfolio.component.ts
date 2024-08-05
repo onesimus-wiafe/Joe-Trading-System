@@ -73,10 +73,8 @@ export class PortfolioComponent {
   }
 
   handleEdit(portfolio: Portfolio) {
-    if (portfolio) {
-      this.selectedPortfolio.set(portfolio);
-      this.showDialog();
-    }
+    this.selectedPortfolio.set(portfolio);
+    this.showDialog();
   }
 
   editPortfolio(portfolioId: number, portfolio: PortfolioCreate) {
