@@ -5,7 +5,7 @@ import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.repositories.UserRepository;
-import com.joe.trading.order_processing.repositories.dao.MarketDataDao;
+import com.joe.trading.order_processing.entities.cache.MarketData;
 import com.joe.trading.order_processing.services.validation.handler.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class OrderValidationServiceImpl implements OrderValidationService{
         User user = userRepository.findById(orderRequest.getUserId()).orElse(null);
 
         // TODO: fetch market data from cache.
-        List<MarketDataDao> marketData = getMarketDataFromExchange(orderRequest.getTicker(), orderRequest.getExchanges());
+        List<MarketData> marketData = getMarketDataFromExchange(orderRequest.getTicker(), orderRequest.getExchanges());
 
 
         return switch (Side.valueOf(orderRequest.getSide())){
@@ -61,32 +61,32 @@ public class OrderValidationServiceImpl implements OrderValidationService{
         };
     }
 
-    private List<MarketDataDao> getMarketDataFromExchange(String ticker, String exchanges) {
+    private List<MarketData> getMarketDataFromExchange(String ticker, String exchanges) {
         return switch (AvailableExchanges.valueOf(exchanges.toUpperCase())){
             case EXCHANGE1 -> {
-                MarketDataDao data = callExchange("https://exchange.matraining.com/pd/", ticker);
+                MarketData data = callExchange("https://exchange.matraining.com/pd/", ticker);
                 data.setEXCHANGE(String.valueOf(EXCHANGE1));
                 yield List.of(data);
             }
             case EXCHANGE2 -> {
-                MarketDataDao data = callExchange("https://exchange2.matraining.com/pd/", ticker);
+                MarketData data = callExchange("https://exchange2.matraining.com/pd/", ticker);
                 data.setEXCHANGE(String.valueOf(EXCHANGE2));
                 yield List.of(data);
             }
             case ALL -> {
-                MarketDataDao data = callExchange("https://exchange.matraining.com/pd/", ticker);
+                MarketData data = callExchange("https://exchange.matraining.com/pd/", ticker);
                 data.setEXCHANGE(String.valueOf(EXCHANGE1));
-                MarketDataDao data1 = callExchange("https://exchange2.matraining.com/pd/", ticker);
+                MarketData data1 = callExchange("https://exchange2.matraining.com/pd/", ticker);
                 data1.setEXCHANGE(String.valueOf(EXCHANGE2));
                 yield List.of(data, data1);
             }
-            case NONE ->List.of( new MarketDataDao());
+            case NONE ->List.of( new MarketData());
         };
 
     }
 
     // TODO: MOVE TO MARKET DATA SERVICE
-    private MarketDataDao callExchange(String url, String ticker){
+    private MarketData callExchange(String url, String ticker){
 
         String exchangeUrl = url + ticker.toUpperCase();
 
@@ -95,7 +95,7 @@ public class OrderValidationServiceImpl implements OrderValidationService{
 
         Object obj = response.getBody();
 
-        MarketDataDao data = new MarketDataDao();
+        MarketData data = new MarketData();
 
         if (obj instanceof Map){
             Map<String, Object> dataMap = (Map<String, Object>) obj;

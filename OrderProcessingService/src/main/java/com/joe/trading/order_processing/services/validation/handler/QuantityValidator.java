@@ -2,16 +2,16 @@ package com.joe.trading.order_processing.services.validation.handler;
 
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.enums.Side;
-import com.joe.trading.order_processing.repositories.dao.MarketDataDao;
+import com.joe.trading.order_processing.entities.cache.MarketData;
 
 import java.util.List;
 
 public class QuantityValidator extends ValidationHandler{
 
     private Side side;
-    private List<MarketDataDao> marketData;
+    private List<MarketData> marketData;
 
-    public QuantityValidator(Side side, List<MarketDataDao> data){
+    public QuantityValidator(Side side, List<MarketData> data){
         super();
         this.side = side;
         this.marketData = data;
@@ -28,7 +28,7 @@ public class QuantityValidator extends ValidationHandler{
 
     private OrderRequestDTO validateQuantity(OrderRequestDTO request){
 
-        List<MarketDataDao> filter = marketData.stream().filter(data -> switch (this.side) {
+        List<MarketData> filter = marketData.stream().filter(data -> switch (this.side) {
             case SELL -> data.getSELL_LIMIT() < request.getQuantity();
             case BUY -> data.getBUY_LIMIT() < request.getQuantity();
         }).toList();

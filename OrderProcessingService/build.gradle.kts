@@ -37,12 +37,13 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.h2database:h2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("io.lettuce:lettuce-core")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
     testLogging {
-        
         events("passed", "skipped", "failed")
     }
 }
