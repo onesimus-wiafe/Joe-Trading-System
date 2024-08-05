@@ -26,3 +26,14 @@ export type Stock = {
   change: number;
   pic: string;
 };
+
+export const OrderRequestSchema = v.object({
+  portfolio: v.string(),
+  stock: v.string(),
+  tradeType: v.string(),
+  side: v.string(),
+  price: v.pipe(v.string(), v.transform(parseFloat)),
+  quantity: v.pipe(v.union([v.number(), v.string()]), v.transform(Number.parseInt)),
+});
+
+export type OrderRequest = v.InferOutput<typeof OrderRequestSchema>;

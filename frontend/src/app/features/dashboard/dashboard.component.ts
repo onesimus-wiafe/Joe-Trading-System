@@ -87,7 +87,6 @@ export class DashboardComponent {
   ];
 
   stockChartOptions = computed(() => {
-    console.log(this.themeService.theme());
     return {
       exportEnabled: true,
       title: {

@@ -6,9 +6,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import * as v from 'valibot';
 import { AuthService } from '../../core/services/auth.service';
 import { LoginSchema } from '../../shared/models/auth.model';
-import * as v from 'valibot';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +25,7 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  loading = computed(() => this.authService.loading);
+  loading = computed(() => this.authService.loading());
 
   login() {
     const result = v.safeParse(LoginSchema, this.loginForm.value);

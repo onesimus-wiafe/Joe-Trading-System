@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
 import { shareReplay, tap } from 'rxjs/operators';
-import { AuthResponse, Login } from '../../shared/models/auth.model';
+import { AuthResponse, Login, Register } from '../../shared/models/auth.model';
 import { add } from 'date-fns';
+import { User } from '../../shared/models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -63,5 +64,9 @@ export class AuthService {
 
   isLoggedOut() {
     return !this.isLoggedIn();
+  }
+
+  register(data: Register) {
+    return this.http.post<User>('http://localhost:3003/api/v1/auth/register', data);
   }
 }

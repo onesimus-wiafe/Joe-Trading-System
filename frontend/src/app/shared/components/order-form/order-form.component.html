@@ -3,7 +3,7 @@
   (ngSubmit)="handleSubmit()"
   [formGroup]="orderForm"
 >
-  <h2 class="card-title">Trade</h2>
+  <h2 class="card-title">Place Order</h2>
   <div class="flex flex-col">
     <div>
       <label for="portfolio" class="label text-sm">Portfolio</label>
@@ -12,9 +12,13 @@
         class="select select-bordered w-full select-sm"
         formControlName="portfolio"
       >
-        <option>Portfolio 1</option>
-        <option>Portfolio 2</option>
+        @for (portfolio of portfolios(); track portfolio.id) {
+        <option [value]="portfolio.id">{{ portfolio.portfolioName }}</option>
+        }
       </select>
+      @if (orderForm.get('portfolio')?.touched && orderForm.get('portfolio')?.invalid) {
+      <small class="text-error">Portfolio is required</small>
+      }
     </div>
     <div>
       <label for="stock" class="label text-sm">Stock</label>
@@ -64,6 +68,13 @@
         placeholder="Price"
         formControlName="price"
       />
+      @if (orderForm.get('price')?.touched && orderForm.get('price')?.invalid) {
+      <small class="text-error">
+        {{ orderForm.get('price')?.errors?.['required']
+          ? 'Price is required'
+          : 'Price must be a number' }}
+      </small>
+      }
     </div>
     <div class="mb-5">
       <label for="quantity" class="label text-sm">Quantity</label>
@@ -74,7 +85,14 @@
         placeholder="Quantity"
         formControlName="quantity"
       />
+      @if (orderForm.get('quantity')?.touched && orderForm.get('quantity')?.invalid) {
+      <small class="text-error">
+        {{ orderForm.get('quantity')?.errors?.['required']
+          ? 'Quantity is required'
+          : 'Quantity must be an integer' }}
+      </small>
+      }
     </div>
   </div>
-  <button type="submit" class="btn btn-primary">Trade</button>
+  <button type="submit" class="btn btn-primary">Order</button>
 </form>

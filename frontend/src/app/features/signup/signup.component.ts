@@ -1,5 +1,5 @@
-import { Component, computed } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, effect } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import {
   FormGroup,
   FormControl,
@@ -7,6 +7,10 @@ import {
   ReactiveFormsModule,
   AbstractControl,
 } from '@angular/forms';
+import { AuthService } from '../../core/services/auth.service';
+import { RegisterSchema } from '../../shared/models/auth.model';
+import * as v from 'valibot';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-signup',
@@ -16,10 +20,13 @@ import {
   styleUrl: './signup.component.css',
 })
 export class SignupComponent {
-  loginForm = new FormGroup({
-    full_name: new FormControl('', [Validators.required]),
+  constructor(private authService: AuthService, private router: Router) {}
+
+  loading = computed(() => this.authService.loading());
+
+  registerForm = new FormGroup({
+    name: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    username: new FormControl('', [Validators.required]),
     password: new FormControl('', [
       Validators.required,
       Validators.minLength(8),
@@ -59,8 +66,22 @@ export class SignupComponent {
     };
   }
 
-  handleSubmit() {
-    console.log('handleSubmit() called');
-    console.log(this.loginForm.value);
+  register() {
+    const result = this.registerForm.valid;
+    if (result) {
+      const data = v.safeParse(RegisterSchema, this.registerForm.value);
+      if (data.success) {
+        this.authService.register(data.output).subscribe({
+          next: (response) => {
+            this.router.navigate(['/login']);
+          },
+          error: (error: HttpErrorResponse) => {
+            this.registerForm.setErrors({ server: error.error.message });
+          },
+        });
+      } else {
+        console.error(data.issues);
+      }
+    }
   }
 }

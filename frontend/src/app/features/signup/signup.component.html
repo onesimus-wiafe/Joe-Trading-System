@@ -38,8 +38,8 @@
     class="w-1/2 bg-gray-50 dark:bg-gray-800 absolute right-0 top-0 h-screen flex items-center justify-center"
   >
     <form
-      [formGroup]="loginForm"
-      (ngSubmit)="handleSubmit()"
+      [formGroup]="registerForm"
+      (ngSubmit)="register()"
       class="max-w-2xl w-full mx-10"
     >
       <h2 class="text-4xl font-extrabold dark:text-white mb-3">Sign up</h2>
@@ -49,27 +49,27 @@
       <div class="gap-6 mb-6 flex flex-col">
         <div>
           <label
-            for="full_name"
+            for="name"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >Full Name</label
           >
           <input
             type="text"
-            id="full_name"
-            formControlName="full_name"
+            id="name"
+            formControlName="name"
             class="input input-bordered w-full"
             [class.input-error]="
-              loginForm.get('full_name')?.touched &&
-              loginForm.get('full_name')?.invalid
+              registerForm.get('name')?.touched &&
+              registerForm.get('name')?.invalid
             "
             placeholder="John Doe"
             required
           />
-          @if ( loginForm.get('full_name')?.touched &&
-          loginForm.get('full_name')?.invalid ) {
+          @if ( registerForm.get('name')?.touched &&
+          registerForm.get('name')?.invalid ) {
           <small class="text-red-500 text-sm mt-1">
             {{
-              loginForm.get("full_name")?.errors?.['required']
+              registerForm.get("name")?.errors?.['required']
                 ? "Full name is required"
                 : ""
             }}
@@ -88,16 +88,16 @@
             formControlName="email"
             class="input input-bordered w-full"
             [class.input-error]="
-              loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+              registerForm.get('email')?.touched && registerForm.get('email')?.invalid
             "
             placeholder="johndoe@test.com"
             required
           />
-          @if ( loginForm.get('email')?.touched &&
-          loginForm.get('email')?.invalid ) {
+          @if ( registerForm.get('email')?.touched &&
+          registerForm.get('email')?.invalid ) {
           <small class="text-red-500 text-sm mt-1">
             {{
-              loginForm.get("email")?.errors?.['required']
+              registerForm.get("email")?.errors?.['required']
                 ? "Email is required"
                 : "Invalid email"
             }}
@@ -115,20 +115,20 @@
             id="password"
             formControlName="password"
             [class.input-error]="
-              loginForm.get('password')?.touched &&
-              loginForm.get('password')?.invalid
+              registerForm.get('password')?.touched &&
+              registerForm.get('password')?.invalid
             "
             class="input input-bordered w-full"
             placeholder="•••••••••"
             required
           />
-          @if ( loginForm.get('password')?.touched &&
-          loginForm.get('password')?.invalid ) {
+          @if ( registerForm.get('password')?.touched &&
+          registerForm.get('password')?.invalid ) {
           <small class="text-red-500 text-sm mt-1">
             {{
-              loginForm.get("password")?.errors?.['required']
+              registerForm.get("password")?.errors?.['required']
                 ? "Password is required"
-                : loginForm.get("password")?.errors?.['minlength']
+                : registerForm.get("password")?.errors?.['minlength']
                 ? "Password must be at least 8 characters"
                 : ""
             }}
@@ -147,19 +147,19 @@
             formControlName="confirm_password"
             class="input input-bordered w-full"
             [class.input-error]="
-              loginForm.get('confirm_password')?.touched &&
-              loginForm.get('confirm_password')?.invalid
+              registerForm.get('confirm_password')?.touched &&
+              registerForm.get('confirm_password')?.invalid
             "
             placeholder="•••••••••"
             required
           />
-          @if ( loginForm.get('confirm_password')?.touched &&
-          loginForm.get('confirm_password')?.invalid ) {
+          @if ( registerForm.get('confirm_password')?.touched &&
+          registerForm.get('confirm_password')?.invalid ) {
           <small class="text-red-500 text-sm mt-1">
             {{
-              loginForm.get("confirm_password")?.errors?.['required']
+              registerForm.get("confirm_password")?.errors?.['required']
                 ? "Confirm password is required"
-                : loginForm.get("confirm_password")?.errors?.['mismatch']
+                : registerForm.get("confirm_password")?.errors?.['mismatch']
                 ? "Passwords must match"
                 : ""
             }}
@@ -169,10 +169,13 @@
 
         <button
           type="submit"
-          [disabled]="!loginForm.valid"
+          [disabled]="!registerForm.valid"
           class="btn btn-primary"
         >
-          Login
+          @if(loading()) {
+          <span class="loading loading-spinner"></span>
+          }
+          Sign up
         </button>
 
         <div>

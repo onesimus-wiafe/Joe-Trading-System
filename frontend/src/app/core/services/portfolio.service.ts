@@ -27,7 +27,7 @@ export class PortfolioService {
   ]);
 
   getPortfolios() {
-    return this.portfolios;
+    return this.portfolios();
   }
 
   getPortfolio(id: number) {

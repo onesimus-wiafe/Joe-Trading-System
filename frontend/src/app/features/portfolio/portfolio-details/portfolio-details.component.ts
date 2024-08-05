@@ -15,6 +15,7 @@ import {
   PortfolioState,
 } from '../../../shared/models/portfolio.model';
 import { Stock } from '../../../shared/models/stock.model';
+import { OrderFormComponent } from '../../../shared/components/order-form/order-form.component';
 
 @Component({
   selector: 'app-portfolio-details',
@@ -25,6 +26,7 @@ import { Stock } from '../../../shared/models/stock.model';
     PaginationComponent,
     ReactiveFormsModule,
     NgIconComponent,
+    OrderFormComponent,
   ],
   templateUrl: './portfolio-details.component.html',
   styleUrl: './portfolio-details.component.css',
@@ -45,6 +47,9 @@ export class PortfolioDetailsComponent {
     createdDate: new Date(),
     updatedOn: new Date(),
   };
+
+  selectedStock = signal<Stock | null>(null);
+  selectedSide = signal<'BUY' | 'SELL' | null>(null);
 
   stocks: (Stock & { quantity: number })[] = [
     {
@@ -139,5 +144,17 @@ export class PortfolioDetailsComponent {
 
     // this.portfolioForm.reset();
     // this.closeDialog();
+  }
+
+  buyStock(stock: Stock) {
+    this.selectedSide.set('BUY');
+    this.selectedStock.set(stock);
+    this.showDialog();
+  }
+
+  sellStock(stock: Stock) {
+    this.selectedSide.set('SELL');
+    this.selectedStock.set(stock);
+    this.showDialog();
   }
 }
