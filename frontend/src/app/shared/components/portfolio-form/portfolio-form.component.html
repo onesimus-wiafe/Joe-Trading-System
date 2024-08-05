@@ -1,0 +1,37 @@
+<form
+  class="mt-4 flex flex-col space-y-3"
+  [formGroup]="portfolioForm"
+  (ngSubmit)="handleSubmit()"
+>
+  <h3 class="text-lg font-bold">{{ isEdit() ? "Edit Portfolio" : "Create Portfolio" }}</h3>
+  <div>
+    <input
+      type="text"
+      aria-label="Portfolio Name"
+      class="input input-bordered w-full select-sm"
+      placeholder="Name"
+      formControlName="portfolioName"
+    />
+    @if ( portfolioForm.get('portfolioName')?.touched &&
+    portfolioForm.get('portfolioName')?.invalid ) {
+    <small class="text-red-500 text-sm mt-1">
+      {{
+                portfolioForm.get("portfolioName")?.errors?.['required']
+                  ? "Portfolio name is required"
+                  : "Minimum of 3 characters required"
+      }}
+    </small>
+    }
+  </div>
+  <textarea
+    aria-label="Description"
+    class="textarea textarea-bordered"
+    placeholder="Description"
+    formControlName="description"
+  ></textarea>
+  <div class="modal-action">
+    <button type="submit" class="btn">
+      {{ isEdit() ? "Update" : "Create" }}
+    </button>
+  </div>
+</form>
