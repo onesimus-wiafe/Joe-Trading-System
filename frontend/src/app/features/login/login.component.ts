@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, ViewContainerRef } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -9,6 +9,7 @@ import { Router, RouterLink } from '@angular/router';
 import * as v from 'valibot';
 import { AuthService } from '../../core/services/auth.service';
 import { LoginSchema } from '../../shared/models/auth.model';
+import { needConfirmation } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,7 @@ export class LoginComponent {
     password: new FormControl('', [Validators.required]),
   });
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private viewContainerRef: ViewContainerRef) {}
 
   loading = computed(() => this.authService.loading());
 

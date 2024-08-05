@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroArrowRightStartOnRectangle,
@@ -8,12 +8,13 @@ import {
   heroUser,
 } from '@ng-icons/heroicons/outline';
 import { AuthService } from '../../core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { UpperCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [NgIconComponent],
+  imports: [NgIconComponent, UpperCasePipe, RouterLink],
   providers: [
     provideIcons({
       heroBars3,
@@ -28,6 +29,8 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent {
   constructor(private authService: AuthService, private router: Router) {}
+
+  user = computed(() => this.authService.authInfo()?.user);
 
   logout() {
     this.authService.logout();

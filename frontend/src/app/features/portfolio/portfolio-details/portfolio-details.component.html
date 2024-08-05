@@ -3,9 +3,29 @@
     <div class="prose">
       <h1>{{ portfolio.portfolioName }}</h1>
     </div>
-    <button type="button" (click)="showDialog()" class="btn btn-primary btn-sm">
-      Place Order
-    </button>
+    <div class="space-x-3">
+      <button
+        type="button"
+        (click)="showDialog()"
+        class="btn btn-outline btn-sm"
+      >
+        Edit Portfolio
+      </button>
+      <button
+        type="button"
+        (click)="showDialog()"
+        class="btn btn-error btn-sm"
+      >
+        Delete Portfolio
+      </button>
+      <button
+        type="button"
+        (click)="showDialog()"
+        class="btn btn-primary btn-sm"
+      >
+        Place Order
+      </button>
+    </div>
     <dialog
       id="my_modal_1"
       class="modal"
@@ -20,7 +40,11 @@
         >
           <ng-icon name="heroXMark" size="18" />
         </button>
-        <app-order-form [defaultside]="selectedSide()" [defaultstock]="selectedStock()?.symbol" [defaultportfolio]="1" />
+        <app-order-form
+          [defaultside]="selectedSide()"
+          [defaultstock]="selectedStock()?.symbol"
+          [defaultportfolio]="portfolio.id"
+        />
       </div>
     </dialog>
   </div>

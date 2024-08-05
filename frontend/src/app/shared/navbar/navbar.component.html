@@ -5,7 +5,7 @@
     </label>
   </div>
   <div class="flex-1">
-    <a class="btn btn-ghost text-xl overflow-ellipsis whitespace-nowrap"
+    <a routerLink="/" class="btn btn-ghost text-xl overflow-ellipsis whitespace-nowrap"
       >JOE Trading System</a
     >
   </div>
@@ -29,15 +29,14 @@
     </div>
     <div class="flex-none dropdown dropdown-end">
       <button type="button" class="btn btn-ghost flex flex-col">
-        <div class="avatar">
-          <div class="w-8 rounded-full">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              alt="avatar"
-            />
+        <div class="avatar placeholder">
+          <div class="w-8 rounded-full bg-base-300">
+            <span>
+              {{ user()?.name?.charAt(0) | uppercase }}
+            </span>
           </div>
         </div>
-        <span class="whitespace-nowrap">Jane Doe</span>
+        <span class="whitespace-nowrap">{{ user()?.name }}</span>
       </button>
       <ul
         tabindex="0"

@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -16,6 +16,8 @@ import {
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 import { Portfolio, PortfolioState } from '../../shared/models/portfolio.model';
 import { RouterLink } from '@angular/router';
+import { needConfirmation } from '../../core/services/dialog.service';
+import { PortfolioService } from '../../core/services/portfolio.service';
 
 @Component({
   selector: 'app-portfolio',
@@ -33,24 +35,7 @@ import { RouterLink } from '@angular/router';
   providers: [provideIcons({ heroTrash, heroPencil, heroEye, heroXMark })],
 })
 export class PortfolioComponent {
-  portfolios: Portfolio[] = [
-    {
-      id: 1,
-      portfolioName: 'Portfolio 1',
-      state: PortfolioState.Active,
-      description: 'This is the first portfolio',
-      createdDate: new Date(),
-      updatedOn: new Date(),
-    },
-    {
-      id: 2,
-      portfolioName: 'Portfolio 2',
-      state: PortfolioState.Inactive,
-      description: 'This is the second portfolio',
-      createdDate: new Date(),
-      updatedOn: new Date(),
-    },
-  ];
+  portfolios = computed(() => this.portfolioService.getPortfolios());
 
   portfolioForm = new FormGroup({
     portfolioName: new FormControl('', [
@@ -59,6 +44,8 @@ export class PortfolioComponent {
     ]),
     description: new FormControl(''),
   });
+
+  constructor(private portfolioService: PortfolioService) {}
 
   dialogOpenSignal = signal<boolean>(false);
 
@@ -76,7 +63,25 @@ export class PortfolioComponent {
       return;
     }
 
-    // this.portfolioForm.reset();
-    // this.closeDialog();
+    const portfolio: Portfolio = {
+      id: this.portfolios().length + 1,
+      portfolioName: this.portfolioForm.get('portfolioName')?.value!,
+      state: PortfolioState.Active,
+      description: this.portfolioForm.get('description')?.value!,
+      createdDate: new Date(),
+      updatedOn: new Date(),
+    };
+
+    this.portfolioService.addPortfolio(portfolio);
+    this.portfolioForm.reset();
+    this.closeDialog();
+  }
+
+  @needConfirmation({
+    title: 'Delete Portfolio',
+    message: 'Are you sure you want to delete this portfolio?',
+  })
+  deletePortfolio(id: number) {
+    this.portfolioService.deletePortfolio(id);
   }
 }

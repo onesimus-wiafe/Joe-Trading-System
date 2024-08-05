@@ -1,17 +1,14 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './features/dashboard/dashboard.component';
-import { LoginComponent } from './features/login/login.component';
-import { SignupComponent } from './features/signup/signup.component';
-import { PortfolioComponent } from './features/portfolio/portfolio.component';
-import { MainLayoutComponent } from './shared/components/main-layout/main-layout.component';
-import { PortfolioDetailsComponent } from './features/portfolio/portfolio-details/portfolio-details.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { UnauthGuard } from './core/guards/unauth.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    component: MainLayoutComponent,
+    loadComponent: () =>
+      import('./shared/components/main-layout/main-layout.component').then(
+        (m) => m.MainLayoutComponent
+      ),
     canActivate: [AuthGuard],
     children: [
       {
@@ -21,26 +18,46 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        component: DashboardComponent,
+        loadComponent: () =>
+          import('./features/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
+          ),
       },
       {
         path: 'portfolios',
-        component: PortfolioComponent,
+        loadComponent: () =>
+          import('./features/portfolio/portfolio.component').then(
+            (m) => m.PortfolioComponent
+          ),
       },
       {
         path: 'portfolios/:porfolioId',
-        component: PortfolioDetailsComponent,
-      }
+        loadComponent: () =>
+          import(
+            './features/portfolio/portfolio-details/portfolio-details.component'
+          ).then((m) => m.PortfolioDetailsComponent),
+      },
+      {
+        path: 'trade-history',
+        loadComponent: () =>
+          import('./features/trade-history/trade-history.component').then(
+            (m) => m.TradeHistoryComponent
+          ),
+      },
     ],
   },
   {
     path: 'login',
-    component: LoginComponent,
+    loadComponent: () =>
+      import('./features/login/login.component').then((m) => m.LoginComponent),
     canActivate: [UnauthGuard],
   },
   {
     path: 'signup',
-    component: SignupComponent,
+    loadComponent: () =>
+      import('./features/signup/signup.component').then(
+        (m) => m.SignupComponent
+      ),
     canActivate: [UnauthGuard],
   },
 ];

@@ -72,7 +72,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (portfolio of portfolios; track portfolio.id) {
+        @for (portfolio of portfolios(); track portfolio.id) {
         <tr class="hover">
           <td>{{ portfolio.portfolioName }}</td>
           <td>{{ portfolio.description }}</td>
@@ -108,6 +108,7 @@
                 title="Delete"
                 type="button"
                 class="btn btn-error btn-sm btn-square btn-outline"
+                (click)="deletePortfolio(portfolio.id)"
               >
                 <ng-icon name="heroTrash" size="18" />
               </button>
