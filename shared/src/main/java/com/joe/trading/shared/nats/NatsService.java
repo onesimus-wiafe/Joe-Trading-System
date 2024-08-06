@@ -20,8 +20,8 @@ import io.nats.client.Nats;
 @ConditionalOnProperty(value = "nats.enabled", havingValue = "true")
 public class NatsService {
 
-    private Connection natsConnection;
-    private ObjectMapper objectMapper;
+    private final Connection natsConnection;
+    private final ObjectMapper objectMapper;
 
     public NatsService(ObjectMapper objectMapper, NatsProperties natsProperties) throws IOException, InterruptedException {
         this.objectMapper = objectMapper;
