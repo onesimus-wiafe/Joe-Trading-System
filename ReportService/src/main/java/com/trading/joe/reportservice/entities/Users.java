@@ -16,12 +16,12 @@ import java.time.LocalDateTime;
 public class Users {
 
     @Id
-    private Long id;
-
     private Long user_id;
+
     private String name;
     private String email;
     private String accountType;
     private Boolean pendingDelete;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
