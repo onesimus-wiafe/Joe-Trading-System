@@ -44,6 +44,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPasswordHash(passwordEncoder.encode(registerRequestDto.getPassword()));
         user.setPendingDelete(false);
 
+        user = userRepository.save(user);
         // the transactional outbox pattern is ideal for addressing the problem of data consistency across multiple services.
         try {
             natsService.publish(Event.USER_CREATED, userMapper.userEventDto(user));
@@ -51,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
             throw new UserDeletionException("Error registering new user");
         }
 
-        return userRepository.save(user);
+        return user;
     }
 
     @Override

@@ -32,10 +32,10 @@ public class ReportingServiceImpl implements ReportingService{
     public void createUser() throws ResourceNotFoundException {
         try{
             natsService.subscribe(Event.USER_CREATED, UserEventDto.class, System.out::println);
+            //userRepository.save()
         } catch (Exception e) {
             throw new ResourceNotFoundException("Could not fetch from Nats Service");
         }
-
     }
 
 }
