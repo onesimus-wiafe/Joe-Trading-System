@@ -1,8 +1,8 @@
 package com.trading.joe.reportservice.repository;
 
 import com.trading.joe.reportservice.entities.Users;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface UserRepository extends JpaRepository<Users,Long> {
+public interface UserRepository extends MongoRepository<Users,Long> {
 
 }
