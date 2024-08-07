@@ -18,7 +18,9 @@ import java.time.LocalDateTime;
 @Document(collection = "portfolios")
 public class Portfolio {
 
+    @Id
     private Long portfolio_id;
+
     private String name;
     private Long user_id;
     private LocalDateTime createdAt;

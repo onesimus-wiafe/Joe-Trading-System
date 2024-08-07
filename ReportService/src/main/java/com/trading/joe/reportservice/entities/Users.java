@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Document(collection = "users")
 public class Users {
 
-
+    @Id
     private Long user_id;
 
     private String name;
