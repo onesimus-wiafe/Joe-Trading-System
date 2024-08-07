@@ -34,5 +34,4 @@ jobs:
             context: ./frontend
             file: ./frontend/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-srv:latest
-    
+            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:latest
