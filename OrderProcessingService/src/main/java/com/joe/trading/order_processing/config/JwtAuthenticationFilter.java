@@ -1,6 +1,7 @@
-package com.joe.trading.user_management.config;
+package com.joe.trading.order_processing.config;
 
 import java.io.IOException;
+import java.util.Base64;
 
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,8 +11,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.services.JwtService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joe.trading.order_processing.entities.User;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,7 +24,7 @@ import lombok.AllArgsConstructor;
 @Component
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
+    private ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(
@@ -38,12 +40,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             final String jwt = authHeader.substring(7);
-            final User user = jwtService.extractUser(jwt);
-            
+            User user = extractUserFromToken(jwt);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            if (authentication == null) {
+            if (user != null && authentication == null) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         user,
                         null,
@@ -57,7 +58,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } finally {
             // Even if an exception is thrown, we still want to continue the filter chain
             // as the request may still be valid
+            System.out.println("Filtering request");
             filterChain.doFilter(request, response);
         }
+    }
+
+    private User extractUserFromToken(String token) throws JsonProcessingException {
+        token = token.split("\\.")[1];
+
+        String json = new String(Base64.getDecoder().decode(token));
+
+        return objectMapper.readValue(json, User.class);
     }
 }

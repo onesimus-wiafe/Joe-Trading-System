@@ -12,7 +12,6 @@ import lombok.Setter;
 public class OrderRequestDTO {
 
     private String ticker;
-    private Long userId;
     private Long portfolioId;
     private Integer quantity;
     private Double unitPrice;

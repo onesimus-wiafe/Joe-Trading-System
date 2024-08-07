@@ -53,13 +53,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
 app.UseOpenTelemetryPrometheusScrapingEndpoint();
 app.UseAuthentication();
 app.UseAuthorization();
-
-IdentityModelEventSource.ShowPII = true;
-
-app.UseCors("AllowAll");
 
 app.MapReverseProxy();
 
