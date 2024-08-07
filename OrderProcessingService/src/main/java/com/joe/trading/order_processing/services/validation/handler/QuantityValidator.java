@@ -22,6 +22,7 @@ public class QuantityValidator extends ValidationHandler{
         if (marketData.isEmpty()){
             super.setNext(null);
             orderRequestDTO.setIsValidated(Boolean.FALSE);
+            return super.validate(orderRequestDTO);
         }
         return super.validate(validateQuantity(orderRequestDTO));
     }

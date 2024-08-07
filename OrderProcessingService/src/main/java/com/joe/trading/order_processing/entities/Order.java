@@ -1,10 +1,7 @@
 package com.joe.trading.order_processing.entities;
 
 import com.joe.trading.order_processing.entities.dto.OrderResponseDTO;
-import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
-import com.joe.trading.order_processing.entities.enums.OrderType;
-import com.joe.trading.order_processing.entities.enums.Side;
-import com.joe.trading.order_processing.entities.enums.Ticker;
+import com.joe.trading.order_processing.entities.enums.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +36,9 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
+
+    @Enumerated(EnumType.STRING)
+    private TradeStatus tradeStatus;
 
     @Enumerated(EnumType.STRING)
     private AvailableExchanges exchanges;
@@ -88,7 +88,12 @@ public class Order {
         out.setUnitPrice(this.getUnitPrice());
         out.setSide(String.valueOf(this.getSide()));
         out.setOrderType(String.valueOf(this.getOrderType()));
-        out.setStrategy("SPLIT");
+
+        if (this.trades.isEmpty()) {
+            out.setStrategy("SINGLE");
+        } else {
+            out.setStrategy("SPLIT");
+        }
 
         return out;
     }
@@ -96,6 +101,7 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
+                "id="+ id +
                 "ticker=" + ticker +
                 ", quantity=" + quantity +
                 ", unitPrice=" + unitPrice +

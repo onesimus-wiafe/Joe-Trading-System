@@ -1,7 +1,8 @@
-package com.joe.trading.order_processing.repositories.cache;
+package com.joe.trading.order_processing.repositories.redis;
 
 import com.joe.trading.order_processing.entities.cache.MarketData;
-import com.joe.trading.order_processing.repositories.dao.MarketDataDAO;
+import com.joe.trading.order_processing.repositories.redis.dao.MarketDataDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,7 @@ public class MarketDataRepo implements MarketDataDAO {
 
     private final HashOperations<String, String, MarketData> hashOperations;
 
+    @Autowired
     public MarketDataRepo(RedisTemplate<String, MarketData> redisTemplate) {
         this.hashOperations = redisTemplate.opsForHash();
     }

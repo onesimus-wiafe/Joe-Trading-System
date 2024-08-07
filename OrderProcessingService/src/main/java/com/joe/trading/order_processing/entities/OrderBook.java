@@ -22,6 +22,7 @@ public class OrderBook {
     private Integer cumulatitiveQuantity;
     private String side;
     private String orderType;
+    private String exchange;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBook", orphanRemoval = true)
     private List<Executions> executions = new ArrayList();

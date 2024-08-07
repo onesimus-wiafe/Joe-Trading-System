@@ -1,4 +1,4 @@
-package com.joe.trading.order_processing.repositories.dao;
+package com.joe.trading.order_processing.repositories.redis.dao;
 
 import com.joe.trading.order_processing.entities.cache.MarketData;
 

@@ -1,7 +1,8 @@
-package com.joe.trading.order_processing.repositories.cache;
+package com.joe.trading.order_processing.repositories.redis;
 
 import com.joe.trading.order_processing.entities.OrderBook;
-import com.joe.trading.order_processing.repositories.dao.OrderBookDAO;
+import com.joe.trading.order_processing.repositories.redis.dao.OrderBookDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,7 @@ public class OrderBookRepo implements OrderBookDAO {
 
     private final HashOperations<String, String, List<OrderBook>> hashOperations;
 
+    @Autowired
     public OrderBookRepo(RedisTemplate<String, List<OrderBook>> redisTemplate) {
         this.hashOperations = redisTemplate.opsForHash();
     }

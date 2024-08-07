@@ -1,7 +1,8 @@
-package com.joe.trading.order_processing.repositories.cache;
+package com.joe.trading.order_processing.repositories.redis;
 
 import com.joe.trading.order_processing.entities.cache.InternalOpenOrder;
-import com.joe.trading.order_processing.repositories.dao.InternalOpenOrderDAO;
+import com.joe.trading.order_processing.repositories.redis.dao.InternalOpenOrderDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,7 @@ public class InternalOpenOrderRepo implements InternalOpenOrderDAO {
 
     private final HashOperations<String, String, List<InternalOpenOrder>> hashOperations;
 
+    @Autowired
     public InternalOpenOrderRepo(RedisTemplate<String, List<InternalOpenOrder>> redisTemplate){
         this.hashOperations = redisTemplate.opsForHash();
     }
