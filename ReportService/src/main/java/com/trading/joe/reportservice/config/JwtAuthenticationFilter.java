@@ -58,7 +58,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } finally {
             // Even if an exception is thrown, we still want to continue the filter chain
             // as the request may still be valid
-            System.out.println("Filtering request");
             filterChain.doFilter(request, response);
         }
     }

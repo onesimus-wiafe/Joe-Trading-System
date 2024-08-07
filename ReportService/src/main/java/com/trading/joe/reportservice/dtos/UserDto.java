@@ -2,13 +2,13 @@ package com.trading.joe.reportservice.dtos;
 
 import com.joe.trading.shared.dtos.UserEventDto;
 import com.trading.joe.reportservice.Status;
-import com.trading.joe.reportservice.entities.Users;
+import com.trading.joe.reportservice.entities.User;
 
 public class UserDto {
 
-    public Users userCreated(UserEventDto userEventDto){
-        Users user = new Users();
-        user.setUser_id(userEventDto.getId());
+    public User userCreated(UserEventDto userEventDto){
+        User user = new User();
+        user.setUserId(userEventDto.getId());
         user.setName(userEventDto.getName());
         user.setEmail(userEventDto.getEmail());
         user.setAccountType(user.getAccountType());
@@ -20,9 +20,9 @@ public class UserDto {
         return user;
     }
 
-    public Users userUpdated(UserEventDto userEventDto){
-        Users user = new Users();
-        user.setUser_id(userEventDto.getId());
+    public User userUpdated(UserEventDto userEventDto){
+        User user = new User();
+        user.setUserId(userEventDto.getId());
         user.setName(userEventDto.getName());
         user.setEmail(userEventDto.getEmail());
         user.setAccountType(user.getAccountType());
@@ -33,9 +33,9 @@ public class UserDto {
 
         return user;
     }
-    public Users userDeleted(UserEventDto userEventDto){
-        Users user = new Users();
-        user.setUser_id(userEventDto.getId());
+    public User userDeleted(UserEventDto userEventDto){
+        User user = new User();
+        user.setUserId(userEventDto.getId());
         user.setName(userEventDto.getName());
         user.setEmail(userEventDto.getEmail());
         user.setAccountType(user.getAccountType());

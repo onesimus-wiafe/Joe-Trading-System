@@ -70,12 +70,11 @@ public class UserServiceImpl implements UserService {
         // the transactional outbox pattern is ideal for addressing the problem of data
         // consistency across multiple services.
         try {
-            System.out.println(user);
-            natsService.publish(Event.USER_CREATED, userMapper.userEventDto(user) );
+            natsService.publish(Event.USER_CREATED, userMapper.userEventDto(user));
         } catch (JsonProcessingException e) {
             throw new UserDeletionException("Error creating user");
         }
-        return  user;
+        return user;
     }
 
     public Page<User> getUsers(UserFilterRequestDto filterRequestDto) {
