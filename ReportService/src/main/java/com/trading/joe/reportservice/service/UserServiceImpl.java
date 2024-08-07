@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         try {
             natsService.subscribe(Event.USER_CREATED, UserEventDto.class, this::saveCreateEvent);
             natsService.subscribe(Event.USER_UPDATED, UserEventDto.class, this::saveUpdateEvent);
-            natsService.subscribe(Event.USER_DELETED, UserEventDto.class, this::saveDeleteEvent);
+            natsService.subscribe(Event.USER_DELETED, UserEventDto.class, this::deleteEvent);
         } catch (Exception e) {
             throw new ResourceNotFoundException("Could not fetch from Nats Service");
         }
@@ -54,9 +54,13 @@ public class UserServiceImpl implements UserService {
         }, () -> System.err.println("DATA INCONSISTENCY"));
     }
 
-    public void saveDeleteEvent(UserEventDto userEventDto){
-        UserDto user = new UserDto();
-        userRepository.deleteById(userEventDto.getId());
+    public void deleteEvent(UserEventDto userEventDto){
+        
+        var userOptional = userRepository.findById(userEventDto.getId());
+        userOptional.ifPresentOrElse(user -> {
+          userRepository.deleteById(userEventDto.getId());
+
+        }, () -> System.err.println("DATA INCONSISTENCY"));
     }
 
 
