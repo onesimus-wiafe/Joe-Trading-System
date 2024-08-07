@@ -1,5 +1,6 @@
 package com.joe.trading.order_processing.entities;
 
+import com.joe.trading.order_processing.entities.dto.PortfolioResponseDTO;
 import com.joe.trading.order_processing.entities.enums.PortfolioState;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -75,6 +76,10 @@ public class Portfolio {
                 ", portfolioValue=" + portfolioValue +
                 ", stocks=" + stocks +
                 '}';
+    }
+
+    public PortfolioResponseDTO toPortfolioResponseDTO(){
+        return new PortfolioResponseDTO(this.id, this.portfolioName, this.portfolioValue, this.stocks);
     }
 
     @Override

@@ -17,6 +17,8 @@ public enum Event {
     NEW_ORDER_EX1("order.exchange1"),
     NEW_ORDER_EX2("order.exchange2"),
 
+    PORTFOLIO_CREATED("order.portfolio.created"),
+
     MARKET_DATA_UPDATE("market.data.update"),
 
     MSFT_ORDER_BOOK("orderbook.msft"),
