@@ -1,6 +1,7 @@
 package com.trading.joe.reportservice.entities;
 
 
+import com.trading.joe.reportservice.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Document(collection = "users")
 public class Users {
 
-    @Id
+
     private Long user_id;
 
     private String name;
@@ -24,4 +25,5 @@ public class Users {
     private Boolean pendingDelete;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Status action ;
 }
