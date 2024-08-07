@@ -33,20 +33,23 @@ public class MarketDataWebhookController {
     public ResponseEntity<OpenOrderDTO> receiveUpdate(@RequestBody OpenOrderDTO payload) throws JsonProcessingException {
 
         String ticker;
+        String exchange;
         Map<String, MarketData> dataUpdate = new HashMap<>();
 
         System.out.println("Received Subscription Update: " + payload);
         if (payload.getExchange().equals("MAL1")){
             ticker = payload.getProduct() + "_EX1";
+            exchange = "Exchange1";
             dataUpdate.put(ticker, newMarketData("exchange1", payload.getProduct()));
         }
         else {
             ticker = payload.getProduct() + "_EX1";
+            exchange = "Exchange2";
             dataUpdate.put(ticker, newMarketData("exchange2", payload.getProduct()));
         }
 
         natsService.publish(Event.MARKET_DATA_UPDATE, dataUpdate);
-        orderBookService.publishOrderBook(payload.getProduct());
+        orderBookService.publishOrderBook(payload.getProduct(), exchange);
         mdService.updateMarketData(dataUpdate.get(ticker));
 
         dataUpdate.clear();

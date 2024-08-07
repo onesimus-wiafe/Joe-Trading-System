@@ -5,4 +5,5 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public interface OrderBookService {
     void publishOrderBook() throws JsonProcessingException;
     void publishOrderBook(String product) throws JsonProcessingException;
+    void publishOrderBook(String product, String exchange);
 }

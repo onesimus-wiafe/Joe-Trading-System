@@ -1,27 +1,41 @@
-package com.joe.trading.order_processing.repositories.dao;
+package com.joe.trading.order_processing.entities.cache;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MarketDataDao {
+public class MarketData implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty
     private Double LAST_TRADED_PRICE;
+    @JsonProperty
     private String TICKER;
+    @JsonProperty
     private Integer SELL_LIMIT;
+    @JsonProperty
     private Double BID_PRICE;
+    @JsonProperty
     private Integer BUY_LIMIT;
-
+    @JsonProperty
     private Double ASK_PRICE;
+    @JsonProperty
     private Double MAX_PRICE_SHIFT;
+
     private String EXCHANGE;
 
-    public MarketDataDao(
+    public MarketData(
             Double LAST_TRADED_PRICE,
             String TICKER,
             Integer SELL_LIMIT,
@@ -38,7 +52,7 @@ public class MarketDataDao {
 
     @Override
     public String toString() {
-        return "MarketDataDao{" +
+        return "MarketData{" +
                 "LAST_TRADED_PRICE=" + LAST_TRADED_PRICE +
                 ", TICKER='" + TICKER + '\'' +
                 ", SELL_LIMIT=" + SELL_LIMIT +

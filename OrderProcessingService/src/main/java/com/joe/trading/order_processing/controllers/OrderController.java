@@ -10,6 +10,7 @@ import com.joe.trading.order_processing.entities.enums.Ticker;
 import com.joe.trading.order_processing.services.OrderService;
 import com.joe.trading.order_processing.services.validation.OrderValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +33,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponseDTO> sendOrder(@RequestBody OrderRequestDTO request){
         OrderResponseDTO response = new OrderResponseDTO();
-        // USER EVENT QUEUE
 
-        // Validating Order;
         OrderRequestDTO validatedRequest = validationService.validateOrder(request);
 
         Order order;
@@ -46,12 +45,27 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(response);
         }
 
-
         response = orderService.saveOrder(order);
 
         response.setMessage("New Order Created");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrders(){
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<OrderResponseDTO>> getAllOrdersByUserId(OrderRequestDTO request){
+
+        return ResponseEntity.ok(orderService.getAllOrdersPerUserId(request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<OrderResponseDTO> cancelAnOrder(@PathVariable Long id){
+        return ResponseEntity.ok(orderService.cancelOrder(id));
     }
 
     private Order buildValidatedOrder(OrderRequestDTO request){
@@ -63,10 +77,5 @@ public class OrderController {
                 AvailableExchanges.valueOf(request.getExchanges().toUpperCase()),
                 OrderType.valueOf(request.getOrderType())
         );
-    }
-
-    @GetMapping
-    public ResponseEntity<List<OrderResponseDTO>> getAllOrders(){
-        return ResponseEntity.ok(orderService.getAllOrders());
     }
 }
