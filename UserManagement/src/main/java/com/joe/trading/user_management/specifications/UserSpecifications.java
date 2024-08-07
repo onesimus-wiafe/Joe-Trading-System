@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import com.joe.trading.shared.auth.AccountType;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.enums.AccountType;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

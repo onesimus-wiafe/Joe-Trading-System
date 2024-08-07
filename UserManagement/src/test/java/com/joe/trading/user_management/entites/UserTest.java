@@ -13,15 +13,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.joe.trading.shared.auth.AccountType;
 import com.joe.trading.user_management.entities.Portfolio;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.enums.AccountType;
 import com.joe.trading.user_management.repository.PortfolioRepository;
 import com.joe.trading.user_management.repository.UserRepository;
 
 @DataJpaTest
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class UserTest {
+class UserTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -76,8 +76,8 @@ public class UserTest {
         assertEquals(1, userRepository.count());
         assertEquals(1, portfolioRepository.count());
 
+        userRepository.delete(user);
         assertThrows(DataIntegrityViolationException.class, () -> {
-            userRepository.delete(user);
             userRepository.flush();
         });
     }

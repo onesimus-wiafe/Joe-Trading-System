@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.joe.trading.shared.auth.AccountType;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.enums.AccountType;
 import com.joe.trading.user_management.services.JwtService;
 
 import io.jsonwebtoken.Claims;

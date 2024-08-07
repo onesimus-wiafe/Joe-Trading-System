@@ -1,4 +1,4 @@
-package com.joe.trading.user_management.enums;
+package com.joe.trading.shared.auth;
 
 public enum AccountType {
     USER,

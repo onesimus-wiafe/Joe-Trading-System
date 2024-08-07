@@ -2,7 +2,7 @@ package com.joe.trading.user_management.dtos;
 
 import java.util.Optional;
 
-import com.joe.trading.user_management.enums.AccountType;
+import com.joe.trading.shared.auth.AccountType;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

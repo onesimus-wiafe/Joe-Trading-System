@@ -12,7 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.joe.trading.user_management.enums.AccountType;
+import com.joe.trading.shared.auth.AccountType;
 
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
