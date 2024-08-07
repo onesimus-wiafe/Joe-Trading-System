@@ -2,11 +2,11 @@ package com.joe.trading.order_processing.services.validation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joe.trading.order_processing.entities.User;
+import com.joe.trading.order_processing.entities.cache.MarketData;
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.repositories.jpa.UserRepository;
-import com.joe.trading.order_processing.entities.cache.MarketData;
 import com.joe.trading.order_processing.repositories.redis.dao.MarketDataDAO;
 import com.joe.trading.order_processing.services.validation.handler.*;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE1;
 import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE2;

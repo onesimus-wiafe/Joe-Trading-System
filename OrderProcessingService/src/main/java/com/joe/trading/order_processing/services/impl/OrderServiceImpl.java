@@ -1,16 +1,20 @@
-package com.joe.trading.order_processing.services;
+package com.joe.trading.order_processing.services.impl;
 
 import com.joe.trading.order_processing.entities.*;
 import com.joe.trading.order_processing.entities.cache.InternalOpenOrder;
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.dto.OrderResponseDTO;
-import com.joe.trading.order_processing.entities.enums.*;
+import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
+import com.joe.trading.order_processing.entities.enums.OrderType;
+import com.joe.trading.order_processing.entities.enums.Side;
+import com.joe.trading.order_processing.entities.enums.TradeStatus;
 import com.joe.trading.order_processing.repositories.jpa.ExchangeRepository;
 import com.joe.trading.order_processing.repositories.jpa.OrderRepository;
 import com.joe.trading.order_processing.repositories.jpa.TradeRepository;
 import com.joe.trading.order_processing.repositories.jpa.UserRepository;
 import com.joe.trading.order_processing.repositories.redis.dao.InternalOpenOrderDAO;
 import com.joe.trading.order_processing.repositories.redis.dao.OrderBookDAO;
+import com.joe.trading.order_processing.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
@@ -19,7 +23,10 @@ import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -143,8 +150,6 @@ public class OrderServiceImpl implements OrderService {
         return new PageImpl<>(paginatedList, pageable, responseList.size());
     }
 
-
-
     private Order makeOrder(Order order, List<OrderBook> openOrders, List<Exchange> exchanges) {
         String product = String.valueOf(order.getTicker());
         String side = String.valueOf(order.getSide());
@@ -265,6 +270,8 @@ public class OrderServiceImpl implements OrderService {
 
         String url = exchange + privateApiKey + "/order";
 
+        String ex = exchange.contains("exchange2") ? "_EX2" : "_EX1";
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Trade> request = new HttpEntity<>(trade, headers);
@@ -279,7 +286,7 @@ public class OrderServiceImpl implements OrderService {
         String orderId = response.getBody();
 
         InternalOpenOrder openOrder = new InternalOpenOrder(orderId, trade.getQuantity(), 0);
-        String key = trade.getTicker()+"_OPEN";
+        String key = trade.getTicker()+ex+"_OPEN";
         List<InternalOpenOrder> openOrders = internalOpenOrderRepo.getInternalOrder(key);
 
         if (openOrders.isEmpty() || openOrders == null){

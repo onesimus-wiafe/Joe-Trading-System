@@ -1,8 +1,8 @@
 package com.joe.trading.order_processing.services.validation.handler;
 
+import com.joe.trading.order_processing.entities.cache.MarketData;
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.enums.Side;
-import com.joe.trading.order_processing.entities.cache.MarketData;
 
 import java.util.List;
 

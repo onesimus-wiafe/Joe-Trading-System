@@ -1,7 +1,6 @@
 package com.joe.trading.order_processing.config;
 
 import com.joe.trading.order_processing.entities.OrderBook;
-import com.joe.trading.order_processing.entities.cache.InternalOpenOrder;
 import com.joe.trading.order_processing.entities.cache.MarketData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
@@ -45,8 +44,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, List<InternalOpenOrder>> internalOrderRedisTemplate(){
-        RedisTemplate<String, List<InternalOpenOrder>> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, List<String>> internalOrderRedisTemplate(){
+        RedisTemplate<String, List<String>> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(this.lettuceConnectionFactory());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());

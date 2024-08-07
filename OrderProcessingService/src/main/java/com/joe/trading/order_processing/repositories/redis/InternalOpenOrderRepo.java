@@ -1,6 +1,5 @@
 package com.joe.trading.order_processing.repositories.redis;
 
-import com.joe.trading.order_processing.entities.cache.InternalOpenOrder;
 import com.joe.trading.order_processing.repositories.redis.dao.InternalOpenOrderDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
@@ -14,20 +13,20 @@ import java.util.Map;
 public class InternalOpenOrderRepo implements InternalOpenOrderDAO {
     private final String hashReference = "JOEOrderProcessingInternalOrders";
 
-    private final HashOperations<String, String, List<InternalOpenOrder>> hashOperations;
+    private final HashOperations<String, String,List<String>> hashOperations;
 
     @Autowired
-    public InternalOpenOrderRepo(RedisTemplate<String, List<InternalOpenOrder>> redisTemplate){
+    public InternalOpenOrderRepo(RedisTemplate<String, List<String>> redisTemplate){
         this.hashOperations = redisTemplate.opsForHash();
     }
 
     @Override
-    public void saveInternalOrder(String key, List<InternalOpenOrder> orders) {
+    public void saveInternalOrder(String key, List<String> orders) {
         hashOperations.putIfAbsent(hashReference, key, orders);
     }
 
     @Override
-    public void updateInternalOrder(String key, List<InternalOpenOrder> orders) {
+    public void updateInternalOrder(String key, List<String> orders) {
         hashOperations.put(hashReference, key, orders);
     }
 
@@ -37,12 +36,12 @@ public class InternalOpenOrderRepo implements InternalOpenOrderDAO {
     }
 
     @Override
-    public List<InternalOpenOrder> getInternalOrder(String key) {
+    public List<String> getInternalOrder(String key) {
         return hashOperations.get(hashReference, key);
     }
 
     @Override
-    public Map<String, List<InternalOpenOrder>> getAllInternalOrders() {
+    public Map<String, List<String>> getAllInternalOrders() {
         return hashOperations.entries(hashReference);
     }
 
