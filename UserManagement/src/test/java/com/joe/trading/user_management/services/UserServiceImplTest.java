@@ -20,13 +20,13 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.joe.trading.shared.auth.AccountType;
 import com.joe.trading.shared.events.Event;
 import com.joe.trading.shared.nats.NatsService;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.entities.Portfolio;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.enums.AccountType;
 import com.joe.trading.user_management.exceptions.EmailAlreadyExistsException;
 import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
 import com.joe.trading.user_management.exceptions.UserDeletionException;

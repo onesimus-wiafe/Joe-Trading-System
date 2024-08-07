@@ -10,7 +10,10 @@ import java.util.List;
 public interface OrderService {
 
     public OrderResponseDTO saveOrder(Order order);
+
     public List<OrderResponseDTO> getAllOrders();
+
     public OrderResponseDTO cancelOrder(Long id);
-    public Page<OrderResponseDTO> getAllOrdersPerUserId(OrderRequestDTO request);
+
+    public Page<OrderResponseDTO> getAllOrdersPerUserId(Long userId, OrderRequestDTO request);
 }

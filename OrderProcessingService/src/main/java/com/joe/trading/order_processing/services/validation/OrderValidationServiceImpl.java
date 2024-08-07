@@ -33,10 +33,10 @@ public class OrderValidationServiceImpl implements OrderValidationService{
     }
 
     @Override
-    public OrderRequestDTO validateOrder(OrderRequestDTO orderRequest) {
+    public OrderRequestDTO validateOrder(Long userId, OrderRequestDTO orderRequest) {
         orderRequest.setSide(orderRequest.getSide().toUpperCase());
 
-        User user = userRepository.findById(orderRequest.getUserId()).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
 
         List<MarketData> marketData = getMarketDataFromCache(orderRequest.getTicker(),orderRequest.getExchanges());
 
