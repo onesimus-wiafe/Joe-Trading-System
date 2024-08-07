@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'ReportService/**'
+  workflow_dispatch:
 
 jobs:
     build:
