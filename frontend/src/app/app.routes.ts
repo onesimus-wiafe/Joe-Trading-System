@@ -48,6 +48,12 @@ export const routes: Routes = [
         path: 'users',
         loadComponent: () =>
           import('./features/users-list/users-list.component').then((m) => m.UsersListComponent),
+      }, {
+        path: 'users/:userId',
+        loadComponent: () =>
+          import('./features/users-list/user-detail/user-detail.component').then(
+            (m) => m.UserDetailComponent
+          ),
       }
     ],
   },

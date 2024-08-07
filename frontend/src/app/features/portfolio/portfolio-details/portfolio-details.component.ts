@@ -35,7 +35,6 @@ import { OrderFormComponent } from '../../../shared/components/order-form/order-
 export class PortfolioDetailsComponent {
   constructor(private _activatedRoute: ActivatedRoute) {
     this._activatedRoute.params.subscribe((params) => {
-      console.log(params);
     });
   }
 

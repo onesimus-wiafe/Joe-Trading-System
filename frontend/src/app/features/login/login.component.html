@@ -46,6 +46,27 @@
       <p class="mb-5">
         Enter your email and password to access your trading dashboard.
       </p>
+      @if(loginForm.errors) {
+      <div class="alert alert-error mb-5">
+        <div class="flex-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 14l9-5-9-5-9 5 9 5z"
+            />
+          </svg>
+          <label class="ml-2">Invalid email or password</label>
+        </div>
+      </div>
+      }
       <div class="gap-6 mb-6 flex flex-col">
         <div>
           <label
@@ -68,9 +89,7 @@
           loginForm.get('email')?.invalid ) {
           <small class="text-red-500 text-sm mt-1">
             {{
-              loginForm.get("email")?.errors?.['required']
-                ? "Email is required"
-                : "Invalid email"
+              loginForm.get("email")?.errors?.['message']
             }}
           </small>
           }
@@ -96,14 +115,16 @@
           @if ( loginForm.get('password')?.touched &&
           loginForm.get('password')?.invalid ) {
           <small class="text-red-500 text-sm mt-1">
-            Password is required
+            {{
+              loginForm.get("password")?.errors?.['message']
+            }}
           </small>
           }
         </div>
 
         <button
           type="submit"
-          [disabled]="!loginForm.valid"
+          [disabled]="!loginForm.valid || loading()"
           class="btn btn-primary"
         >
           @if(loading()) {

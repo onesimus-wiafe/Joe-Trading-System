@@ -28,6 +28,26 @@
     </dialog>
   </div>
 
+  <div class="flex justify-end items-center shadow-md rounded-md p-5">
+    <div class="join">
+      <div>
+        <div>
+          <input class="input input-bordered join-item" placeholder="Search" />
+        </div>
+      </div>
+      <div>
+        <div>
+          <input
+            class="input input-bordered join-item"
+            type="datetime-local"
+            placeholder="Search"
+          />
+        </div>
+      </div>
+      <button type="button" class="btn join-item">Search</button>
+    </div>
+  </div>
+
   <div class="overflow-x-auto shadow-md mt-5">
     <table class="table">
       <thead>
@@ -55,7 +75,7 @@
             <div class="badge badge-info gap-2">Default</div>
             } }
           </td>
-          <td>{{ portfolio.createdDate | date }}</td>
+          <td>{{ portfolio.createdDate | date : "short" }}</td>
           <td>
             <div class="flex space-x-2">
               <a

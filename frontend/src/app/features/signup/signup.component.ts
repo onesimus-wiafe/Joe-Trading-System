@@ -1,69 +1,64 @@
-import { Component, computed, effect } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  ReactiveFormsModule,
-  AbstractControl,
-} from '@angular/forms';
-import { AuthService } from '../../core/services/auth.service';
-import { RegisterSchema } from '../../shared/models/auth.model';
-import * as v from 'valibot';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component, computed, effect, OnInit, signal } from '@angular/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import * as v from 'valibot';
+import { AuthService } from '../../core/services/auth.service';
+import { validateField } from '../../core/validators/validate';
+import { RegisterSchema } from '../../shared/models/auth.model';
+import { UserCreateSchema } from '../../shared/models/user.model';
+import { ToastComponent } from '../../shared/components/toast/toast.component';
+import { ToastService, ToastVariant } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, ToastComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
 })
 export class SignupComponent {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toastService: ToastService
+  ) {}
 
   loading = computed(() => this.authService.loading());
+  formError = computed(() => this.registerForm.errors);
 
   registerForm = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(8),
-      this.passwordMatchValidator('password'),
-    ]),
+    name: new FormControl('', validateField(UserCreateSchema.entries.name)),
+    email: new FormControl('', validateField(UserCreateSchema.entries.email)),
+    password: new FormControl(
+      '',
+      validateField(UserCreateSchema.entries.password)
+    ),
     confirm_password: new FormControl('', [
-      Validators.required,
-      this.passwordMatchValidator('confirm_password'),
+      validateField(
+        v.pipe(
+          v.string('Password is invalid'),
+          v.nonEmpty('Confirm password is required')
+        )
+      ),
+      this.passwordMatchValidator,
     ]),
   });
 
-  passwordMatchValidator(field: 'password' | 'confirm_password') {
-    return (control: AbstractControl) => {
-      const password = control.parent?.get('password')?.value;
-      const confirmPassword = control.parent?.get('confirm_password')?.value;
+  passwordMatchValidator(control: AbstractControl) {
+    const password = control.parent?.get('password')?.value;
+    const confirmPassword = control.value;
 
-      const errors = control.parent?.get('confirm_password')?.errors;
+    if (password !== confirmPassword) {
+      return { mismatch: 'Passwords do not match' };
+    }
 
-      if (password !== confirmPassword) {
-        if (field === 'password') {
-          control.parent
-            ?.get('confirm_password')
-            ?.setErrors({ ...errors, mismatch: true });
-          return null;
-        }
-        return { mismatch: true };
-      }
-
-      if (errors) {
-        delete errors?.['mismatch'];
-        control.parent
-          ?.get('confirm_password')
-          ?.setErrors(Object.keys(errors).length ? errors : null);
-      }
-
-      return null;
-    };
+    return null;
   }
 
   register() {
@@ -73,10 +68,19 @@ export class SignupComponent {
       if (data.success) {
         this.authService.register(data.output).subscribe({
           next: (response) => {
-            this.router.navigate(['/login']);
+            this.toastService.initiate({
+              message: "You've successfully registered!",
+              variant: ToastVariant.Success,
+            });
+            setTimeout(() => {
+              this.router.navigate(['/login']);
+            }, 2000);
           },
           error: (error: HttpErrorResponse) => {
-            this.registerForm.setErrors({ server: error.error.message });
+            this.toastService.initiate({
+              message: error.error.detail,
+              variant: ToastVariant.Error,
+            });
           },
         });
       } else {

@@ -13,41 +13,37 @@
       class="drawer-overlay"
     ></label>
     <div class="min-h-full bg-base-200 p-4 flex flex-col">
-      <h1>This is my content</h1>
+      <div class="flex items-center space-x-5">
+        <div class="avatar placeholder">
+          <div class="bg-neutral text-neutral-content w-16 rounded-full">
+            <span class="text-3xl">
+              {{ user()?.name?.charAt(0)?.toUpperCase() }}
+            </span>
+          </div>
+        </div>
+        <div>
+          <div class="font-bold text-lg">{{ user()?.name }}</div>
+          <div class="text-sm">
+            <a href="mailto:daisy@yahoo.com">{{ user()?.email }}</a>
+          </div>
+          <div class="text-sm">
+            <span href="mailto:daisy@yahoo.com">{{ user()?.accountType }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
       <ul class="menu text-base-content h-full rounded-box w-80">
+        @for (item of menuItems$; track item.label) {
         <li>
-          <a routerLink="/dashboard">
-            <ng-icon name="heroSquares2x2" size="24" />
-            Dashboard
+          <a [routerLink]="item.link">
+            <ng-icon [name]="item.icon" size="24" />
+            {{ item.label }}
           </a>
         </li>
-        <!-- <li>
-          <a routerLink="/orders">
-            <ng-icon name="heroBuildingOffice2" size="24" />
-            Orders
-          </a>
-        </li> -->
-        <li>
-          <a routerLink="/portfolios">
-            <ng-icon name="heroBuildingOffice2" size="24" />
-            Portfolios
-          </a>
-        </li>
-        <li>
-          <a routerLink="/trade-history">
-            <ng-icon name="heroReceiptRefund" size="24" />
-            Trade History
-          </a>
-        </li>
-        <li>
-          <a routerLink="/users">
-            <ng-icon name="heroUser" size="24" />
-            Users
-          </a>
-        </li>
+        }
       </ul>
       <div class="flex-grow"></div>
-        <div class="divider"></div>
+      <div class="divider"></div>
       <div class="flex-none space-x-3 mb-3">
         <ng-icon name="heroMoon" size="24" />
         <input

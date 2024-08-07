@@ -1,10 +1,10 @@
 import * as v from 'valibot';
 
 export enum OrderStatus {
-  Pending = 'PENDING',
-  Completed = 'COMPLETED',
-  Cancelled = 'CANCELLED',
-  Failed = 'FAILED',
+  OPEN = 'OPEN',
+  PARTIALLY_FILLED = 'PARTIALLY_FILLED',
+  CANCELLED = 'CANCELLED',
+  CLOSED = 'CLOSED',
 }
 
 export const TradeSchema = v.object({

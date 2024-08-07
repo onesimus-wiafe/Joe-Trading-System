@@ -28,20 +28,18 @@ export class AuthService {
 
   login(data: Login) {
     this.loading.set(true);
-    return this.http
-      .post<AuthResponse>('http://localhost:3003/api/v1/auth/login', data)
-      .pipe(
-        tap({
-          next: (auth) => {
-            this.setSession(auth);
-            this.loading.set(false);
-          },
-          error: () => {
-            this.loading.set(false);
-          },
-        }),
-        shareReplay()
-      );
+    return this.http.post<AuthResponse>('/auth/login', data).pipe(
+      tap({
+        next: (auth) => {
+          this.setSession(auth);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+        },
+      }),
+      shareReplay()
+    );
   }
 
   private setSession(auth: AuthResponse) {
@@ -67,6 +65,17 @@ export class AuthService {
   }
 
   register(data: Register) {
-    return this.http.post<User>('http://localhost:3003/api/v1/auth/register', data);
+    this.loading.set(true);
+    return this.http.post<User>('/auth/register', data).pipe(
+      tap({
+        next: () => {
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+        },
+      }),
+      shareReplay()
+    );
   }
 }

@@ -17,9 +17,7 @@
     @if ( userForm.get('name')?.touched && userForm.get('name')?.invalid ) {
     <small class="text-red-500 text-sm mt-1">
       {{
-                userForm.get("name")?.errors?.['required']
-                  ? "Name is required"
-                  : "Minimum of 3 characters required"
+                userForm.get("name")?.errors?.['message']
       }}
     </small>
     }
@@ -35,9 +33,28 @@
     @if ( userForm.get('email')?.touched && userForm.get('email')?.invalid ) {
     <small class="text-red-500 text-sm mt-1">
       {{
-                userForm.get("email")?.errors?.['required']
-                  ? "Email is required"
-                  : "Invalid email"
+                userForm.get("email")?.errors?.['message']
+      }}
+    </small>
+    }
+  </div>
+  <div>
+    <select
+      type="accountType"
+      aria-label="Account Type"
+      class="select select-bordered w-full select-sm"
+      placeholder="Account Type"
+      formControlName="accountType"
+    >
+      <!-- <option value="" disabled selected>Role</option> -->
+      <option value="ADMIN" selected>User</option>
+      <option value="ADMIN">Admin</option>
+    </select>
+    @if ( userForm.get('accountType')?.touched && userForm.get('accountType')?.invalid
+    ) {
+    <small class="text-red-500 text-sm mt-1">
+      {{
+                userForm.get("accountType")?.errors?.['message']
       }}
     </small>
     }
@@ -54,9 +71,7 @@
     ) {
     <small class="text-red-500 text-sm mt-1">
       {{
-                userForm.get("password")?.errors?.['required']
-                  ? "Password is required"
-                  : "Minimum of 6 characters required"
+                userForm.get("password")?.errors?.['message']
       }}
     </small>
     }

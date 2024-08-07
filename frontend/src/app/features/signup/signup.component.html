@@ -69,9 +69,7 @@
           registerForm.get('name')?.invalid ) {
           <small class="text-red-500 text-sm mt-1">
             {{
-              registerForm.get("name")?.errors?.['required']
-                ? "Full name is required"
-                : ""
+              registerForm.get("name")?.errors?.['message']
             }}
           </small>
           }
@@ -88,7 +86,8 @@
             formControlName="email"
             class="input input-bordered w-full"
             [class.input-error]="
-              registerForm.get('email')?.touched && registerForm.get('email')?.invalid
+              registerForm.get('email')?.touched &&
+              registerForm.get('email')?.invalid
             "
             placeholder="johndoe@test.com"
             required
@@ -97,9 +96,7 @@
           registerForm.get('email')?.invalid ) {
           <small class="text-red-500 text-sm mt-1">
             {{
-              registerForm.get("email")?.errors?.['required']
-                ? "Email is required"
-                : "Invalid email"
+              registerForm.get("email")?.errors?.['message']
             }}
           </small>
           }
@@ -126,11 +123,7 @@
           registerForm.get('password')?.invalid ) {
           <small class="text-red-500 text-sm mt-1">
             {{
-              registerForm.get("password")?.errors?.['required']
-                ? "Password is required"
-                : registerForm.get("password")?.errors?.['minlength']
-                ? "Password must be at least 8 characters"
-                : ""
+              registerForm.get("password")?.errors?.['message']
             }}
           </small>
           }
@@ -157,11 +150,7 @@
           registerForm.get('confirm_password')?.invalid ) {
           <small class="text-red-500 text-sm mt-1">
             {{
-              registerForm.get("confirm_password")?.errors?.['required']
-                ? "Confirm password is required"
-                : registerForm.get("confirm_password")?.errors?.['mismatch']
-                ? "Passwords must match"
-                : ""
+              registerForm.get("confirm_password")?.errors?.['message'] || registerForm.get("confirm_password")?.errors?.['mismatch']
             }}
           </small>
           }
@@ -169,13 +158,12 @@
 
         <button
           type="submit"
-          [disabled]="!registerForm.valid"
+          [disabled]="!registerForm.valid || loading()"
           class="btn btn-primary"
         >
           @if(loading()) {
           <span class="loading loading-spinner"></span>
-          }
-          Sign up
+          } Sign up
         </button>
 
         <div>

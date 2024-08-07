@@ -1,0 +1,22 @@
+<!-- @if (visible()) { -->
+<div
+  class="toast toast-top toast-end z-50"
+  [@openClose]="visible() ? 'open' : 'closed'"
+>
+  <div [class]="getAlertClass()">
+    <div class="flex-1">
+      <span>{{ message() }}</span>
+    </div>
+    <div class="flex-none">
+      <button
+        type="button"
+        (click)="this.toastService.hide()"
+        class="btn btn-sm btn-ghost btn-circle"
+        aria-label="Close"
+      >
+        <ng-icon name="heroXMark" size="18" />
+      </button>
+    </div>
+  </div>
+</div>
+<!-- } -->

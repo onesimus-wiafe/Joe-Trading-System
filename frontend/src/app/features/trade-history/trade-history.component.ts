@@ -42,7 +42,7 @@ export class TradeHistoryComponent {
       side: 'BUY',
       splitted: false,
       splitAmounts: [],
-      status: OrderStatus.Completed,
+      status: OrderStatus.OPEN,
       date: new Date(),
       completedDate: new Date(),
     },

@@ -2,8 +2,8 @@ import * as v from 'valibot';
 import { AccountType, UserSchema } from './user.model';
 
 export const LoginSchema = v.object({
-  email: v.pipe(v.string(), v.email()),
-  password: v.string(),
+  email: v.pipe(v.string("Invalid email"), v.nonEmpty("Email is required"), v.email("Invalid email")),
+  password: v.pipe(v.string("Invalid password"), v.nonEmpty("Password is required")),
 });
 
 export type Login = v.InferOutput<typeof LoginSchema>;

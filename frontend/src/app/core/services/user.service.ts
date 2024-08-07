@@ -1,71 +1,52 @@
 import { Injectable, signal } from '@angular/core';
-import { AccountType, User, UserCreate, UserUpdate } from '../../shared/models/user.model';
+import {
+  AccountType,
+  User,
+  UserCreate,
+  UserListResponse,
+  UserUpdate,
+} from '../../shared/models/user.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  constructor() {}
+  constructor(private httpClient: HttpClient) {}
 
-  private users = signal<User[]>([
+  getUsers(
     {
-      id: 1,
-      name: 'Alice',
-      email: 'aliceinwonderland@yahoo.com',
-      accountType: AccountType.ADMIN,
-      pendingDelete: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 2,
-      name: 'Bob',
-      email: 'bob@yahoo.com',
-      accountType: AccountType.USER,
-      pendingDelete: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
+      size,
+      page,
+      accountType,
+    }: { size: number; page: number; accountType?: AccountType | null } = {
+      size: 10,
+      page: 1,
+    }
+  ) {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('accountType', accountType?.toString() || '');
 
-  getUsers() {
-    return this.users();
+    return this.httpClient
+      .get<UserListResponse>('/users', { params });
   }
 
   deleteUser(id: number) {
-    this.users.set(this.users().filter((user) => user.id !== id));
+    return this.httpClient.delete(`/users/${id}`);
   }
 
   createUser(user: UserCreate) {
-    this.users.set([
-      ...this.users(),
-      {
-        id: this.users().length + 1,
-        ...user,
-        accountType: AccountType.USER,
-        pendingDelete: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ]);
+    return this.httpClient.post<User>('/users', user);
   }
 
   updateUser(id: number, user: UserUpdate) {
-    this.users.set(
-      this.users().map((u) => {
-        if (u.id === id) {
-          return {
-            ...u,
-            ...user,
-            updatedAt: new Date(),
-          };
-        }
-        return u;
-      })
-    );
+    return this.httpClient.put<User>(`/users/${id}`, user);
   }
 
-  getUserById(id: number) {
-    return this.users().find((user) => user.id === id);
+  getUser(id: number) {
+    return this.httpClient.get<User>(`/users/${id}`).pipe(shareReplay());
   }
 }

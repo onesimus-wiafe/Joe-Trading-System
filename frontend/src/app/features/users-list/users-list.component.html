@@ -20,7 +20,10 @@
         >
           <ng-icon name="heroXMark" size="18" />
         </button>
-        <app-user-form [defaultUser]="selectedUser()" (submit)="handleSubmit($event)" />
+        <app-user-form
+          [defaultUser]="selectedUser()"
+          (submit)="handleSubmit($event)"
+        />
       </div>
     </dialog>
   </div>
@@ -33,18 +36,21 @@
         name="{{ prefix + '-role' }}"
         aria-label="All"
         checked="{{ true }}"
+        (click)="setAccountType('ALL')"
       />
       <input
         class="join-item btn"
         type="radio"
         name="{{ prefix + '-role' }}"
         aria-label="Admin"
+        (click)="setAccountType('ADMIN')"
       />
       <input
         class="join-item btn"
         type="radio"
         name="{{ prefix + '-role' }}"
         aria-label="User"
+        (click)="setAccountType('USER')"
       />
     </div>
     <div class="join">
@@ -62,11 +68,6 @@
           />
         </div>
       </div>
-      <select aria-label="Filter" class="select select-bordered join-item">
-        <option disabled selected>Filter</option>
-        <option value="ADMIN">Admin</option>
-        <option value="USER">User</option>
-      </select>
       <button class="btn join-item">Search</button>
     </div>
   </div>
@@ -84,7 +85,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (user of users(); track user.id) {
+        @for (user of users().data; track user.id) {
         <tr class="hover">
           <td>{{ user.name }}</td>
           <td>{{ user.email }}</td>
@@ -92,7 +93,7 @@
           <td>
             {{ user.pendingDelete }}
           </td>
-          <td>{{ user.createdAt | date }}</td>
+          <td>{{ user.createdAt | date : "short" }}</td>
           <td>
             <div class="flex space-x-2">
               <a
@@ -126,7 +127,14 @@
       </tbody>
     </table>
     <div class="mt-5 mb-2 px-2">
-      <app-pagination />
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalItems]="users().totalElements"
+        [itemsPerPage]="sizePerPage()"
+        [currentPage]="currentPage()"
+        (changeItemsPerPage)="changeItemsPerPage($event)"
+        (changePage)="changePage($event)"
+      />
     </div>
   </div>
 </div>

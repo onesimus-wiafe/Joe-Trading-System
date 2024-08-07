@@ -1,15 +1,12 @@
-import { Component, computed, ViewContainerRef } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, computed, effect } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import * as v from 'valibot';
 import { AuthService } from '../../core/services/auth.service';
+import { validateField } from '../../core/validators/validate';
 import { LoginSchema } from '../../shared/models/auth.model';
-import { needConfirmation } from '../../core/services/dialog.service';
+import { ToastService, ToastVariant } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -20,25 +17,41 @@ import { needConfirmation } from '../../core/services/dialog.service';
 })
 export class LoginComponent {
   loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required]),
+    email: new FormControl('', validateField(LoginSchema.entries.email)),
+    password: new FormControl('', validateField(LoginSchema.entries.password)),
   });
-
-  constructor(private authService: AuthService, private router: Router, private viewContainerRef: ViewContainerRef) {}
-
   loading = computed(() => this.authService.loading());
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toastService: ToastService
+  ) {}
 
   login() {
     const result = v.safeParse(LoginSchema, this.loginForm.value);
     if (result.success) {
       this.authService.login(result.output).subscribe({
         next: (response) => {
+          this.toastService.initiate({
+            message: 'Logged in successfully',
+            variant: ToastVariant.Success,
+          });
           this.router.navigate(['/dashboard']);
         },
-        error: (error) => {},
+        error: (error: HttpErrorResponse) => {
+          this.toastService.initiate({
+            message: error.error.detail,
+            variant: ToastVariant.Error,
+          });
+        },
       });
     } else {
-      console.error(result.issues);
+      for (const error of result.issues) {
+        for (const path of error.path ?? []) {
+          this.loginForm.controls.email.setErrors({ email: true });
+        }
+      }
     }
   }
 

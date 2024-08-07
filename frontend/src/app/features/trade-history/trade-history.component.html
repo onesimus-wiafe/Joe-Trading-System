@@ -128,10 +128,10 @@
           <td>{{ trade.splitted }}</td>
           <td>{{ "70 | 20" }}</td>
           <td>
-            @switch (trade.status) { @case ("PENDING") {
-            <div class="badge badge-info gap-2">Active</div>
-            } @case ("COMPLETED") {
-            <div class="badge badge-success gap-2">Completed</div>
+            @switch (trade.status) { @case ("OPEN") {
+            <div class="badge badge-info gap-2">Open</div>
+            } @case ("CLOSED") {
+            <div class="badge badge-success gap-2">Closed</div>
             } @case ("CANCELLED") {
             <div class="badge badge-error gap-2">Cancelled</div>
             } @default {
