@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void deleteEvent(UserEventDto userEventDto){
-        
+
         var userOptional = userRepository.findById(userEventDto.getId());
         userOptional.ifPresentOrElse(user -> {
           userRepository.deleteById(userEventDto.getId());
