@@ -49,7 +49,7 @@ public class MarketDataWebhookController {
         }
 
         natsService.publish(Event.MARKET_DATA_UPDATE, dataUpdate);
-        orderBookService.publishOrderBook(payload.getProduct());
+        orderBookService.publishOrderBook(payload.getProduct(), exchange);
         mdService.updateMarketData(dataUpdate.get(ticker));
 
         dataUpdate.clear();
