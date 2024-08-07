@@ -1,5 +1,8 @@
 package com.joe.trading.user_management.services.impl;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.joe.trading.shared.auth.AccountType;
+import com.joe.trading.user_management.entities.User;
 import com.joe.trading.user_management.services.JwtService;
 
 import io.jsonwebtoken.Claims;
@@ -32,8 +37,25 @@ public class JwtServiceImpl implements JwtService {
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
 
+    @Value("${security.jwt.audience}")
+    private String audience;
+
+    @Value("${security.jwt.issuer}")
+    private String issuer;
+
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public User extractUser(String token) {
+        final Claims claims = extractAllClaims(token);
+        var user = new User();
+        user.setId(((Number) claims.get("id")).longValue());
+        user.setName((String) claims.get("name"));
+        user.setEmail((String) claims.get("email"));
+        user.setAccountType(AccountType.valueOf((String) claims.get("accountType")));
+        user.setPendingDelete((Boolean) claims.get("pendingDelete"));
+        return user;
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -41,12 +63,19 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(User user) {
+        var claims = new HashMap<String, Object>();
+        // Put all user data in the token
+        claims.put("id", user.getId());
+        claims.put("name", user.getName());
+        claims.put("email", user.getEmail());
+        claims.put("accountType", user.getAccountType());
+        claims.put("pendingDelete", user.getPendingDelete());
+        return generateToken(claims, user);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+    public String generateToken(Map<String, Object> extraClaims, User user) {
+        return buildToken(extraClaims, user, jwtExpiration);
     }
 
     public long getExpirationTime() {
@@ -55,15 +84,22 @@ public class JwtServiceImpl implements JwtService {
 
     private String buildToken(
             Map<String, Object> extraClaims,
-            UserDetails userDetails,
+            User user,
             long expiration) {
         return Jwts
                 .builder()
+                .header()
+                .keyId(generateKeyId())
+                .and()
                 .claims(extraClaims)
-                .subject(userDetails.getUsername())
+                .subject(user.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey())
+                .audience()
+                .add(audience)
+                .and()
+                .issuer(issuer)
                 .compact();
     }
 
@@ -92,5 +128,15 @@ public class JwtServiceImpl implements JwtService {
     private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private String generateKeyId() {
+        var key = getSignInKey();
+        try {
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(
+                    MessageDigest.getInstance("SHA-256").digest(key.getEncoded()));
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
     }
 }

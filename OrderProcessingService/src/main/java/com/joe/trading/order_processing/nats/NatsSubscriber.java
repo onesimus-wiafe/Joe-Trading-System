@@ -1,5 +1,12 @@
 package com.joe.trading.order_processing.nats;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
 import com.joe.trading.order_processing.entities.OrderBook;
 import com.joe.trading.order_processing.entities.cache.MarketData;
 import com.joe.trading.order_processing.repositories.redis.dao.InternalOpenOrderDAO;
@@ -8,14 +15,8 @@ import com.joe.trading.order_processing.repositories.redis.dao.OrderBookDAO;
 import com.joe.trading.order_processing.services.OrderBookService;
 import com.joe.trading.shared.events.Event;
 import com.joe.trading.shared.nats.NatsService;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class NatsSubscriber {
@@ -25,7 +26,6 @@ public class NatsSubscriber {
     private final OrderBookDAO orderBookRepo;
     private final OrderBookService orderBookService;
 
-    @Autowired
     public NatsSubscriber(NatsService natsService, MarketDataDAO marketDataRepo, InternalOpenOrderDAO openOrderRepo, OrderBookDAO orderBookRepo, OrderBookService orderBookService) {
         this.natsService = natsService;
         this.marketDataRepo = marketDataRepo;
@@ -128,8 +128,8 @@ public class NatsSubscriber {
                 orderBookRepo.saveOrderBook(key, booksToCache);
             }
             else {
-                int key_len = key.length();
-                String cacheKey = key.substring(0, key_len-5)+"_OPEN";
+                int keylen = key.length();
+                String cacheKey = key.substring(0, keylen-5)+"_OPEN";
                 updateInternalOrders(cacheKey, key, actualMapData);
             }
         });

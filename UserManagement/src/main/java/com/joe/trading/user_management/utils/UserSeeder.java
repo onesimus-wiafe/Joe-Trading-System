@@ -1,13 +1,10 @@
 package com.joe.trading.user_management.utils;
 
-import com.joe.trading.shared.dtos.UserEventDto;
-import com.joe.trading.shared.events.Event;
-import com.joe.trading.shared.nats.NatsService;
 import org.springframework.stereotype.Component;
 
+import com.joe.trading.shared.auth.AccountType;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
 import com.joe.trading.user_management.dtos.UserFilterRequestDto;
-import com.joe.trading.user_management.enums.AccountType;
 import com.joe.trading.user_management.services.UserService;
 
 import jakarta.annotation.PostConstruct;
@@ -18,8 +15,6 @@ import lombok.AllArgsConstructor;
 public class UserSeeder {
     private UserService userService;
 
-    private NatsService natsService;
-
     @PostConstruct
     public void seedUsers() {
         var allUsers = userService.getUsers(new UserFilterRequestDto());
@@ -28,5 +23,4 @@ public class UserSeeder {
             userService.createUser(user);
         }
     }
-
 }

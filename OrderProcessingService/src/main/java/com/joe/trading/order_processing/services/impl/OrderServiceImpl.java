@@ -1,7 +1,31 @@
 package com.joe.trading.order_processing.services.impl;
 
-import com.joe.trading.order_processing.entities.*;
-import com.joe.trading.order_processing.entities.cache.InternalOpenOrder;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.joe.trading.order_processing.entities.Exchange;
+import com.joe.trading.order_processing.entities.Order;
+import com.joe.trading.order_processing.entities.OrderBook;
+import com.joe.trading.order_processing.entities.Portfolio;
+import com.joe.trading.order_processing.entities.Trade;
+import com.joe.trading.order_processing.entities.User;
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.dto.OrderResponseDTO;
 import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
@@ -15,18 +39,6 @@ import com.joe.trading.order_processing.repositories.jpa.UserRepository;
 import com.joe.trading.order_processing.repositories.redis.dao.InternalOpenOrderDAO;
 import com.joe.trading.order_processing.repositories.redis.dao.OrderBookDAO;
 import com.joe.trading.order_processing.services.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
-import org.springframework.http.*;
-import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -45,8 +57,10 @@ public class OrderServiceImpl implements OrderService {
     @Value("${exchange.private.api.key}")
     String privateApiKey;
 
-    @Autowired
-    public OrderServiceImpl(RestTemplate restTemplate, OrderRepository orderRepo, ExchangeRepository exchangeRepo, TradeRepository tradeRepo, OrderBookDAO orderBookRepo, OpenEntityManagerInViewInterceptor openEntityManagerInViewInterceptor, InternalOpenOrderDAO internalOpenOrderRepo, UserRepository userRepo) {
+    public OrderServiceImpl(RestTemplate restTemplate, OrderRepository orderRepo, ExchangeRepository exchangeRepo,
+            TradeRepository tradeRepo, OrderBookDAO orderBookRepo,
+            OpenEntityManagerInViewInterceptor openEntityManagerInViewInterceptor,
+            InternalOpenOrderDAO internalOpenOrderRepo, UserRepository userRepo) {
         this.restTemplate = restTemplate;
         this.orderRepo = orderRepo;
         this.exchangeRepo = exchangeRepo;
@@ -63,13 +77,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponseDTO saveOrder(Order order){
+    public OrderResponseDTO saveOrder(Order order) {
 
         List<Exchange> exchanges = exchangeRepo.findAll();
 
         Side tradeSide = order.getSide().equals(Side.BUY) ? Side.SELL : Side.BUY;
 
-        List<OrderBook> openOrders = filterOrderBook(tradeSide, order.getOrderType(), getOrderBookFromCache(String.valueOf(order.getTicker()), order.getExchanges()));
+        List<OrderBook> openOrders = filterOrderBook(tradeSide, order.getOrderType(),
+                getOrderBookFromCache(String.valueOf(order.getTicker()), order.getExchanges()));
 
         Order completedOrder = makeOrder(order, openOrders, exchanges);
 
@@ -77,20 +92,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponseDTO cancelOrder(Long id){
+    public OrderResponseDTO cancelOrder(Long id) {
         OrderResponseDTO response = new OrderResponseDTO();
 
         Order order = orderRepo.findById(id).orElseThrow();
 
-        return switch (order.getTradeStatus()){
+        return switch (order.getTradeStatus()) {
             case OPEN -> {
                 List<Trade> trades = order.getTrades();
 
-                while (!trades.isEmpty()){
-                    for (Trade trade: trades){
+                while (!trades.isEmpty()) {
+                    for (Trade trade : trades) {
                         Boolean isCancelled = cancelTrade(trade.getOrderBook().getId(), trade.getExchange().getUrl());
 
-                        if (isCancelled){
+                        if (isCancelled) {
                             trades.remove(trade);
                         }
                     }
@@ -116,9 +131,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderResponseDTO> getAllOrdersPerUserId(OrderRequestDTO request){
-        Long id = request.getUserId();
-        User user = userRepo.findById(id).orElseThrow();
+    public Page<OrderResponseDTO> getAllOrdersPerUserId(Long userId, OrderRequestDTO request) {
+        User user = userRepo.findById(userId).orElseThrow();
 
         List<Portfolio> portfolios = user.getPortfolios();
 
@@ -128,8 +142,7 @@ public class OrderServiceImpl implements OrderService {
             portfolio.getStocks().forEach(
                     stock -> {
                         orders.addAll(stock.getOrders());
-                    }
-            );
+                    });
         });
 
         Pageable pageable = PageRequest.of(
@@ -158,14 +171,14 @@ public class OrderServiceImpl implements OrderService {
         Integer quantity = order.getQuantity();
         String exchange = exchanges.get(0).toString();
 
-        while (order.getQuantity() > 0){
+        while (order.getQuantity() > 0) {
 
-
-            if (!openOrders.isEmpty()){
+            if (!openOrders.isEmpty()) {
                 OrderBook openOrder = openOrders.get(0);
-                quantity = order.getQuantity() > openOrder.getQuantity() ? openOrder.getQuantity() : order.getQuantity();
+                quantity = order.getQuantity() > openOrder.getQuantity() ? openOrder.getQuantity()
+                        : order.getQuantity();
 
-                switch (order.getOrderType()){
+                switch (order.getOrderType()) {
                     case MARKET -> {
                         price = openOrder.getPrice();
                     }
@@ -179,7 +192,7 @@ public class OrderServiceImpl implements OrderService {
                                 yield openOrder.getPrice();
                             }
                             case BUY -> {
-                                if (order.getUnitPrice() < openOrder.getPrice()){
+                                if (order.getUnitPrice() < openOrder.getPrice()) {
                                     openOrders.remove(openOrder);
                                     yield order.getUnitPrice();
                                 }
@@ -187,12 +200,13 @@ public class OrderServiceImpl implements OrderService {
                             }
                         };
 
-                        if (!openOrders.contains(openOrder)){
+                        if (!openOrders.contains(openOrder)) {
                             continue;
                         }
 
                     }
-                };
+                }
+                ;
                 exchange = openOrder.getExchange();
             }
 
@@ -219,10 +233,10 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
-    private List<OrderBook> getOrderBookFromCache(String ticker, AvailableExchanges exchanges){
-        return switch (exchanges){
-            case EXCHANGE1 -> this.orderBookRepo.getOrderBook(ticker+"_EX1_OPEN");
-            case EXCHANGE2 -> this.orderBookRepo.getOrderBook(ticker+"_EX2_OPEN");
+    private List<OrderBook> getOrderBookFromCache(String ticker, AvailableExchanges exchanges) {
+        return switch (exchanges) {
+            case EXCHANGE1 -> this.orderBookRepo.getOrderBook(ticker + "_EX1_OPEN");
+            case EXCHANGE2 -> this.orderBookRepo.getOrderBook(ticker + "_EX2_OPEN");
             case NONE -> List.of();
             case ALL -> {
                 List<OrderBook> book = getOrderBookFromCache(ticker, AvailableExchanges.EXCHANGE1);
@@ -234,12 +248,11 @@ public class OrderServiceImpl implements OrderService {
         };
     }
 
-    private List<OrderBook> filterOrderBook(Side side, OrderType orderType, List<OrderBook> orderBook){
+    private List<OrderBook> filterOrderBook(Side side, OrderType orderType, List<OrderBook> orderBook) {
         List<OrderBook> filteredBook = new ArrayList<>(orderBook.stream().filter(
-                book -> book.getSide().equals(String.valueOf(side))
-        ).toList());
+                book -> book.getSide().equals(String.valueOf(side))).toList());
 
-        List<OrderBook> filteredBySide = switch (side){
+        List<OrderBook> filteredBySide = switch (side) {
             case SELL -> {
                 filteredBook.sort(Comparator.comparingDouble(OrderBook::getPrice));
 
@@ -252,21 +265,22 @@ public class OrderServiceImpl implements OrderService {
             }
         };
 
-        return switch (orderType){
+        return switch (orderType) {
             case LIMIT -> filteredBySide;
-            case MARKET -> filteredBySide.stream().filter(book -> !book.getOrderType().equals(String.valueOf(orderType)))
-                    .toList();
+            case MARKET ->
+                filteredBySide.stream().filter(book -> !book.getOrderType().equals(String.valueOf(orderType)))
+                        .toList();
         };
 
     }
 
-    private Trade buildTrade(Integer quantity, Double price, String ticker, String side, String tradeType, Exchange exchange){
-
+    private Trade buildTrade(Integer quantity, Double price, String ticker, String side, String tradeType,
+            Exchange exchange) {
 
         return new Trade(quantity, price, ticker, side, tradeType, exchange);
     }
 
-    private Trade makeTrade(Trade trade, String exchange){
+    private Trade makeTrade(Trade trade, String exchange) {
 
         String url = exchange + privateApiKey + "/order";
 
@@ -280,34 +294,30 @@ public class OrderServiceImpl implements OrderService {
                 url,
                 HttpMethod.POST,
                 request,
-                String.class
-        );
+                String.class);
 
         String orderId = response.getBody();
 
-        InternalOpenOrder openOrder = new InternalOpenOrder(orderId, trade.getQuantity(), 0);
-        String key = trade.getTicker()+ex+"_OPEN";
-        List<InternalOpenOrder> openOrders = internalOpenOrderRepo.getInternalOrder(key);
+        String key = trade.getTicker() + ex + "_OPEN";
+        List<String> openOrders = internalOpenOrderRepo.getInternalOrder(key);
 
-        if (openOrders.isEmpty() || openOrders == null){
+        if (openOrders.isEmpty() || openOrders == null) {
             openOrders = new ArrayList<>();
         }
 
-        openOrders.add(openOrder);
+        openOrders.add(orderId);
 
         internalOpenOrderRepo.saveInternalOrder(key, openOrders);
 
-
         trade.setOrderBook(
                 new OrderBook(trade.getTicker(), orderId, trade.getQuantity(),
-                        trade.getSide(), trade.getTradeType())
-        );
+                        trade.getSide(), trade.getTradeType()));
 
         return tradeRepo.save(trade);
     }
 
-    private Boolean cancelTrade(String orderId, String exchange){
-        String url = exchange + privateApiKey + "/order/"+orderId;
+    private Boolean cancelTrade(String orderId, String exchange) {
+        String url = exchange + privateApiKey + "/order/" + orderId;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -317,8 +327,7 @@ public class OrderServiceImpl implements OrderService {
                 url,
                 HttpMethod.DELETE,
                 request,
-                String.class
-        );
+                String.class);
 
         return Boolean.valueOf(response.getBody());
     }
