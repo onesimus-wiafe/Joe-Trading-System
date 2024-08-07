@@ -1,11 +1,11 @@
-name: Build and push docker image of order processing service when changes are pushed to the main branch
+name: Build and push docker image of gateway when changes are pushed to the main branch
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'OrderProcessingService/**'
+      - 'GatewayService/**'
 
 jobs:
     build:
@@ -28,7 +28,7 @@ jobs:
           uses: docker/build-push-action@v2
           with:
             context: .
-            file: ./OrderProcessingService/Dockerfile
+            file: ./GatewayService/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/order-srv:latest
+            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-srv:latest
     
