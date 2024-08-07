@@ -31,7 +31,7 @@ jobs:
         - name: Build and push Docker image
           uses: docker/build-push-action@v6
           with:
-            context: ./MarketDataService
+            context: ./
             file: ./MarketDataService/Dockerfile
             push: true
             tags: ${{ secrets.DOCKER_HUB_USERNAME }}/market-srv:latest

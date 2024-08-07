@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: joe-trading/frontend
+    image: sarrpong4/frontend
     build:
       context: ../frontend
       dockerfile: Dockerfile
@@ -10,7 +10,7 @@ services:
       - 4200:80
 
   gateway-srv:
-    image: joe-trading/gateway-srv
+    image: sarrpong4/gateway-srv
     build:
       context: ../GatewayService
       dockerfile: Dockerfile
@@ -36,7 +36,7 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
 
   user-srv:
-    image: joe-trading/user-srv
+    image: sarrpong4/user-srv
     build:
       context: ../
       dockerfile: UserManagement/Dockerfile
@@ -66,7 +66,7 @@ services:
       - user_data:/var/lib/postgresql/data
 
   order-srv:
-    image: joe-trading/order-srv
+    image: sarrpong4/order-srv
     build:
       context: ../
       dockerfile: OrderProcessingService/Dockerfile
@@ -92,7 +92,7 @@ services:
       - order_data:/var/lib/postgresql/data
 
   report-srv:
-    image: joe-trading/report-srv
+    image: sarrpong4/report-srv
     build:
       context: ../
       dockerfile: ReportService/Dockerfile
@@ -117,7 +117,7 @@ services:
       - report_data:/var/lib/postgresql/data
 
   market-srv:
-    image: joe-trading/market-srv
+    image: sarrpong4/market-srv
     build:
       context: ../
       dockerfile: MarketDataService/Dockerfile
