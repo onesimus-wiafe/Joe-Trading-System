@@ -33,6 +33,8 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+	implementation(project(":shared"))
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("com.h2database:h2")

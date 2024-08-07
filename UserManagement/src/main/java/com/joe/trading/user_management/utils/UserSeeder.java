@@ -23,5 +23,4 @@ public class UserSeeder {
             userService.createUser(user);
         }
     }
-
 }

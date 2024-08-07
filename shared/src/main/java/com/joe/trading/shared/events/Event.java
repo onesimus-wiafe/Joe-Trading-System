@@ -26,7 +26,9 @@ public enum Event {
     TSLA_ORDER_BOOK("orderbook.tsla"),
     IBM_ORDER_BOOK("orderbook.ibm"),
     ORCL_ORDER_BOOK("orderbook.orcl"),
-    AMZN_ORDER_BOOK("orderbook.amzn");
+    AMZN_ORDER_BOOK("orderbook.amzn"),
+
+    PORTFOLIO_DELETED("portfolio.deleted");
 
     private final String value;
 }
