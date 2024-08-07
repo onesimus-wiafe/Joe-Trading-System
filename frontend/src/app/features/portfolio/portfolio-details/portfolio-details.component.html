@@ -1,0 +1,115 @@
+<div class="mx-5 mt-5">
+  <div class="flex justify-between items-center shadow-md rounded-md p-5">
+    <div class="prose">
+      <h1>{{ portfolio.portfolioName }}</h1>
+    </div>
+    <div class="space-x-3">
+      <button
+        type="button"
+        (click)="showDialog()"
+        class="btn btn-outline btn-sm"
+      >
+        Edit Portfolio
+      </button>
+      <button
+        type="button"
+        (click)="showDialog()"
+        class="btn btn-error btn-sm"
+      >
+        Delete Portfolio
+      </button>
+      <button
+        type="button"
+        (click)="showDialog()"
+        class="btn btn-primary btn-sm"
+      >
+        Place Order
+      </button>
+    </div>
+    <dialog
+      id="my_modal_1"
+      class="modal"
+      [class.modal-open]="dialogOpenSignal()"
+    >
+      <div class="modal-box">
+        <button
+          type="button"
+          aria-label="Close"
+          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          (click)="closeDialog()"
+        >
+          <ng-icon name="heroXMark" size="18" />
+        </button>
+        <app-order-form
+          [defaultside]="selectedSide()"
+          [defaultstock]="selectedStock()?.symbol"
+          [defaultportfolio]="portfolio.id"
+        />
+      </div>
+    </dialog>
+  </div>
+
+  <div class="overflow-x-auto shadow-md mt-5">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Change</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (stock of stocks; track stock.symbol) {
+        <tr class="hover">
+          <td class="flex items-center space-x-1">
+            <img class="w-8" src="{{ stock.pic }}" alt="{{ stock.name }}" />
+            <span>
+              {{ stock.symbol }}
+            </span>
+          </td>
+          <td>{{ stock.name }}</td>
+          <td>{{ stock.price | currency }}</td>
+          <td>
+            {{ stock.quantity }}
+          </td>
+          <td>
+            <span
+              [class.text-success]="stock.change > 0"
+              [class.text-error]="stock.change < 0"
+            >
+              {{ stock.change | percent }}
+            </span>
+          </td>
+          <td>
+            <div class="flex space-x-2">
+              <button
+                title="Buy"
+                type="button"
+                class="btn btn-neutral btn-sm btn-square btn-outline"
+                (click)="buyStock(stock)"
+              >
+                <ng-icon name="heroPlus" size="18" />
+              </button>
+              <button
+                title="Sell"
+                type="button"
+                class="btn btn-primary btn-sm btn-square btn-outline"
+                [disabled]="stock.quantity <= 0"
+                (click)="sellStock(stock)"
+              >
+                <ng-icon name="heroMinus" size="18" />
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    <div class="mt-5 mb-2 px-2">
+      <app-pagination />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<form
+  class="mt-4 flex flex-col space-y-3"
+  [formGroup]="userForm"
+  (ngSubmit)="handleSubmit()"
+>
+  <h3 class="text-lg font-bold">
+    {{ isEdit() ? "Edit User" : "Create User" }}
+  </h3>
+  <div>
+    <input
+      type="text"
+      aria-label="Name"
+      class="input input-bordered w-full select-sm"
+      placeholder="Name"
+      formControlName="name"
+    />
+    @if ( userForm.get('name')?.touched && userForm.get('name')?.invalid ) {
+    <small class="text-red-500 text-sm mt-1">
+      {{
+                userForm.get("name")?.errors?.['message']
+      }}
+    </small>
+    }
+  </div>
+  <div>
+    <input
+      type="text"
+      aria-label="Email"
+      class="input input-bordered w-full select-sm"
+      placeholder="Email"
+      formControlName="email"
+    />
+    @if ( userForm.get('email')?.touched && userForm.get('email')?.invalid ) {
+    <small class="text-red-500 text-sm mt-1">
+      {{
+                userForm.get("email")?.errors?.['message']
+      }}
+    </small>
+    }
+  </div>
+  <div>
+    <select
+      type="accountType"
+      aria-label="Account Type"
+      class="select select-bordered w-full select-sm"
+      placeholder="Account Type"
+      formControlName="accountType"
+    >
+      <!-- <option value="" disabled selected>Role</option> -->
+      <option value="ADMIN" selected>User</option>
+      <option value="ADMIN">Admin</option>
+    </select>
+    @if ( userForm.get('accountType')?.touched && userForm.get('accountType')?.invalid
+    ) {
+    <small class="text-red-500 text-sm mt-1">
+      {{
+                userForm.get("accountType")?.errors?.['message']
+      }}
+    </small>
+    }
+  </div>
+  <div>
+    <input
+      type="password"
+      aria-label="Password"
+      class="input input-bordered w-full select-sm"
+      placeholder="Password"
+      formControlName="password"
+    />
+    @if ( userForm.get('password')?.touched && userForm.get('password')?.invalid
+    ) {
+    <small class="text-red-500 text-sm mt-1">
+      {{
+                userForm.get("password")?.errors?.['message']
+      }}
+    </small>
+    }
+  </div>
+  <div class="modal-action">
+    <button type="submit" class="btn">
+      {{ isEdit() ? "Update" : "Create" }}
+    </button>
+  </div>
+</form>

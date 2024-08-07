@@ -1,0 +1,115 @@
+<div class="mx-5 mt-5">
+  <div class="flex justify-between items-center shadow-md rounded-md p-5">
+    <div class="prose">
+      <h1>Portfolio</h1>
+    </div>
+    <button type="button" (click)="showDialog()" class="btn btn-primary btn-sm">
+      New Portfolio
+    </button>
+    <dialog
+      id="my_modal_1"
+      class="modal"
+      [class.modal-open]="dialogOpenSignal()"
+    >
+      <div class="modal-box">
+        <button
+          type="button"
+          aria-label="Close"
+          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          (click)="closeDialog()"
+        >
+          <ng-icon name="heroXMark" size="18" />
+        </button>
+        <app-portfolio-form
+          [defaultPortfolio]="selectedPortfolio()"
+          (submit)="handleSubmit($event)"
+        />
+      </div>
+    </dialog>
+  </div>
+
+  <div class="flex justify-end items-center shadow-md rounded-md p-5">
+    <div class="join">
+      <div>
+        <div>
+          <input class="input input-bordered join-item" placeholder="Search" />
+        </div>
+      </div>
+      <div>
+        <div>
+          <input
+            class="input input-bordered join-item"
+            type="datetime-local"
+            placeholder="Search"
+          />
+        </div>
+      </div>
+      <button type="button" class="btn join-item">Search</button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto shadow-md mt-5">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Total Value</th>
+          <th>State</th>
+          <th>Date Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (portfolio of portfolios(); track portfolio.id) {
+        <tr class="hover">
+          <td>{{ portfolio.portfolioName }}</td>
+          <td>{{ portfolio.description }}</td>
+          <td>{{ 123 | currency }}</td>
+          <td>
+            @switch (portfolio.state) { @case ('ACTIVE') {
+            <div class="badge badge-success gap-2">Active</div>
+            } @case ('INACTIVE') {
+            <div class="badge badge-error gap-2">Inactive</div>
+            } @default {
+            <div class="badge badge-info gap-2">Default</div>
+            } }
+          </td>
+          <td>{{ portfolio.createdDate | date : "short" }}</td>
+          <td>
+            <div class="flex space-x-2">
+              <a
+                title="View"
+                type="button"
+                [routerLink]="['/portfolios', portfolio.id]"
+                class="btn btn-neutral btn-sm btn-square btn-outline"
+              >
+                <ng-icon name="heroEye" size="18" />
+              </a>
+              <button
+                title="Edit"
+                type="button"
+                class="btn btn-primary btn-sm btn-square btn-outline"
+                (click)="handleEdit(portfolio)"
+              >
+                <ng-icon name="heroPencil" size="18" />
+              </button>
+              <button
+                title="Delete"
+                type="button"
+                class="btn btn-error btn-sm btn-square btn-outline"
+                (click)="deletePortfolio(portfolio.id)"
+              >
+                <ng-icon name="heroTrash" size="18" />
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    <div class="mt-5 mb-2 px-2">
+      <app-pagination />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,232 @@
+<div class="mx-5 mt-5 mb-10">
+  <div class="flex justify-between items-center shadow-md rounded-md p-5">
+    <div class="prose">
+      <h1>Profile</h1>
+    </div>
+    <div class="space-x-1">
+      <button
+        type="button"
+        (click)="showDialog()"
+        class="btn btn-primary btn-sm"
+      >
+        Edit User
+      </button>
+      <button type="button" (click)="deleteUser()" class="btn btn-error btn-sm">
+        Delete User
+      </button>
+    </div>
+    <dialog
+      id="my_modal_1"
+      class="modal"
+      [class.modal-open]="dialogOpenSignal()"
+    >
+      <div class="modal-box">
+        <button
+          type="button"
+          aria-label="Close"
+          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          (click)="closeDialog()"
+        >
+          <ng-icon name="heroXMark" size="18" />
+        </button>
+        <app-user-form [defaultUser]="user()" (submit)="handleSubmit($event)" [open]="dialogOpenSignal()" />
+      </div>
+    </dialog>
+  </div>
+
+  <div class="flex mt-10 justify-around">
+    <div class="flex justify-between items-center rounded-md px-10 py-5 shadow">
+      <div class="flex items-center space-x-10">
+        <img
+          src="https://avatar.iran.liara.run/public"
+          alt="avatar"
+          class="rounded-full w-40 h-40"
+        />
+        <div class="">
+          <div class="prose prose-2xl">
+            <h2>{{ user().name }}</h2>
+          </div>
+          <div class="prose prose-2xl">
+            <p>{{ user().email }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats shadow">
+      <div class="stat">
+        <div class="stat-figure text-primary">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="inline-block h-8 w-8 stroke-current"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            ></path>
+          </svg>
+        </div>
+        <div class="stat-title">Total Profits</div>
+        <div class="stat-value text-primary">{{ 25_600 | shortCurrency }}</div>
+        <div class="stat-desc">21% more than last month</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-figure text-secondary">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="inline-block h-8 w-8 stroke-current"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            ></path>
+          </svg>
+        </div>
+        <div class="stat-title">Order Count</div>
+        <div class="stat-value text-secondary">
+          {{ 2_600_000 | shortCurrency }}
+        </div>
+        <div class="stat-desc">21% more than last month</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-figure text-secondary">
+          <div class="avatar online">
+            <div class="w-16 rounded-full">
+              <img
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="stat-value">86%</div>
+        <div class="stat-title">Tasks done</div>
+        <div class="stat-desc text-secondary">31 tasks remaining</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="shadow-xl rounded-md mt-10 p-5">
+    <div class="flex justify-between items-center">
+      <div class="prose">
+        <h2>Portfolios</h2>
+      </div>
+      <div class="join">
+        <div>
+          <div>
+            <input
+              class="input input-bordered join-item"
+              placeholder="Search"
+            />
+          </div>
+        </div>
+        <div>
+          <div>
+            <input
+              class="input input-bordered join-item"
+              type="datetime-local"
+              placeholder="Search"
+            />
+          </div>
+        </div>
+        <button type="button" class="btn join-item">Search</button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto shadow mt-10">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Total Value</th>
+            <th>State</th>
+            <th>Date Created</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (portfolio of portfolios(); track portfolio.id) {
+          <tr class="hover">
+            <td>{{ portfolio.portfolioName }}</td>
+            <td>{{ portfolio.description }}</td>
+            <td>{{ 123 | currency }}</td>
+            <td>
+              @switch (portfolio.state) { @case ('ACTIVE') {
+              <div class="badge badge-success gap-2">Active</div>
+              } @case ('INACTIVE') {
+              <div class="badge badge-error gap-2">Inactive</div>
+              } @default {
+              <div class="badge badge-info gap-2">Default</div>
+              } }
+            </td>
+            <td>{{ portfolio.createdDate | date : "short" }}</td>
+            <td>
+              <div class="flex space-x-2">
+                <button
+                  title="View"
+                  type="button"
+                  class="btn btn-neutral btn-sm btn-square btn-outline"
+                >
+                  <ng-icon name="heroEye" size="18" />
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      <div class="mt-5 mb-2 px-2">
+        <app-pagination />
+      </div>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto shadow-md mt-5">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (stock of stocks; track stock.symbol) {
+        <tr class="hover">
+          <td class="flex items-center space-x-1">
+            <img class="w-8" src="{{ stock.pic }}" alt="{{ stock.name }}" />
+            <span>
+              {{ stock.symbol }}
+            </span>
+          </td>
+          <td>{{ stock.name }}</td>
+          <td>{{ stock.price | currency }}</td>
+          <td>
+            {{ stock.quantity }}
+          </td>
+          <td>
+            <span
+              [class.text-success]="stock.change > 0"
+              [class.text-error]="stock.change < 0"
+            >
+              {{ stock.change | percent }}
+            </span>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

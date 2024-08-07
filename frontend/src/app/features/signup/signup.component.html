@@ -37,7 +37,11 @@
   <div
     class="w-1/2 bg-gray-50 dark:bg-gray-800 absolute right-0 top-0 h-screen flex items-center justify-center"
   >
-    <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()" class="max-w-2xl w-full mx-10">
+    <form
+      [formGroup]="registerForm"
+      (ngSubmit)="register()"
+      class="max-w-2xl w-full mx-10"
+    >
       <h2 class="text-4xl font-extrabold dark:text-white mb-3">Sign up</h2>
       <p class="mb-5">
         Sign up for a new account to access our trading platform.
@@ -45,33 +49,30 @@
       <div class="gap-6 mb-6 flex flex-col">
         <div>
           <label
-            for="full_name"
+            for="name"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >Full Name</label
           >
           <input
             type="text"
-            id="full_name"
-            formControlName="full_name"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            id="name"
+            formControlName="name"
+            class="input input-bordered w-full"
+            [class.input-error]="
+              registerForm.get('name')?.touched &&
+              registerForm.get('name')?.invalid
+            "
             placeholder="John Doe"
             required
           />
-        </div>
-        <div>
-          <label
-            for="username"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Username</label
-          >
-          <input
-            type="text"
-            id="username"
-            formControlName="username"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="johndoe"
-            required
-          />
+          @if ( registerForm.get('name')?.touched &&
+          registerForm.get('name')?.invalid ) {
+          <small class="text-red-500 text-sm mt-1">
+            {{
+              registerForm.get("name")?.errors?.['message']
+            }}
+          </small>
+          }
         </div>
         <div>
           <label
@@ -83,10 +84,22 @@
             type="text"
             id="email"
             formControlName="email"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            class="input input-bordered w-full"
+            [class.input-error]="
+              registerForm.get('email')?.touched &&
+              registerForm.get('email')?.invalid
+            "
             placeholder="johndoe@test.com"
             required
           />
+          @if ( registerForm.get('email')?.touched &&
+          registerForm.get('email')?.invalid ) {
+          <small class="text-red-500 text-sm mt-1">
+            {{
+              registerForm.get("email")?.errors?.['message']
+            }}
+          </small>
+          }
         </div>
         <div>
           <label
@@ -98,18 +111,59 @@
             type="password"
             id="password"
             formControlName="password"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            [class.input-error]="
+              registerForm.get('password')?.touched &&
+              registerForm.get('password')?.invalid
+            "
+            class="input input-bordered w-full"
             placeholder="•••••••••"
             required
           />
+          @if ( registerForm.get('password')?.touched &&
+          registerForm.get('password')?.invalid ) {
+          <small class="text-red-500 text-sm mt-1">
+            {{
+              registerForm.get("password")?.errors?.['message']
+            }}
+          </small>
+          }
+        </div>
+        <div>
+          <label
+            for="confirm-password"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Confirm Password</label
+          >
+          <input
+            type="password"
+            id="confirm-password"
+            formControlName="confirm_password"
+            class="input input-bordered w-full"
+            [class.input-error]="
+              registerForm.get('confirm_password')?.touched &&
+              registerForm.get('confirm_password')?.invalid
+            "
+            placeholder="•••••••••"
+            required
+          />
+          @if ( registerForm.get('confirm_password')?.touched &&
+          registerForm.get('confirm_password')?.invalid ) {
+          <small class="text-red-500 text-sm mt-1">
+            {{
+              registerForm.get("confirm_password")?.errors?.['message'] || registerForm.get("confirm_password")?.errors?.['mismatch']
+            }}
+          </small>
+          }
         </div>
 
         <button
           type="submit"
-          [disabled]="!loginForm.valid"
-          class="text-white transition-colors duration-100 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:bg-blue-400 disabled:dark:bg-blue-500 disabled:cursor-not-allowed disabled:text-center"
+          [disabled]="!registerForm.valid || loading()"
+          class="btn btn-primary"
         >
-          Login
+          @if(loading()) {
+          <span class="loading loading-spinner"></span>
+          } Sign up
         </button>
 
         <div>

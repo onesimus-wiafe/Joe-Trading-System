@@ -1,0 +1,44 @@
+<div class="flex justify-between">
+  <div class="flex items-center space-x-3">
+    <label class="label">Show</label>
+    <select
+      aria-label="Select Stock"
+      class="select select-bordered select-sm"
+      (change)="changePageSize($event)"
+    >
+    <option>1</option>
+      <option selected>10</option>
+      <option>25</option>
+      <option>50</option>
+      <option>100</option>
+    </select>
+  </div>
+  <div class="join">
+    <input
+      class="join-item btn-sm btn"
+      type="radio"
+      name="{{ prefix + '-page' }}"
+      aria-label="Previous"
+      [disabled]="isFirstPage"
+      (click)="goToPage(currentPage() - 1)"
+    />
+    @for (page of pages(); track page) {
+    <input
+      class="join-item btn-sm btn"
+      type="radio"
+      name="{{ prefix + '-page' }}"
+      attr.aria-label="{{ page.page }}"
+      [checked]="page.page === currentPage().toString()"
+      (click)="goToPage(page.page)"
+      [disabled]="!page.enabled"
+    />
+    }
+    <input
+      class="join-item btn-sm btn"
+      type="radio"
+      name="{{ prefix + '-page' }}"
+      aria-label="Next"
+      [disabled]="isLastPage"
+    />
+  </div>
+</div>
