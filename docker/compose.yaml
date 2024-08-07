@@ -76,6 +76,8 @@ services:
       - DB_PASSWORD=postgres
       - SERVER_PORT=80
       - API_KEY=$API_KEY
+      - REDIS_HOST=order-srv-cache
+      - REDIS_PORT=6379
     depends_on:
       - order-srv-db
     ports:
@@ -90,6 +92,11 @@ services:
     restart: unless-stopped
     volumes:
       - order_data:/var/lib/postgresql/data
+
+  order-srv-cache:
+    image: redis:alpine
+    # ports:
+    #   - 6379:6379
 
   report-srv:
     image: sarpong4/report-srv
@@ -136,8 +143,8 @@ services:
 
   market-srv-cache:
     image: redis:alpine
-    ports:
-      - 6379:6379
+    # ports:
+    #   - 6379:6379
 
   prometheus:
     image: prom/prometheus
