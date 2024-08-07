@@ -1,6 +1,8 @@
 package com.joe.trading.user_management.services.impl;
 
+import com.joe.trading.shared.dtos.PortfolioEventDto;
 import com.joe.trading.user_management.mapper.UserMapper;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -9,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -158,5 +158,22 @@ public class UserServiceImpl implements UserService {
 
         user.setPendingDelete(true);
         userRepository.save(user);
+    }
+
+    @PostConstruct
+    private void handlePortfolioDeleteMsg() {
+        natsService.subscribe(Event.PORTFOLIO_DELETED, PortfolioEventDto.class, this::deletePortfolio);
+    }
+
+    private void deletePortfolio(PortfolioEventDto portfolio) {
+        portfolioRepository.deleteById(portfolio.getId());
+        portfolioRepository.flush();
+
+        var user = userRepository.findById(portfolio.getUserId());
+        user.ifPresent(u -> {
+            if (u.getPortfolios().isEmpty()) {
+                userRepository.deleteById(u.getId());
+            }
+        });
     }
 }

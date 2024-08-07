@@ -15,12 +15,11 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private PortfolioRepository portfolioRepository;
     private UserRepository userRepository;
     private NatsService natsService;
 
     @PostConstruct
-    public void userCreatedEvent() throws ResourceNotFoundException {
+    public void userSubscriptionEvent() throws ResourceNotFoundException {
         System.out.println("Testing nats subscribe");
         try {
             natsService.subscribe(Event.USER_CREATED, UserEventDto.class,this::saveCreateEvent);
@@ -30,26 +29,6 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("Could not fetch from Nats Service");
         }
     }
-
-//    @PostConstruct
-//    public void userUpdatedEvent() throws ResourceNotFoundException{
-//        try {
-//            natsService.subscribe(Event.USER_UPDATED, UserEventDto.class, this::saveUpdateEvent);
-//        } catch (Exception e) {
-//            throw new ResourceNotFoundException("Could not fetch from Nats Service");
-//        }
-//
-//    }
-//
-//    @PostConstruct
-//    public void userDeletedEvent() throws ResourceNotFoundException{
-//        try {
-//            natsService.subscribe(Event.USER_DELETED, UserEventDto.class, this::saveDeleteEvent);
-//        } catch (Exception e) {
-//            throw new ResourceNotFoundException("Could not fetch from Nats Service");
-//        }
-//
-//    }
 
 
     public void saveCreateEvent(UserEventDto userEventDto){

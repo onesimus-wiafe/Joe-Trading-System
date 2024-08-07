@@ -1,6 +1,7 @@
 package com.trading.joe.reportservice.entities;
 
 
+import com.trading.joe.reportservice.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,13 +18,12 @@ import java.time.LocalDateTime;
 @Document(collection = "portfolios")
 public class Portfolio {
 
-    @Id
-    private Long id;
-
     private Long portfolio_id;
     private String name;
     private Long user_id;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private Status action;
 
 
 }
