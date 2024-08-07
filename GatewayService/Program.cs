@@ -47,6 +47,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
       RequireExpirationTime = true,
       ValidateTokenReplay = true,
       TryAllIssuerSigningKeys = true,
+      ClockSkew = TimeSpan.Zero
     };
   });
 
