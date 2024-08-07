@@ -1,4 +1,4 @@
-package com.joe.trading.order_processing.repositories;
+package com.joe.trading.order_processing.repositories.jpa;
 
 import com.joe.trading.order_processing.entities.Exchange;
 import org.springframework.data.jpa.repository.JpaRepository;

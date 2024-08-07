@@ -40,6 +40,15 @@ public class Trade {
     @JoinColumn(name = "trade_id")
     private OrderBook orderBook;
 
+    public Trade(Integer quantity, Double price, String ticker, String side, String tradeType, Exchange exchange){
+        this.quantity = quantity;
+        this.price = price;
+        this.ticker = ticker;
+        this.side = side;
+        this.tradeType = tradeType;
+        this.exchange = exchange;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,8 +1,8 @@
 package com.joe.trading.order_processing.services.validation.handler;
 
+import com.joe.trading.order_processing.entities.cache.MarketData;
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.enums.Side;
-import com.joe.trading.order_processing.repositories.dao.MarketDataDao;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import static java.lang.Boolean.TRUE;
 
 public class PriceValidator extends ValidationHandler {
     private final Side side;
-    private final List<MarketDataDao> marketData;
+    private final List<MarketData> marketData;
 
-    public PriceValidator(Side side, List<MarketDataDao> marketData){
+    public PriceValidator(Side side, List<MarketData> marketData){
         super();
         this.side = side;
         this.marketData = marketData;
@@ -30,7 +30,7 @@ public class PriceValidator extends ValidationHandler {
     }
 
     public OrderRequestDTO validatePrice(OrderRequestDTO request){
-        List<MarketDataDao> filter = marketData.stream().filter(
+        List<MarketData> filter = marketData.stream().filter(
                 data -> switch (this.side){
                     case BUY ->
                             (Math.abs(data.getBID_PRICE()) - request.getUnitPrice()) < data.getMAX_PRICE_SHIFT();

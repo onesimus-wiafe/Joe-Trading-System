@@ -50,8 +50,18 @@ public class OrderBookServiceImpl implements OrderBookService{
     public void publishOrderBook(String product) throws JsonProcessingException{
         fullOrderBook.putAll(getOpenOrders(product));
         fullOrderBook.putAll(getClosedOrders(product));
-        fullOrderBook.putAll(getCancelledOrders(product));
 
+        publishEvent(product);
+    }
+
+    @Override
+    public void publishOrderBook(String product, String exchange){
+        fullOrderBook.putAll(getOpenAndClosedOrdersFromOneExchange(product, exchange));
+
+        publishEvent(product);
+    }
+
+    private void publishEvent(String product){
         switch (Ticker.valueOf(product.toUpperCase())){
             case IBM -> this.publishOne(Event.IBM_ORDER_BOOK);
             case AAPL -> this.publishOne(Event.AAPL_ORDER_BOOK);
@@ -105,14 +115,26 @@ public class OrderBookServiceImpl implements OrderBookService{
         return result;
     }
 
-    private Map<String, List<OrderBook>> getCancelledOrders(String ticker){
-        String ex1Key = ticker+"_EX1_CANCELLED";
-        String ex2Key = ticker+"_EX2_CANCELLED";
+    private Map<String, List<OrderBook>> getOpenAndClosedOrdersFromOneExchange(String ticker, String exchange){
+        String openKey;
+        String closedKey;
 
         Map<String, List<OrderBook>> result = new HashMap<>();
 
-        result.put(ex1Key, getFromExchange(exchange1Url, ticker, "cancelled"));
-        result.put(ex2Key, getFromExchange(exchange2Url, ticker, "cancelled"));
+        if (exchange1Url.contains(exchange.toLowerCase())){
+            openKey = ticker+"_EX1_OPEN";
+            closedKey = ticker+"_EX1_CLOSED";
+
+            result.put(openKey, getFromExchange(exchange1Url, ticker, "open"));
+            result.put(closedKey, getFromExchange(exchange1Url, ticker, "closed"));
+        }
+        else{
+            openKey = ticker+"_EX2_OPEN";
+            closedKey = ticker+"_EX2_CLOSED";
+
+            result.put(openKey, getFromExchange(exchange2Url, ticker, "open"));
+            result.put(closedKey, getFromExchange(exchange2Url, ticker, "closed"));
+        }
 
         return result;
     }

@@ -22,6 +22,11 @@ import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.entities.enums.Ticker;
 import com.joe.trading.order_processing.services.OrderService;
 import com.joe.trading.order_processing.services.validation.OrderValidationService;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -43,7 +48,6 @@ public class OrderController {
         var principal = (User) auth.getPrincipal();
 
         OrderResponseDTO response = new OrderResponseDTO();
-        // USER EVENT QUEUE
 
         // Validating Order
         OrderRequestDTO validatedRequest = validationService.validateOrder(principal.getId(), request);
@@ -63,7 +67,23 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    private Order buildValidatedOrder(OrderRequestDTO request) {
+    @GetMapping
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrders(){
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<OrderResponseDTO>> getAllOrdersByUserId(OrderRequestDTO request){
+
+        return ResponseEntity.ok(orderService.getAllOrdersPerUserId(request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<OrderResponseDTO> cancelAnOrder(@PathVariable Long id){
+        return ResponseEntity.ok(orderService.cancelOrder(id));
+    }
+
+    private Order buildValidatedOrder(OrderRequestDTO request){
         return new Order(
                 Ticker.valueOf(request.getTicker().toUpperCase()),
                 request.getQuantity(),

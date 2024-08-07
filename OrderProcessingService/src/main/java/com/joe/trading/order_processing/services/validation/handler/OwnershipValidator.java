@@ -35,11 +35,10 @@ public class OwnershipValidator extends ValidationHandler {
         if (portfolio == null) {
             super.setNext(null);
             request.setIsValidated(Boolean.FALSE);
-            return request;
         }
         else {
             request.setIsValidated(Boolean.TRUE);
-            return request;
         }
+        return request;
     };
 }
