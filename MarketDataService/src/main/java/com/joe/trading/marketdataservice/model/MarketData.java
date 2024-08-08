@@ -34,6 +34,10 @@ public class MarketData implements Serializable {
 
     private String EXCHANGE;
 
+    public MarketData(String ticker){
+        this.TICKER = ticker;
+    }
+
     @Override
     public String toString() {
         return "MarketData{" +
