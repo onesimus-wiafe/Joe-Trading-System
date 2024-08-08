@@ -117,12 +117,14 @@ public class MarketDataServiceImpl implements MarketDataService {
 
         List<String> subList = Arrays.asList(response.getBody());
 
-        boolean isSubbed = subList.contains(serviceUrl);
+        String url = serviceUrl+"/md/webhook";
+
+        boolean isSubbed = subList.contains(url);
 
         if (!isSubbed) {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<String> request = new HttpEntity<>(serviceUrl, headers);
+            HttpEntity<String> request = new HttpEntity<>(url, headers);
 
             restTemplate.exchange(
                     subscriptionUrl,
