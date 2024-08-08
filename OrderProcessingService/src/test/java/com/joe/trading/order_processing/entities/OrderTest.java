@@ -25,7 +25,7 @@ class OrderTest {
     void testOrderToString() {
         Order order = new Order(Ticker.AAPL, 100, 1.0, Side.BUY, AvailableExchanges.EXCHANGE1, OrderType.LIMIT);
         order.setId(1L);
-        String expected = "Order{id=1L, ticker=AAPL, quantity=100, unitPrice=1.0, side=BUY, exchanges=EXCHANGE1, orderType=LIMIT, trades=null}";
+        String expected = "Order{id=1, ticker=AAPL, quantity=100, unitPrice=1.0, side=BUY, exchanges=EXCHANGE1, orderType=LIMIT, trades=null}";
         assertTrue(order.toString().contains(expected));
     }
 }
