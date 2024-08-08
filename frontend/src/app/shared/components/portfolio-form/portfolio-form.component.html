@@ -10,13 +10,13 @@
       aria-label="Portfolio Name"
       class="input input-bordered w-full select-sm"
       placeholder="Name"
-      formControlName="portfolioName"
+      formControlName="name"
     />
-    @if ( portfolioForm.get('portfolioName')?.touched &&
-    portfolioForm.get('portfolioName')?.invalid ) {
+    @if ( portfolioForm.get('name')?.touched &&
+    portfolioForm.get('name')?.invalid ) {
     <small class="text-red-500 text-sm mt-1">
       {{
-                portfolioForm.get("portfolioName")?.errors?.['required']
+                portfolioForm.get("name")?.errors?.['required']
                   ? "Portfolio name is required"
                   : "Minimum of 3 characters required"
       }}

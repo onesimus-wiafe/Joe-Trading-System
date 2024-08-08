@@ -1,11 +1,9 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, effect, OnInit, signal } from '@angular/core';
 import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
+  ReactiveFormsModule
 } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroEye,
@@ -13,16 +11,16 @@ import {
   heroTrash,
   heroXMark,
 } from '@ng-icons/heroicons/outline';
+import { needConfirmation } from '../../core/services/dialog.service';
+import { PortfolioService } from '../../core/services/portfolio.service';
+import { ToastService, ToastVariant } from '../../core/services/toast.service';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
+import { PortfolioFormComponent } from '../../shared/components/portfolio-form/portfolio-form.component';
 import {
   Portfolio,
   PortfolioCreate,
-  PortfolioState,
+  PortfolioListResponse
 } from '../../shared/models/portfolio.model';
-import { RouterLink } from '@angular/router';
-import { needConfirmation } from '../../core/services/dialog.service';
-import { PortfolioService } from '../../core/services/portfolio.service';
-import { PortfolioFormComponent } from '../../shared/components/portfolio-form/portfolio-form.component';
 
 @Component({
   selector: 'app-portfolio',
@@ -40,10 +38,55 @@ import { PortfolioFormComponent } from '../../shared/components/portfolio-form/p
   styleUrl: './portfolio.component.css',
   providers: [provideIcons({ heroTrash, heroPencil, heroEye, heroXMark })],
 })
-export class PortfolioComponent {
-  portfolios = computed(() => this.portfolioService.getPortfolios());
+export class PortfolioComponent implements OnInit {
+  portfolios = signal<PortfolioListResponse>({
+    data: [],
+    totalElements: 0,
+    totalPages: 0,
+    currentPage: 0,
+  });
 
-  constructor(private portfolioService: PortfolioService) {}
+  currentPage = signal(1);
+  sizePerPage = signal(10);
+
+  constructor(
+    private portfolioService: PortfolioService,
+    private toastService: ToastService
+  ) {
+    effect(() => {
+      this.loadPortfolios();
+    });
+  }
+
+  ngOnInit(): void {
+    this.portfolioService.getPortfolios().subscribe({
+      next: (response) => {
+        this.portfolios.set(response);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
+
+  loadPortfolios() {
+    this.portfolioService
+      .getPortfolios({
+        page: this.currentPage(),
+        size: this.sizePerPage(),
+      })
+      .subscribe({
+        next: (response) => {
+          this.portfolios.set(response);
+        },
+        error: (error) => {
+          this.toastService.initiate({
+            message: 'Failed to load portfolios',
+            variant: ToastVariant.Error,
+          });
+        },
+      });
+  }
 
   dialogOpenSignal = signal<boolean>(false);
 
@@ -58,17 +101,8 @@ export class PortfolioComponent {
     this.dialogOpenSignal.set(false);
   }
 
-  createPortfolio({ portfolioName, description }: PortfolioCreate) {
-    const portfolio: Portfolio = {
-      id: this.portfolios().length + 1,
-      portfolioName: portfolioName,
-      state: PortfolioState.Active,
-      description: description,
-      createdDate: new Date(),
-      updatedOn: new Date(),
-    };
-
-    this.portfolioService.addPortfolio(portfolio);
+  createPortfolio(data: PortfolioCreate) {
+    this.portfolioService.addPortfolio(data).subscribe({});
     this.closeDialog();
   }
 
@@ -78,29 +112,26 @@ export class PortfolioComponent {
   }
 
   editPortfolio(portfolioId: number, portfolio: PortfolioCreate) {
-    const updatedPortfolio = {
-      id: portfolioId,
-      portfolioName: portfolio.portfolioName,
-      description: portfolio.description,
-      state: PortfolioState.Active,
-      createdDate: new Date(),
-      updatedOn: new Date(),
-    };
-
-    this.portfolioService.updatePortfolio(updatedPortfolio);
-    this.closeDialog();
+    // const updatedPortfolio = {
+    //   id: portfolioId,
+    //   name: portfolio.name,
+    //   description: portfolio.description,
+    //   state: PortfolioState.Active,
+    //   createdDate: new Date(),
+    //   updatedOn: new Date(),
+    // };
+    // this.portfolioService.updatePortfolio(updatedPortfolio);
+    // this.closeDialog();
   }
 
-  handleSubmit({
-    portfolioName,
-    description,
-    id,
-  }: PortfolioCreate & { id?: number }) {
+  handleSubmit({ name, description, id }: PortfolioCreate & { id?: number }) {
     // BUG: This event is being fired twice
     if (id) {
-      this.editPortfolio(id, { portfolioName, description });
+      console.log('Editing', { name, description, id });
+      this.editPortfolio(id, { name, description });
     } else {
-      this.createPortfolio({ portfolioName, description });
+      console.log('Creating', { name, description });
+      this.createPortfolio({ name, description });
     }
   }
 
@@ -110,5 +141,13 @@ export class PortfolioComponent {
   })
   deletePortfolio(id: number) {
     this.portfolioService.deletePortfolio(id);
+  }
+
+  changeItemsPerPage(size: number) {
+    this.sizePerPage.set(size);
+  }
+
+  changePage(page: number) {
+    this.currentPage.set(page);
   }
 }

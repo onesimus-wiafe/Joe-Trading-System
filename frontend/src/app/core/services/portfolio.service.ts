@@ -1,61 +1,70 @@
-import { Injectable, signal } from '@angular/core';
-import { Portfolio, PortfolioState } from '../../shared/models/portfolio.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import {
+  Portfolio,
+  PortfolioCreate,
+  PortfolioListResponse,
+} from '../../shared/models/portfolio.model';
+
+type PortfolioFilters = {
+  name?: string;
+  description?: string;
+  page?: number;
+  size?: number;
+  sortBy?: 'id' | 'name' | 'description' | 'createdAt' | 'updatedAt';
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class PortfolioService {
-  constructor() {}
+  constructor(private httpClient: HttpClient) {}
 
-  private portfolios = signal<Portfolio[]>([
-    {
-      id: 1,
-      portfolioName: 'Portfolio 1',
-      state: PortfolioState.Active,
-      description: 'This is the first portfolio',
-      createdDate: new Date(),
-      updatedOn: new Date(),
-    },
-    {
-      id: 2,
-      portfolioName: 'Portfolio 2',
-      state: PortfolioState.Inactive,
-      description: 'This is the second portfolio',
-      createdDate: new Date(),
-      updatedOn: new Date(),
-    },
-  ]);
+  getPortfolios(
+    filters: PortfolioFilters = {
+      sortBy: 'id',
+      size: 10,
+      page: 1,
+    }
+  ) {
+    const params = new HttpParams();
+    if (filters.name) {
+      params.set('name', filters.name);
+    }
+    if (filters.description) {
+      params.set('description', filters.description);
+    }
+    if (filters.page) {
+      params.set('page', filters.page.toString());
+    }
+    if (filters.size) {
+      params.set('size', filters.size.toString());
+    }
+    if (filters.sortBy) {
+      params.set('sortBy', filters.sortBy);
+    }
 
-  getPortfolios() {
-    return this.portfolios();
+    return this.httpClient.get<PortfolioListResponse>('/portfolios', {
+      params,
+    });
   }
 
   getPortfolio(id: number) {
-    return this.portfolios().find((p) => p.id === id);
+    return this.httpClient.get<Portfolio>(`/portfolios/${id}`);
   }
 
-  addPortfolio(portfolio: Portfolio) {
-    this.portfolios.set([...this.portfolios(), portfolio]);
+  addPortfolio(portfolio: PortfolioCreate) {
+    return this.httpClient.post<Portfolio>('/portfolios', portfolio);
   }
 
   updatePortfolio(portfolio: Portfolio) {
-    this.portfolios.set(
-      this.portfolios().map((p) => (p.id === portfolio.id ? portfolio : p))
+    return this.httpClient.put<Portfolio>(
+      `/portfolios/${portfolio.id}`,
+      portfolio
     );
   }
 
   deletePortfolio(id: number) {
-    this.portfolios.set(this.portfolios().filter((p) => p.id !== id));
+    return this.httpClient.delete(`/portfolios/${id}`);
   }
-
-  // getPortfolioValue(id: number) {
-  //   const portfolio = this.getPortfolio(id);
-  //   if (!portfolio) {
-  //     return 0;
-  //   }
-  //   return portfolio.stocks.reduce(
-  //     (total, stock) => total + stock.price * stock.quantity,
-  //     0
-  //   );
-  // }
 }

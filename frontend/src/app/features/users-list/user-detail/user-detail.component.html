@@ -155,9 +155,9 @@
           </tr>
         </thead>
         <tbody>
-          @for (portfolio of portfolios(); track portfolio.id) {
+          @for (portfolio of portfolios().data; track portfolio.id) {
           <tr class="hover">
-            <td>{{ portfolio.portfolioName }}</td>
+            <td>{{ portfolio.name }}</td>
             <td>{{ portfolio.description }}</td>
             <td>{{ 123 | currency }}</td>
             <td>
@@ -169,7 +169,7 @@
               <div class="badge badge-info gap-2">Default</div>
               } }
             </td>
-            <td>{{ portfolio.createdDate | date : "short" }}</td>
+            <td>{{ portfolio.createdAt | date : "short" }}</td>
             <td>
               <div class="flex space-x-2">
                 <button

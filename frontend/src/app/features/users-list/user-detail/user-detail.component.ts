@@ -15,6 +15,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PortfolioService } from '../../../core/services/portfolio.service';
 import { UserService } from '../../../core/services/user.service';
 import { Stock } from '../../../shared/models/stock.model';
+import { PortfolioListResponse } from '../../../shared/models/portfolio.model';
 
 @Component({
   selector: 'app-user-detail',
@@ -35,7 +36,12 @@ import { Stock } from '../../../shared/models/stock.model';
 })
 export class UserDetailComponent {
   prefix = 'users-list';
-  portfolios = computed(() => this.portfolioService.getPortfolios());
+  portfolios = signal<PortfolioListResponse>({
+    data: [],
+    totalElements: 0,
+    totalPages: 0,
+    currentPage: 0,
+  });
   dialogOpenSignal = signal<boolean>(false);
 
   constructor(
@@ -140,7 +146,13 @@ export class UserDetailComponent {
     this.dialogOpenSignal.set(false);
   }
 
-  handleSubmit({ name, email, password, accountType, id }: UserCreate & { id?: number }) {
+  handleSubmit({
+    name,
+    email,
+    password,
+    accountType,
+    id,
+  }: UserCreate & { id?: number }) {
     // BUG: This handler is being called twice
     if (id) {
       console.log('Editing', { name, email, password, id });

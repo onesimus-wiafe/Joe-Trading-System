@@ -1,21 +1,24 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroMinus, heroPlus, heroXMark } from '@ng-icons/heroicons/outline';
+import { needConfirmation } from '../../../core/services/dialog.service';
+import { PortfolioService } from '../../../core/services/portfolio.service';
+import { OrderFormComponent } from '../../../shared/components/order-form/order-form.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import {
   Portfolio,
   PortfolioState,
 } from '../../../shared/models/portfolio.model';
 import { Stock } from '../../../shared/models/stock.model';
-import { OrderFormComponent } from '../../../shared/components/order-form/order-form.component';
+import { ToastService, ToastVariant } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-portfolio-details',
@@ -32,23 +35,26 @@ import { OrderFormComponent } from '../../../shared/components/order-form/order-
   styleUrl: './portfolio-details.component.css',
   providers: [provideIcons({ heroMinus, heroPlus, heroXMark })],
 })
-export class PortfolioDetailsComponent {
-  constructor(private _activatedRoute: ActivatedRoute) {
-    this._activatedRoute.params.subscribe((params) => {
-    });
-  }
+export class PortfolioDetailsComponent implements OnInit {
+  portfolioForm = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    description: new FormControl(''),
+  });
 
-  portfolio: Portfolio = {
+  portfolio = signal<Portfolio>({
     id: 1,
-    portfolioName: 'Portfolio 1',
+    name: '',
     state: PortfolioState.Active,
-    description: 'This is the first portfolio',
-    createdDate: new Date(),
+    value: 10000,
+    description: '',
+    createdAt: new Date(),
     updatedOn: new Date(),
-  };
+  });
 
   selectedStock = signal<Stock | null>(null);
   selectedSide = signal<'BUY' | 'SELL' | null>(null);
+
+  dialogOpenSignal = signal<boolean>(false);
 
   stocks: (Stock & { quantity: number })[] = [
     {
@@ -117,15 +123,33 @@ export class PortfolioDetailsComponent {
     },
   ];
 
-  portfolioForm = new FormGroup({
-    portfolioName: new FormControl('', [
-      Validators.required,
-      Validators.minLength(3),
-    ]),
-    description: new FormControl(''),
-  });
+  constructor(
+    private _activatedRoute: ActivatedRoute,
+    private portfolioService: PortfolioService,
+    private router: Router,
+    private toastService: ToastService
+  ) {
+    this._activatedRoute.params.subscribe((params) => {});
+  }
 
-  dialogOpenSignal = signal<boolean>(false);
+  ngOnInit(): void {
+    this.loadPortfolio();
+  }
+
+  loadPortfolio() {
+    const id = this._activatedRoute.snapshot.params['porfolioId'];
+    this.portfolioService.getPortfolio(id).subscribe({
+      next: (portfolio) => {
+        this.portfolio.set(portfolio);
+      },
+      error: (err) => {
+        this.toastService.initiate({
+          message: err.error.detail,
+          variant: ToastVariant.Error,
+        });
+      },
+    });
+  }
 
   showDialog() {
     this.dialogOpenSignal.set(true);
@@ -140,9 +164,6 @@ export class PortfolioDetailsComponent {
       this.portfolioForm.markAllAsTouched();
       return;
     }
-
-    // this.portfolioForm.reset();
-    // this.closeDialog();
   }
 
   buyStock(stock: Stock) {
@@ -155,5 +176,23 @@ export class PortfolioDetailsComponent {
     this.selectedSide.set('SELL');
     this.selectedStock.set(stock);
     this.showDialog();
+  }
+
+  @needConfirmation({
+    message: 'Are you sure you want to delete this portfolio?',
+    title: 'Delete Portfolio',
+  })
+  deletePortfolio() {
+    this.portfolioService.deletePortfolio(this.portfolio().id).subscribe({
+      next: () => {
+        this.router.navigate(['/portfolios']);
+      },
+      error: (err) => {
+        this.toastService.initiate({
+          message: err.error.detail || 'Failed to delete portfolio',
+          variant: ToastVariant.Error,
+        });
+      },
+    });
   }
 }

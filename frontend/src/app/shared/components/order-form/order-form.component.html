@@ -12,8 +12,8 @@
         class="select select-bordered w-full select-sm"
         formControlName="portfolio"
       >
-        @for (portfolio of portfolios(); track portfolio.id) {
-        <option [value]="portfolio.id">{{ portfolio.portfolioName }}</option>
+        @for (portfolio of portfolios().data; track portfolio.id) {
+        <option [value]="portfolio.id">{{ portfolio.name }}</option>
         }
       </select>
       @if (orderForm.get('portfolio')?.touched && orderForm.get('portfolio')?.invalid) {

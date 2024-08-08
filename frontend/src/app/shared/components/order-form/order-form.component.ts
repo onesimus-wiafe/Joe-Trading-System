@@ -1,4 +1,4 @@
-import { Component, computed, effect, input, output } from '@angular/core';
+import { Component, computed, effect, input, output, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -8,6 +8,7 @@ import {
 import { OrderRequest, OrderRequestSchema } from '../../models/stock.model';
 import * as v from 'valibot';
 import { PortfolioService } from '../../../core/services/portfolio.service';
+import { PortfolioListResponse } from '../../models/portfolio.model';
 
 @Component({
   selector: 'app-order-form',
@@ -42,7 +43,23 @@ export class OrderFormComponent {
     });
   }
 
-  portfolios = computed(() => this.portfolioService.getPortfolios());
+  portfolios = signal<PortfolioListResponse>({
+    data: [],
+    totalElements: 0,
+    totalPages: 0,
+    currentPage: 0,
+  });
+
+  getPortfolios() {
+    this.portfolioService.getPortfolios().subscribe({
+      next: (response) => {
+        this.portfolios.set(response);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
 
   handleSubmit() {
     if (this.orderForm.invalid) {
