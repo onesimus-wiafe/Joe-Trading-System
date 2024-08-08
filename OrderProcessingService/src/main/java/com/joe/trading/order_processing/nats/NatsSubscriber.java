@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.joe.trading.order_processing.entities.Stock;
+import com.joe.trading.order_processing.entities.Trade;
+import com.joe.trading.order_processing.entities.enums.Side;
 import org.springframework.stereotype.Service;
 
 import com.joe.trading.order_processing.entities.OrderBook;
@@ -139,8 +142,8 @@ public class NatsSubscriber {
                 orderBookRepo.saveOrderBook(key, booksToCache);
             }
             else {
-                int keylen = key.length();
-                String cacheKey = key.substring(0, keylen-5)+"_OPEN";
+                int keyLen = key.length();
+                String cacheKey = key.substring(0, keyLen-5)+"_OPEN";
                 updateInternalOrders(cacheKey, key, actualMapData);
             }
         });

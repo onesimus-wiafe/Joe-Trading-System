@@ -55,6 +55,8 @@ public class Order {
     @JoinColumn(name = "order_id")
     private Stock stock;
 
+    private Long userId;
+
     public Order
             (Ticker ticker, Integer quantity, Double unitPrice,
              Side side, AvailableExchanges exchanges, OrderType type) {

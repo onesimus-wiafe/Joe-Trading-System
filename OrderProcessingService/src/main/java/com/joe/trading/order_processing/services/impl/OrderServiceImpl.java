@@ -1,10 +1,9 @@
 package com.joe.trading.order_processing.services.impl;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
+import com.joe.trading.order_processing.entities.*;
+import com.joe.trading.order_processing.repositories.jpa.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,22 +19,12 @@ import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.joe.trading.order_processing.entities.Exchange;
-import com.joe.trading.order_processing.entities.Order;
-import com.joe.trading.order_processing.entities.OrderBook;
-import com.joe.trading.order_processing.entities.Portfolio;
-import com.joe.trading.order_processing.entities.Trade;
-import com.joe.trading.order_processing.entities.User;
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.dto.OrderResponseDTO;
 import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.OrderType;
 import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.entities.enums.TradeStatus;
-import com.joe.trading.order_processing.repositories.jpa.ExchangeRepository;
-import com.joe.trading.order_processing.repositories.jpa.OrderRepository;
-import com.joe.trading.order_processing.repositories.jpa.TradeRepository;
-import com.joe.trading.order_processing.repositories.jpa.UserRepository;
 import com.joe.trading.order_processing.repositories.redis.dao.InternalOpenOrderDAO;
 import com.joe.trading.order_processing.repositories.redis.dao.OrderBookDAO;
 import com.joe.trading.order_processing.services.OrderService;
@@ -53,14 +42,15 @@ public class OrderServiceImpl implements OrderService {
     private final OrderBookDAO orderBookRepo;
     private final InternalOpenOrderDAO internalOpenOrderRepo;
     private final UserRepository userRepo;
+    private final PortfolioRepository portfolioRepo;
 
     @Value("${exchange.private.api.key}")
     String privateApiKey;
 
     public OrderServiceImpl(RestTemplate restTemplate, OrderRepository orderRepo, ExchangeRepository exchangeRepo,
-            TradeRepository tradeRepo, OrderBookDAO orderBookRepo,
-            OpenEntityManagerInViewInterceptor openEntityManagerInViewInterceptor,
-            InternalOpenOrderDAO internalOpenOrderRepo, UserRepository userRepo) {
+                            TradeRepository tradeRepo, OrderBookDAO orderBookRepo,
+                            OpenEntityManagerInViewInterceptor openEntityManagerInViewInterceptor,
+                            InternalOpenOrderDAO internalOpenOrderRepo, UserRepository userRepo, PortfolioRepository portfolioRepo) {
         this.restTemplate = restTemplate;
         this.orderRepo = orderRepo;
         this.exchangeRepo = exchangeRepo;
@@ -68,6 +58,7 @@ public class OrderServiceImpl implements OrderService {
         this.orderBookRepo = orderBookRepo;
         this.internalOpenOrderRepo = internalOpenOrderRepo;
         this.userRepo = userRepo;
+        this.portfolioRepo = portfolioRepo;
     }
 
     @Override
@@ -77,7 +68,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponseDTO saveOrder(Order order) {
+    public OrderResponseDTO saveOrder(Order order, Long portfolioId) {
+
+        Portfolio portfolio = portfolioRepo.findById(portfolioId).orElseThrow();
+
+        Set<Stock> stocks = portfolio.getStocks();
 
         List<Exchange> exchanges = exchangeRepo.findAll();
 
@@ -88,14 +83,39 @@ public class OrderServiceImpl implements OrderService {
 
         Order completedOrder = makeOrder(order, openOrders, exchanges);
 
-        return orderRepo.save(completedOrder).toOrderResponseDTO();
+        Stock stock = stocks.stream().filter(s -> s.getTicker().equals(order.getTicker()))
+                .findAny().orElse(new Stock(String.valueOf(order.getTicker()), 0));
+
+        completedOrder.setStock(stock);
+
+        Order orderMade = orderRepo.save(completedOrder);
+
+        List<Order> orders = stock.getOrders();
+
+        orders.add(orderMade);
+
+        stock.setOrders(orders);
+
+        stocks.add(stock);
+
+        portfolio.setStocks(stocks);
+
+        portfolioRepo.save(portfolio);
+
+        return orderMade.toOrderResponseDTO();
     }
 
     @Override
-    public OrderResponseDTO cancelOrder(Long id) {
+    public OrderResponseDTO cancelOrder(Long orderId, Long userId) {
         OrderResponseDTO response = new OrderResponseDTO();
 
-        Order order = orderRepo.findById(id).orElseThrow();
+        Order order = orderRepo.findById(orderId).orElseThrow();
+
+        if (!userId.equals(order.getUserId())){
+            response.setMessage("User is not the owner of this order");
+            return response;
+        }
+
 
         return switch (order.getTradeStatus()) {
             case OPEN -> {

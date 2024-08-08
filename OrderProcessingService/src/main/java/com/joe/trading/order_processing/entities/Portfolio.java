@@ -2,6 +2,7 @@ package com.joe.trading.order_processing.entities;
 
 import com.joe.trading.order_processing.entities.dto.PortfolioResponseDTO;
 import com.joe.trading.order_processing.entities.enums.PortfolioState;
+import com.joe.trading.order_processing.entities.enums.Ticker;
 import com.joe.trading.shared.dtos.PortfolioEventDto;
 
 import jakarta.persistence.*;
@@ -12,9 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Setter
@@ -26,7 +25,7 @@ public class Portfolio {
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "portfolio")
-    private List<Stock> stocks = new ArrayList<>();
+    private Set<Stock> stocks =new HashSet<>(Ticker.values().length);
 
     @Column(name = "value", nullable = false)
     private Double value = (double) 0;
