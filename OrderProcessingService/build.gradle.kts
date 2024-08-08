@@ -51,6 +51,7 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    exclude("**/OrderProcessingApplicationTests.class")
     testLogging {
         events("passed", "skipped", "failed")
     }

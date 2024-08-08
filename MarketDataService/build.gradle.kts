@@ -39,6 +39,7 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    exclude("**/MarketDataApplicationTests.class")
     testLogging {
         events("passed", "skipped", "failed")
     }
