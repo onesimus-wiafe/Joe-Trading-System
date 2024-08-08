@@ -97,8 +97,20 @@ public class OrderValidationServiceImpl implements OrderValidationService {
 
     private List<MarketData> getMarketDataFromCache(String ticker, String exchanges) {
         return switch (AvailableExchanges.valueOf(exchanges.toUpperCase())) {
-            case EXCHANGE1 -> List.of(this.marketDataRepo.getMarketData(ticker + "_EX1").orElse(null));
-            case EXCHANGE2 -> List.of(this.marketDataRepo.getMarketData(ticker + "_EX2").orElse(null));
+            case EXCHANGE1 -> {
+                MarketData data = this.marketDataRepo.getMarketData(ticker + "_EX1").orElse(null);
+                if (data == null){
+                    yield List.of();
+                }
+                else yield List.of(data);
+            }
+            case EXCHANGE2 -> {
+                MarketData data = this.marketDataRepo.getMarketData(ticker + "_EX2").orElse(null);
+                if (data == null){
+                    yield List.of();
+                }
+                else yield List.of(data);
+            }
             case NONE -> List.of();
             case ALL -> {
                 List<MarketData> data = getMarketDataFromCache(ticker, "EXCHANGE1");
