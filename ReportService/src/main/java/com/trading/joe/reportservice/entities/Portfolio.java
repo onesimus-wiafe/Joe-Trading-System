@@ -19,13 +19,10 @@ import java.time.LocalDateTime;
 public class Portfolio {
 
     @Id
-    private Long portfolio_id;
-
+    private Long id;
     private String name;
-    private Long user_id;
+    private String description;
+    private Long userId;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private Status action;
-
 
 }
