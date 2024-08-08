@@ -23,11 +23,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.joe.trading.shared.auth.AccountType;
 import com.joe.trading.shared.dtos.UserEventDto;
 import com.joe.trading.shared.events.Event;
+import com.joe.trading.shared.exceptions.EmailAlreadyExistsException;
 import com.joe.trading.shared.nats.NatsService;
 import com.joe.trading.user_management.dtos.LoginRequestDto;
 import com.joe.trading.user_management.dtos.RegisterRequestDto;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.exceptions.EmailAlreadyExistsException;
 import com.joe.trading.user_management.mapper.UserMapper;
 import com.joe.trading.user_management.repository.UserRepository;
 import com.joe.trading.user_management.services.impl.AuthServiceImpl;
@@ -83,7 +83,7 @@ class AuthServiceImplTest {
         when(passwordEncoder.encode(registerRequestDto.getPassword())).thenReturn("hashed_password");
         when(userRepository.save(any(User.class))).thenReturn(user);
         var userEventDto = new UserEventDto();
-        when(userMapper.userEventDto(any(User.class))).thenReturn(userEventDto);
+        when(userMapper.toUserEventDto(any(User.class))).thenReturn(userEventDto);
 
         User createdUser = authService.register(registerRequestDto);
 

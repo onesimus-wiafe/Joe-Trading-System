@@ -1,8 +1,7 @@
-package com.joe.trading.user_management.exceptions;
+package com.joe.trading.shared.exceptions;
 
 public class UserDeletionException extends RuntimeException {
     public UserDeletionException(String message) {
         super(message);
     }
-    
 }

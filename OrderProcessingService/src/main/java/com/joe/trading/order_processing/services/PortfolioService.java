@@ -1,17 +1,24 @@
 package com.joe.trading.order_processing.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.joe.trading.order_processing.entities.Portfolio;
-import com.joe.trading.order_processing.entities.dto.PortfolioRequestDTO;
-import com.joe.trading.order_processing.entities.dto.PortfolioResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.AccessDeniedException;
 
-import java.util.List;
+import com.joe.trading.order_processing.entities.Portfolio;
+import com.joe.trading.order_processing.entities.dto.CreatePortfolioRequestDTO;
+import com.joe.trading.order_processing.entities.dto.PortfolioFilterRequestDto;
+import com.joe.trading.shared.exceptions.ResourceNotFoundException;
 
 public interface PortfolioService {
-    PortfolioResponseDTO saveNewPortfolio(Long userId, String name) throws JsonProcessingException;
+    Portfolio createPortfolio(Long userId, CreatePortfolioRequestDTO portfolio);
 
-    Boolean deletePortfolio(PortfolioRequestDTO request);
+    public Boolean deletePortfolio(Long userId, Long portfolioId) throws AccessDeniedException;
 
-    Portfolio getDefaultPortfolio(Long id);
-    List<Portfolio> getAllPortfolioByUserId(Long userId);
+    Portfolio getDefaultPortfolio(Long id) throws AccessDeniedException;
+
+    Portfolio getPortfolio(Long userId, Long portfolioId) throws ResourceNotFoundException, AccessDeniedException;
+
+    Page<Portfolio> getPortfoliosByUserId(Long userId, PortfolioFilterRequestDto filter)
+            throws AccessDeniedException;
+
+    void createDefaultPortolio(Long userId);
 }

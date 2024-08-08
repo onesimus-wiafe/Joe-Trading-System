@@ -29,7 +29,7 @@
         >
           <ng-icon name="heroXMark" size="18" />
         </button>
-        <app-user-form [defaultUser]="user()" (submit)="handleSubmit($event)" [open]="dialogOpenSignal()" />
+        <app-user-form [defaultUser]="user()" (formSubmit)="handleSubmit($event)" [open]="dialogOpenSignal()" />
       </div>
     </dialog>
   </div>
@@ -104,6 +104,7 @@
             <div class="w-16 rounded-full">
               <img
                 src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                alt="avatar"
               />
             </div>
           </div>
@@ -155,9 +156,9 @@
           </tr>
         </thead>
         <tbody>
-          @for (portfolio of portfolios(); track portfolio.id) {
+          @for (portfolio of portfolios().data; track portfolio.id) {
           <tr class="hover">
-            <td>{{ portfolio.portfolioName }}</td>
+            <td>{{ portfolio.name }}</td>
             <td>{{ portfolio.description }}</td>
             <td>{{ 123 | currency }}</td>
             <td>
@@ -169,7 +170,7 @@
               <div class="badge badge-info gap-2">Default</div>
               } }
             </td>
-            <td>{{ portfolio.createdDate | date : "short" }}</td>
+            <td>{{ portfolio.createdAt | date : "short" }}</td>
             <td>
               <div class="flex space-x-2">
                 <button

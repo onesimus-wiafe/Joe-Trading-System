@@ -5,6 +5,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroXMark } from '@ng-icons/heroicons/outline';
 import { CurrencyPipe, DatePipe, PercentPipe } from '@angular/common';
 import { OrderStatus, Trade } from '../../shared/models/order.model';
+import { needConfirmation } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-trade-history',
@@ -50,5 +51,13 @@ export class TradeHistoryComponent {
 
   getIconForSymbol(symbol: string) {
     return `assets/${symbol.toLowerCase()}.svg`;
+  }
+
+  @needConfirmation({
+    title: 'Cancel Order',
+    message: 'Are you sure you want to cancel this order?',
+  })
+  cancelOrder(trade: Trade) {
+    trade.status = OrderStatus.CANCELLED;
   }
 }

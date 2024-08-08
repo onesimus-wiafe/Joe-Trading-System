@@ -81,7 +81,6 @@ export class PaginationComponent {
   }
 
   changePageSize(e: Event) {
-    console.log('Change page size event fired:', e);
     const target = e.target as HTMLSelectElement;
     this.changeItemsPerPage.emit(+target.value);
   }

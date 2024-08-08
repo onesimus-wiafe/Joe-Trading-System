@@ -22,7 +22,7 @@
         </button>
         <app-portfolio-form
           [defaultPortfolio]="selectedPortfolio()"
-          (submit)="handleSubmit($event)"
+          (formSubmit)="handleSubmit($event)"
         />
       </div>
     </dialog>
@@ -61,11 +61,11 @@
         </tr>
       </thead>
       <tbody>
-        @for (portfolio of portfolios(); track portfolio.id) {
+        @for (portfolio of portfolios().data; track portfolio.id) {
         <tr class="hover">
-          <td>{{ portfolio.portfolioName }}</td>
+          <td>{{ portfolio.name }}</td>
           <td>{{ portfolio.description }}</td>
-          <td>{{ 123 | currency }}</td>
+          <td>{{ portfolio.value | currency }}</td>
           <td>
             @switch (portfolio.state) { @case ('ACTIVE') {
             <div class="badge badge-success gap-2">Active</div>
@@ -75,7 +75,7 @@
             <div class="badge badge-info gap-2">Default</div>
             } }
           </td>
-          <td>{{ portfolio.createdDate | date : "short" }}</td>
+          <td>{{ portfolio.createdAt | date : "short" }}</td>
           <td>
             <div class="flex space-x-2">
               <a
@@ -99,6 +99,7 @@
                 type="button"
                 class="btn btn-error btn-sm btn-square btn-outline"
                 (click)="deletePortfolio(portfolio.id)"
+                [disabled]="portfolio.state === 'DEFAULT'"
               >
                 <ng-icon name="heroTrash" size="18" />
               </button>
@@ -109,7 +110,14 @@
       </tbody>
     </table>
     <div class="mt-5 mb-2 px-2">
-      <app-pagination />
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalItems]="portfolios().totalElements"
+        [itemsPerPage]="sizePerPage()"
+        [currentPage]="currentPage()"
+        (changeItemsPerPage)="changeItemsPerPage($event)"
+        (changePage)="changePage($event)"
+      />
     </div>
   </div>
 </div>

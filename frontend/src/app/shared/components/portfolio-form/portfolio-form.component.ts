@@ -21,7 +21,7 @@ import * as v from 'valibot';
 })
 export class PortfolioFormComponent {
   portfolioForm = new FormGroup({
-    portfolioName: new FormControl('', [
+    name: new FormControl('', [
       Validators.required,
       Validators.minLength(3),
     ]),
@@ -31,13 +31,13 @@ export class PortfolioFormComponent {
   defaultPortfolio = input<Portfolio | null>(null);
   isEdit = computed<boolean>(() => !!this.defaultPortfolio());
 
-  submit = output<PortfolioCreate & { id?: number }>();
+  formSubmit = output<PortfolioCreate & { id?: number }>();
 
   constructor() {
     effect(() => {
       this.portfolioForm = new FormGroup({
-        portfolioName: new FormControl(
-          this.defaultPortfolio()?.portfolioName || '',
+        name: new FormControl(
+          this.defaultPortfolio()?.name || '',
           Validators.required
         ),
         description: new FormControl(
@@ -55,7 +55,7 @@ export class PortfolioFormComponent {
 
     const result = v.safeParse(PortfolioCreateSchema, this.portfolioForm.value);
     if (result.success) {
-      console.log("emitted", { ...result.output, id: this.defaultPortfolio()?.id });
+      this.formSubmit.emit({ ...result.output, id: this.defaultPortfolio()?.id });
     } else {
       console.error(result.issues);
     }

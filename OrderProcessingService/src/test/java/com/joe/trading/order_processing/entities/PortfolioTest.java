@@ -9,15 +9,15 @@ class PortfolioTest {
     @Test
     void testPortfolioCreation() {
         Portfolio portfolio = new Portfolio("Tech Stocks");
-        assertEquals("Tech Stocks", portfolio.getPortfolioName());
+        assertEquals("Tech Stocks", portfolio.getName());
         assertEquals(PortfolioState.ACTIVE, portfolio.getState());
-        assertEquals(0.0, portfolio.getPortfolioValue());
+        assertEquals(0.0, portfolio.getValue());
     }
 
     @Test
     void testDefaultPortfolioCreation(){
         Portfolio portfolio = new Portfolio("Default", PortfolioState.DEFAULT);
-        assertEquals("Default", portfolio.getPortfolioName());
+        assertEquals("Default", portfolio.getName());
         assertEquals(PortfolioState.DEFAULT, portfolio.getState());
     }
 
@@ -33,7 +33,7 @@ class PortfolioTest {
     void testUpdateValue() {
         Portfolio portfolio = new Portfolio("Tech Stocks");
         portfolio.updateValue(100.0);
-        assertEquals(100.0, portfolio.getPortfolioValue());
+        assertEquals(100.0, portfolio.getValue());
     }
 
     @Test
@@ -52,7 +52,7 @@ class PortfolioTest {
     void testPortfolioToString() {
         Portfolio portfolio = new Portfolio("Tech Stocks");
         portfolio.setId(1L);
-        String expected = "Portfolio{state=ACTIVE, portfolioName='Tech Stocks', portfolioValue=0.0, stocks=[]}";
+        String expected = "Portfolio{state=ACTIVE, name='Tech Stocks', portfolioValue=0.0, stocks=[]}";
         assertTrue(portfolio.toString().contains(expected));
     }
 

@@ -1,7 +1,7 @@
 <div class="mx-5 mt-5">
   <div class="flex justify-between items-center shadow-md rounded-md p-5">
     <div class="prose">
-      <h1>{{ portfolio.portfolioName }}</h1>
+      <h1>{{ portfolio().name }}</h1>
     </div>
     <div class="space-x-3">
       <button
@@ -13,8 +13,9 @@
       </button>
       <button
         type="button"
-        (click)="showDialog()"
+        (click)="deletePortfolio()"
         class="btn btn-error btn-sm"
+      [disabled]="portfolio().state === 'DEFAULT'"
       >
         Delete Portfolio
       </button>
@@ -43,7 +44,7 @@
         <app-order-form
           [defaultside]="selectedSide()"
           [defaultstock]="selectedStock()?.symbol"
-          [defaultportfolio]="portfolio.id"
+          [defaultportfolio]="portfolio().id"
         />
       </div>
     </dialog>
@@ -108,8 +109,5 @@
         }
       </tbody>
     </table>
-    <div class="mt-5 mb-2 px-2">
-      <app-pagination />
-    </div>
   </div>
 </div>

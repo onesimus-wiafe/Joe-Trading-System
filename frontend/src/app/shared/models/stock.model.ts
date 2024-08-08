@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-export enum Symbol {
+export enum StockSymbol {
   MSFT = 'MSFT',
   NFLX = 'NFLX',
   GOOGL = 'GOOGL',
@@ -13,7 +13,7 @@ export enum Symbol {
 
 export const Stock = v.object({
   name: v.string(),
-  symbol: v.enum(Symbol),
+  symbol: v.enum(StockSymbol),
   price: v.number(),
   change: v.number(),
   pic: v.string(),
@@ -26,14 +26,3 @@ export type Stock = {
   change: number;
   pic: string;
 };
-
-export const OrderRequestSchema = v.object({
-  portfolio: v.string(),
-  stock: v.string(),
-  tradeType: v.string(),
-  side: v.string(),
-  price: v.pipe(v.string(), v.transform(parseFloat)),
-  quantity: v.pipe(v.union([v.number(), v.string()]), v.transform(Number.parseInt)),
-});
-
-export type OrderRequest = v.InferOutput<typeof OrderRequestSchema>;

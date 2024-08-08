@@ -1,4 +1,4 @@
-package com.joe.trading.user_management.exceptions;
+package com.joe.trading.shared.exceptions;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;

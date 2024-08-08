@@ -1,13 +1,22 @@
-import { Component, computed, effect, input, output } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  input,
+  OnInit,
+  output,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { OrderRequest, OrderRequestSchema } from '../../models/stock.model';
 import * as v from 'valibot';
 import { PortfolioService } from '../../../core/services/portfolio.service';
+import { PortfolioListResponse } from '../../models/portfolio.model';
+import { OrderRequest, OrderRequestSchema, OrderType } from '../../models/order.model';
 
 @Component({
   selector: 'app-order-form',
@@ -16,21 +25,49 @@ import { PortfolioService } from '../../../core/services/portfolio.service';
   templateUrl: './order-form.component.html',
   styleUrl: './order-form.component.css',
 })
-export class OrderFormComponent {
+export class OrderFormComponent implements OnInit {
+  formSubmit = output<OrderRequest>();
+
+  portfolios = signal<PortfolioListResponse>({
+    data: [],
+    totalElements: 0,
+    totalPages: 0,
+    currentPage: 0,
+  });
+
+  defaultportfolio = input<number | undefined>(1);
+  defaultstock = input<string | undefined>('MSFT');
+  defaultside = input<'BUY' | 'SELL' | undefined | null>('BUY');
+
+  orderForm: FormGroup = new FormGroup({
+    portfolioId: new FormControl('', Validators.required),
+    ticker: new FormControl('', Validators.required),
+    orderType: new FormControl('MARKET', Validators.required),
+    side: new FormControl('', Validators.required),
+    unitPrice: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/^[0-9]+(\.[0-9]{1,2})?$/),
+    ]),
+    quantity: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/^[0-9]+$/),
+    ]),
+  });
+
   constructor(private portfolioService: PortfolioService) {
     effect(() => {
       this.orderForm = new FormGroup({
-        portfolio: new FormControl(
-          this.defaultportfolio()||undefined,
+        portfolioId: new FormControl(
+          this.defaultportfolio() || undefined,
           Validators.required
         ),
-        stock: new FormControl(
+        ticker: new FormControl(
           this.defaultstock() || 'MSFT',
           Validators.required
         ),
-        tradeType: new FormControl('MARKET', Validators.required),
+        orderType: new FormControl('MARKET', Validators.required),
         side: new FormControl(this.defaultside() || 'BUY', Validators.required),
-        price: new FormControl('', [
+        unitPrice: new FormControl('', [
           Validators.required,
           Validators.pattern(/^[0-9]+(\.[0-9]{1,2})?$/),
         ]),
@@ -42,7 +79,20 @@ export class OrderFormComponent {
     });
   }
 
-  portfolios = computed(() => this.portfolioService.getPortfolios());
+  ngOnInit(): void {
+    this.loadPortfolios();
+  }
+
+  loadPortfolios() {
+    this.portfolioService.getPortfolios().subscribe({
+      next: (response) => {
+        this.portfolios.set(response);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
 
   handleSubmit() {
     if (this.orderForm.invalid) {
@@ -52,31 +102,10 @@ export class OrderFormComponent {
 
     const result = v.safeParse(OrderRequestSchema, this.orderForm.value);
     if (result.success) {
-      this.submit.emit(result.output);
+      this.formSubmit.emit(result.output);
       this.orderForm.reset();
     } else {
       console.error(result.issues);
     }
   }
-
-  defaultportfolio = input<number | undefined>(1);
-  defaultstock = input<string | undefined>('MSFT');
-  defaultside = input<'BUY' | 'SELL' | undefined | null>('BUY');
-
-  submit = output<OrderRequest>();
-
-  orderForm: FormGroup = new FormGroup({
-    portfolio: new FormControl('', Validators.required),
-    stock: new FormControl('', Validators.required),
-    tradeType: new FormControl('MARKET', Validators.required),
-    side: new FormControl('', Validators.required),
-    price: new FormControl('', [
-      Validators.required,
-      Validators.pattern(/^[0-9]+(\.[0-9]{1,2})?$/),
-    ]),
-    quantity: new FormControl('', [
-      Validators.required,
-      Validators.pattern(/^[0-9]+$/),
-    ]),
-  });
 }

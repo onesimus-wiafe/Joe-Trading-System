@@ -92,11 +92,13 @@ services:
     restart: unless-stopped
     volumes:
       - order_data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
 
   order-srv-cache:
     image: redis:alpine
-    # ports:
-    #   - 6379:6379
+    ports:
+      - 6379:6379
 
   report-srv:
     image: sarpong4/report-srv

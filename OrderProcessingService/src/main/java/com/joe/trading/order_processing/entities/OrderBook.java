@@ -25,7 +25,7 @@ public class OrderBook {
     private String exchange;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBook", orphanRemoval = true)
-    private List<Executions> executions = new ArrayList();
+    private List<Executions> executions = new ArrayList<>();
 
     @OneToOne
     private Trade trade;

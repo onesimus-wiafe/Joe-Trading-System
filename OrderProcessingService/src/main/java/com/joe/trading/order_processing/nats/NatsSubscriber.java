@@ -9,29 +9,40 @@ import org.springframework.stereotype.Service;
 
 import com.joe.trading.order_processing.entities.OrderBook;
 import com.joe.trading.order_processing.entities.cache.MarketData;
+import com.joe.trading.order_processing.mappers.UserMapper;
+import com.joe.trading.order_processing.repositories.jpa.UserRepository;
 import com.joe.trading.order_processing.repositories.redis.dao.InternalOpenOrderDAO;
 import com.joe.trading.order_processing.repositories.redis.dao.MarketDataDAO;
 import com.joe.trading.order_processing.repositories.redis.dao.OrderBookDAO;
 import com.joe.trading.order_processing.services.OrderBookService;
+import com.joe.trading.order_processing.services.PortfolioService;
+import com.joe.trading.shared.dtos.UserEventDto;
 import com.joe.trading.shared.events.Event;
 import com.joe.trading.shared.nats.NatsService;
 
 import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class NatsSubscriber {
     private final NatsService natsService;
     private final MarketDataDAO marketDataRepo;
     private final InternalOpenOrderDAO openOrderRepo;
     private final OrderBookDAO orderBookRepo;
     private final OrderBookService orderBookService;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PortfolioService portfolioService;
 
-    public NatsSubscriber(NatsService natsService, MarketDataDAO marketDataRepo, InternalOpenOrderDAO openOrderRepo, OrderBookDAO orderBookRepo, OrderBookService orderBookService) {
-        this.natsService = natsService;
-        this.marketDataRepo = marketDataRepo;
-        this.openOrderRepo = openOrderRepo;
-        this.orderBookRepo = orderBookRepo;
-        this.orderBookService = orderBookService;
+    @PostConstruct
+    public void subscribeToUserCreation(){
+        natsService.subscribe(Event.USER_CREATED, UserEventDto.class, this::saveUser, "OrderProcessing");
+    }
+
+    private void saveUser(UserEventDto userEventDto){
+        userRepository.save(userMapper.mapToUser(userEventDto));
+        portfolioService.createDefaultPortolio(userEventDto.getId());
     }
 
     @PostConstruct

@@ -32,14 +32,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joe.trading.shared.auth.AccountType;
+import com.joe.trading.shared.dtos.PaginatedResponseDto;
+import com.joe.trading.shared.exceptions.ResourceNotFoundException;
 import com.joe.trading.user_management.controller.UserController;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
-import com.joe.trading.user_management.dtos.PaginatedResponseDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserFilterRequestDto;
 import com.joe.trading.user_management.dtos.UserResponseDto;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
 import com.joe.trading.user_management.mapper.UserMapper;
 import com.joe.trading.user_management.services.UserService;
 
@@ -114,7 +114,7 @@ class UserControllerTest {
     @WithMockUser(roles = "ADMIN")
     void createUser_shouldReturnUserResponseDto_whenRequestIsValid() throws Exception {
         when(userService.createUser(any(CreateUserRequestDto.class))).thenReturn(clientUser);
-        when(userMapper.userToUserResponseDto(any(User.class))).thenReturn(userResponseDto);
+        when(userMapper.toUserResponseDto(any(User.class))).thenReturn(userResponseDto);
 
         mockMvc.perform(post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -128,7 +128,7 @@ class UserControllerTest {
     @WithMockUser(roles = "ADMIN")
     void getUserById_shouldReturnUserResponseDto_whenUserExists() throws Exception {
         when(userService.getUserById(anyLong())).thenReturn(clientUser);
-        when(userMapper.userToUserResponseDto(any(User.class))).thenReturn(userResponseDto);
+        when(userMapper.toUserResponseDto(any(User.class))).thenReturn(userResponseDto);
 
         mockMvc.perform(get("/api/v1/users/{id}", 1L))
                 .andExpect(status().isOk())
@@ -148,7 +148,7 @@ class UserControllerTest {
     @WithMockUser(roles = "ADMIN")
     void getAllUsers_shouldReturnPaginatedResponseDto_whenRequestIsValid() throws Exception {
         when(userService.getUsers(any(UserFilterRequestDto.class))).thenReturn(pagedUsers);
-        when(userMapper.usersToUserResponseDtos(anyList())).thenReturn(Collections.singletonList(userResponseDto));
+        when(userMapper.toUserResponseDtos(anyList())).thenReturn(Collections.singletonList(userResponseDto));
 
         mockMvc.perform(get("/api/v1/users"))
                 .andExpect(status().isOk())
@@ -159,7 +159,7 @@ class UserControllerTest {
     @WithMockUser(roles = "ADMIN")
     void updateUser_shouldReturnUserResponseDto_whenRequestIsValid() throws Exception {
         when(userService.updateUser(anyLong(), any(UpdateUserDto.class))).thenReturn(clientUser);
-        when(userMapper.userToUserResponseDto(any(User.class))).thenReturn(userResponseDto);
+        when(userMapper.toUserResponseDto(any(User.class))).thenReturn(userResponseDto);
 
         mockMvc.perform(put("/api/v1/users/{id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)

@@ -28,12 +28,11 @@ import { UpperCasePipe } from '@angular/common';
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService) {}
 
   user = computed(() => this.authService.authInfo()?.user);
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }

@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joe.trading.shared.auth.AccountType;
+import com.joe.trading.shared.dtos.PaginatedResponseDto;
+import com.joe.trading.shared.exceptions.ResourceNotFoundException;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
-import com.joe.trading.user_management.dtos.PaginatedResponseDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserFilterRequestDto;
 import com.joe.trading.user_management.dtos.UserResponseDto;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
 import com.joe.trading.user_management.mapper.UserMapper;
 import com.joe.trading.user_management.services.UserService;
 
@@ -42,7 +42,7 @@ public class UserController {
             @RequestBody @Valid CreateUserRequestDto createUserRequestDto) {
         var user = userService.createUser(createUserRequestDto);
 
-        return ResponseEntity.ok(userMapper.userToUserResponseDto(user));
+        return ResponseEntity.ok(userMapper.toUserResponseDto(user));
     }
 
     @GetMapping("{id}")
@@ -50,7 +50,7 @@ public class UserController {
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable("id") Long userId)
             throws ResourceNotFoundException {
         User user = userService.getUserById(userId);
-        return ResponseEntity.ok(userMapper.userToUserResponseDto(user));
+        return ResponseEntity.ok(userMapper.toUserResponseDto(user));
     }
 
     @GetMapping
@@ -58,11 +58,12 @@ public class UserController {
     public ResponseEntity<PaginatedResponseDto<UserResponseDto>> getAllUsers(UserFilterRequestDto filterRequestDto) {
         Page<User> pagedUsers = userService.getUsers(filterRequestDto);
 
-        List<UserResponseDto> userResponseDtos = userMapper.usersToUserResponseDtos(pagedUsers.getContent());
+        List<UserResponseDto> userResponseDtos = userMapper.toUserResponseDtos(pagedUsers.getContent());
         PaginatedResponseDto<UserResponseDto> userListResponseDto = new PaginatedResponseDto<>(
                 userResponseDtos,
                 pagedUsers.getTotalPages(),
-                pagedUsers.getTotalElements(), pagedUsers.getNumber());
+                pagedUsers.getTotalElements(),
+                pagedUsers.getNumber() + 1);
 
         return ResponseEntity.ok(userListResponseDto);
     }
@@ -86,7 +87,7 @@ public class UserController {
         }
 
         User userDto = userService.updateUser(userId, updatedUser);
-        return ResponseEntity.ok(userMapper.userToUserResponseDto(userDto));
+        return ResponseEntity.ok(userMapper.toUserResponseDto(userDto));
     }
 
     @DeleteMapping("{id}")

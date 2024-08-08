@@ -83,7 +83,7 @@ class AuthControllerTest {
         when(authService.login(any(LoginRequestDto.class))).thenReturn(user);
         when(jwtService.generateToken(user)).thenReturn("jwtToken");
         when(jwtService.getExpirationTime()).thenReturn(3600L);
-        when(userMapper.userToUserResponseDto(user)).thenReturn(userResponseDto);
+        when(userMapper.toUserResponseDto(user)).thenReturn(userResponseDto);
 
         mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +97,7 @@ class AuthControllerTest {
     @WithMockUser
     void register_shouldReturnUserResponseDto_whenRequestIsValid() throws Exception {
         when(authService.register(any(RegisterRequestDto.class))).thenReturn(user);
-        when(userMapper.userToUserResponseDto(user)).thenReturn(userResponseDto);
+        when(userMapper.toUserResponseDto(user)).thenReturn(userResponseDto);
 
         mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)

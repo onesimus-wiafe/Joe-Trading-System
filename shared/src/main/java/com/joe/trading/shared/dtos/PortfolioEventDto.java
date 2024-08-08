@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class PortfolioEventDto {
     private Long id;
     private String name;
+    private String description;
     private Long userId;
     private LocalDateTime createdAt;
 }

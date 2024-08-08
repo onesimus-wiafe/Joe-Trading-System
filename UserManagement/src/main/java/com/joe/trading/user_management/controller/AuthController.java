@@ -34,7 +34,7 @@ public class AuthController {
         String jwtToken = jwtService.generateToken(user);
 
         return ResponseEntity.ok(
-                new LoginResponseDto(jwtToken, jwtService.getExpirationTime(), userMapper.userToUserResponseDto(user)));
+                new LoginResponseDto(jwtToken, jwtService.getExpirationTime(), userMapper.toUserResponseDto(user)));
     }
 
     @PostMapping("/register")
@@ -42,6 +42,6 @@ public class AuthController {
     public ResponseEntity<UserResponseDto> register(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
         var user = authService.register(registerRequestDto);
 
-        return ResponseEntity.ok(userMapper.userToUserResponseDto(user));
+        return ResponseEntity.ok(userMapper.toUserResponseDto(user));
     }
 }

@@ -1,5 +1,14 @@
 package com.joe.trading.order_processing.services.validation;
 
+import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE1;
+import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE2;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joe.trading.order_processing.entities.User;
 import com.joe.trading.order_processing.entities.cache.MarketData;
@@ -8,25 +17,21 @@ import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.repositories.jpa.UserRepository;
 import com.joe.trading.order_processing.repositories.redis.dao.MarketDataDAO;
-import com.joe.trading.order_processing.services.validation.handler.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
-
-import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE1;
-import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE2;
+import com.joe.trading.order_processing.services.validation.handler.FundsValidator;
+import com.joe.trading.order_processing.services.validation.handler.OwnershipValidator;
+import com.joe.trading.order_processing.services.validation.handler.PriceValidator;
+import com.joe.trading.order_processing.services.validation.handler.QuantityValidator;
+import com.joe.trading.order_processing.services.validation.handler.ValidationHandler;
 
 @Service
-public class OrderValidationServiceImpl implements OrderValidationService{
+public class OrderValidationServiceImpl implements OrderValidationService {
 
     private final UserRepository userRepository;
     private final RestTemplate restTemplate;
     private final MarketDataDAO marketDataRepo;
 
-
-    public OrderValidationServiceImpl(UserRepository userRepository, RestTemplate restTemplate, MarketDataDAO marketDataRepo) {
+    public OrderValidationServiceImpl(UserRepository userRepository, RestTemplate restTemplate,
+            MarketDataDAO marketDataRepo) {
         this.userRepository = userRepository;
         this.restTemplate = restTemplate;
         this.marketDataRepo = marketDataRepo;
@@ -38,9 +43,9 @@ public class OrderValidationServiceImpl implements OrderValidationService{
 
         User user = userRepository.findById(userId).orElse(null);
 
-        List<MarketData> marketData = getMarketDataFromCache(orderRequest.getTicker(),orderRequest.getExchanges());
+        List<MarketData> marketData = getMarketDataFromCache(orderRequest.getTicker(), orderRequest.getExchanges());
 
-        if (marketData.isEmpty()){
+        if (marketData.isEmpty()) {
             marketData = getMarketDataFromExchange(orderRequest.getTicker(), orderRequest.getExchanges());
         }
 
@@ -49,8 +54,7 @@ public class OrderValidationServiceImpl implements OrderValidationService{
         ValidationHandler quantityHandler = new QuantityValidator(orderSide, marketData);
         ValidationHandler priceHandler = new PriceValidator(orderSide, marketData);
 
-
-        return switch (orderSide){
+        return switch (orderSide) {
             case BUY -> {
                 ValidationHandler fundHandler = new FundsValidator(user);
 
@@ -74,7 +78,7 @@ public class OrderValidationServiceImpl implements OrderValidationService{
         String url = "https://exchange.matraining.com/pd/";
         String url2 = "https://exchange2.matraining.com/pd/";
 
-        return switch (AvailableExchanges.valueOf(exchanges.toUpperCase())){
+        return switch (AvailableExchanges.valueOf(exchanges.toUpperCase())) {
             case EXCHANGE1 -> {
                 MarketData data = callExchange(url, ticker);
                 data.setEXCHANGE(String.valueOf(EXCHANGE1));
@@ -92,17 +96,17 @@ public class OrderValidationServiceImpl implements OrderValidationService{
                 data1.setEXCHANGE(String.valueOf(EXCHANGE2));
                 yield List.of(data, data1);
             }
-            case NONE ->List.of( new MarketData());
+            case NONE -> List.of(new MarketData());
         };
     }
 
-    private List<MarketData> getMarketDataFromCache(String ticker, String exchanges){
-        return switch (AvailableExchanges.valueOf(exchanges.toUpperCase())){
-            case EXCHANGE1 -> List.of(this.marketDataRepo.getMarketData(ticker+"_EX1"));
-            case EXCHANGE2 -> List.of(this.marketDataRepo.getMarketData(ticker+"_EX2"));
+    private List<MarketData> getMarketDataFromCache(String ticker, String exchanges) {
+        return switch (AvailableExchanges.valueOf(exchanges.toUpperCase())) {
+            case EXCHANGE1 -> List.of(this.marketDataRepo.getMarketData(ticker + "_EX1"));
+            case EXCHANGE2 -> List.of(this.marketDataRepo.getMarketData(ticker + "_EX2"));
             case NONE -> List.of();
             case ALL -> {
-                List<MarketData> data =getMarketDataFromCache(ticker, "EXCHANGE1");
+                List<MarketData> data = getMarketDataFromCache(ticker, "EXCHANGE1");
                 data.addAll(getMarketDataFromCache(ticker, "EXCHANGE2"));
 
                 yield data;
@@ -110,7 +114,7 @@ public class OrderValidationServiceImpl implements OrderValidationService{
         };
     }
 
-    private MarketData callExchange(String url, String ticker){
+    private MarketData callExchange(String url, String ticker) {
 
         String exchangeUrl = url + ticker.toUpperCase();
 

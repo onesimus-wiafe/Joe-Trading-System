@@ -4,15 +4,22 @@ import { shareReplay, tap } from 'rxjs/operators';
 import { AuthResponse, Login, Register } from '../../shared/models/auth.model';
 import { add } from 'date-fns';
 import { User } from '../../shared/models/user.model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     const auth = localStorage.getItem('auth');
     if (auth) {
       this.authInfo.set(JSON.parse(auth));
+
+      this.timeoutId.set(
+        setTimeout(() => {
+          this.logout();
+        }, this.expiration())
+      );
     }
   }
 
@@ -20,6 +27,8 @@ export class AuthService {
   role = computed(() => this.authInfo()?.user.accountType);
 
   loading = signal<boolean>(false);
+
+  timeoutId = signal<ReturnType<typeof setTimeout> | null>(null);
 
   private expiration() {
     const expiresAt = JSON.parse(localStorage.getItem('expires_at')!) as number;
@@ -33,6 +42,11 @@ export class AuthService {
         next: (auth) => {
           this.setSession(auth);
           this.loading.set(false);
+          this.timeoutId.set(
+            setTimeout(() => {
+              this.logout();
+            }, auth.expiresIn)
+          );
         },
         error: () => {
           this.loading.set(false);
@@ -54,6 +68,7 @@ export class AuthService {
     localStorage.removeItem('auth');
     localStorage.removeItem('expires_at');
     this.authInfo.set(null);
+    this.router.navigate(['/login']);
   }
 
   isLoggedIn() {

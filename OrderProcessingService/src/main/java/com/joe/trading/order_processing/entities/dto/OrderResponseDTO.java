@@ -11,8 +11,8 @@ public class OrderResponseDTO {
     private String ticker;
     private Integer quantity;
     private Double unitPrice;
-    private String Side;
-    private String Strategy;
+    private String side;
+    private String strategy;
     private String orderType;
     private String message;
 

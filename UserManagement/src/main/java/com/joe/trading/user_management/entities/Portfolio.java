@@ -17,7 +17,7 @@ public class Portfolio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "portfolio_name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @ManyToOne

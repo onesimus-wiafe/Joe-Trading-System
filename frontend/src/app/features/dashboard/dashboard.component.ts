@@ -1,11 +1,14 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, computed, effect } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
-import { DrawerComponent } from '../../shared/components/drawer/drawer.component';
-import { StockPriceCardComponent } from '../../shared/components/stock-price-card/stock-price-card.component';
-import { Stock } from '../../shared/models/stock.model';
+import { OrderService } from '../../core/services/order.service';
 import { ThemeService } from '../../core/services/theme.service';
-import { OrderFormComponent } from "../../shared/components/order-form/order-form.component";
+import { DrawerComponent } from '../../shared/components/drawer/drawer.component';
+import { OrderFormComponent } from '../../shared/components/order-form/order-form.component';
+import { StockPriceCardComponent } from '../../shared/components/stock-price-card/stock-price-card.component';
+import { ToastService, ToastVariant } from '../../core/services/toast.service';
+import { Stock } from '../../shared/models/stock.model';
+import { OrderRequest } from '../../shared/models/order.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,17 +18,17 @@ import { OrderFormComponent } from "../../shared/components/order-form/order-for
     StockPriceCardComponent,
     CurrencyPipe,
     CanvasJSAngularChartsModule,
-    OrderFormComponent
-],
+    OrderFormComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent {
-  constructor(private themeService: ThemeService) {
-    // effect(() => {
-    //   this.updateRenderedTheme();
-    // });
-  }
+  constructor(
+    private themeService: ThemeService,
+    private orderService: OrderService,
+    private toastService: ToastService
+  ) {}
 
   stocks: Stock[] = [
     {
@@ -85,6 +88,24 @@ export class DashboardComponent {
       pic: 'assets/tesla.svg',
     },
   ];
+
+  placeOrder($event: OrderRequest) {
+    console.log("placing order", $event);
+    this.orderService.createOrder($event).subscribe({
+      next: () => {
+        this.toastService.initiate({
+          message: 'Order placed successfully',
+          variant: ToastVariant.Success,
+        });
+      },
+      error: () => {
+        this.toastService.initiate({
+          message: 'Failed to place order',
+          variant: ToastVariant.Error,
+        });
+      },
+    });
+  }
 
   stockChartOptions = computed(() => {
     return {
