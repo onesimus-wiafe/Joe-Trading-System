@@ -50,7 +50,7 @@ public class MarketDataRepo implements MarketDataDAO {
 
     @Override
     public Optional<MarketData> getMarketData(String ticker) {
-        return Optional.of(hashOperations.get(hashReference, ticker));
+        return Optional.ofNullable(hashOperations.get(hashReference, ticker));
     }
 
     @Override

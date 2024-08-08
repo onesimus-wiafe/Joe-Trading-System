@@ -32,6 +32,7 @@ public class MarketDataSetup {
 
     @PostConstruct
     public void setUpMarketData(){
+        marketDataRepo.clearCache();
         Arrays.stream(Ticker.values()).forEach(ticker -> saveNullMarketDataToCache(String.valueOf(ticker)));
     }
 
