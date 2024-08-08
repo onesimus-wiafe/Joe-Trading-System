@@ -1,10 +1,9 @@
 package com.joe.trading.order_processing.services;
 
-import java.util.function.Function;
-
 import com.joe.trading.order_processing.entities.User;
-
 import io.jsonwebtoken.Claims;
+
+import java.util.function.Function;
 
 public interface JwtService {
 

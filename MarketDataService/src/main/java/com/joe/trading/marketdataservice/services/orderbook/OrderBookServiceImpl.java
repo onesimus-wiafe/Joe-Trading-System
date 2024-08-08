@@ -1,8 +1,9 @@
 package com.joe.trading.marketdataservice.services.orderbook;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.joe.trading.marketdataservice.model.OrderBook;
 import com.joe.trading.marketdataservice.services.enums.Ticker;
+import com.joe.trading.shared.dtos.OrderBook;
+import com.joe.trading.shared.dtos.OrderBookUpdateDto;
 import com.joe.trading.shared.events.Event;
 import com.joe.trading.shared.nats.NatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,94 +49,73 @@ public class OrderBookServiceImpl implements OrderBookService{
 
     @Override
     public void publishOrderBook(String product) throws JsonProcessingException{
-        fullOrderBook.putAll(getOpenOrders(product));
-        fullOrderBook.putAll(getClosedOrders(product));
 
-        publishEvent(product);
+        this.publishOrderBook(product, exchange1Url);
+        this.publishOrderBook(product, exchange2Url);
     }
 
     @Override
-    public void publishOrderBook(String product, String exchange){
-        fullOrderBook.putAll(getOpenAndClosedOrdersFromOneExchange(product, exchange));
-
-        publishEvent(product);
+    public void publishOrderBook(String product, String exchange) throws JsonProcessingException {
+        getOpenAndClosedOrdersFromOneExchange(product, exchange);
     }
 
-    private void publishEvent(String product){
+    private void publishEvent(String product, OrderBookUpdateDto book){
         switch (Ticker.valueOf(product.toUpperCase())){
-            case IBM -> this.publishOne(Event.IBM_ORDER_BOOK);
-            case AAPL -> this.publishOne(Event.AAPL_ORDER_BOOK);
-            case AMZN -> this.publishOne(Event.AMZN_ORDER_BOOK);
-            case MSFT -> this.publishOne(Event.MSFT_ORDER_BOOK);
-            case NFLX -> this.publishOne(Event.NFLX_ORDER_BOOK);
-            case ORCL -> this.publishOne(Event.ORCL_ORDER_BOOK);
-            case TSLA -> this.publishOne(Event.TSLA_ORDER_BOOK);
-            case GOOGL -> this.publishOne(Event.GOOGL_ORDER_BOOK);
+            case IBM -> this.publishOne(Event.IBM_ORDER_BOOK, book);
+            case AAPL -> this.publishOne(Event.AAPL_ORDER_BOOK, book);
+            case AMZN -> this.publishOne(Event.AMZN_ORDER_BOOK, book);
+            case MSFT -> this.publishOne(Event.MSFT_ORDER_BOOK, book);
+            case NFLX -> this.publishOne(Event.NFLX_ORDER_BOOK, book);
+            case ORCL -> this.publishOne(Event.ORCL_ORDER_BOOK, book);
+            case TSLA -> this.publishOne(Event.TSLA_ORDER_BOOK, book);
+            case GOOGL -> this.publishOne(Event.GOOGL_ORDER_BOOK, book);
         }
     }
 
 
-    private void publishOne(Event event){
+    private void publishOne(Event event, OrderBookUpdateDto book){
         try {
-            natsService.publish(event, fullOrderBook);
-            fullOrderBook.clear();
+            natsService.publish(event, book);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private List<OrderBook> getFromExchange(String baseUrl, String ticker, String state){
+    private OrderBookUpdateDto getFromExchange(String baseUrl, String ticker, String state, String key){
         String url = baseUrl+"/orderbook/"+ticker+"/"+state;
         ResponseEntity<OrderBook[]> response = restTemplate.getForEntity(url, OrderBook[].class);
 
-        return Arrays.asList(response.getBody());
+        OrderBookUpdateDto book = new OrderBookUpdateDto();
+        book.setOrderBooks(Arrays.stream(response.getBody()).toList());
+        book.setSourceExchange(key);
+
+        return book;
     }
 
-    private Map<String, List<OrderBook>> getOpenOrders(String ticker){
-        String ex1Key = ticker+"_EX1_OPEN";
-        String ex2Key = ticker+"_EX2_OPEN";
-
-        Map<String, List<OrderBook>> result = new HashMap<>();
-
-        result.put(ex1Key, getFromExchange(exchange1Url, ticker, "open"));
-        result.put(ex2Key, getFromExchange(exchange2Url, ticker, "open"));
-
-        return result;
-    }
-
-    private Map<String, List<OrderBook>> getClosedOrders(String ticker){
-        String ex1Key = ticker+"_EX1_CLOSED";
-        String ex2Key = ticker+"_EX2_CLOSED";
-
-        Map<String, List<OrderBook>> result = new HashMap<>();
-
-        result.put(ex1Key, getFromExchange(exchange1Url, ticker, "closed"));
-        result.put(ex2Key, getFromExchange(exchange2Url, ticker, "closed"));
-
-        return result;
-    }
-
-    private Map<String, List<OrderBook>> getOpenAndClosedOrdersFromOneExchange(String ticker, String exchange){
+    private void getOpenAndClosedOrdersFromOneExchange(String ticker, String exchange){
         String openKey;
         String closedKey;
-
-        Map<String, List<OrderBook>> result = new HashMap<>();
 
         if (exchange1Url.contains(exchange.toLowerCase())){
             openKey = ticker+"_EX1_OPEN";
             closedKey = ticker+"_EX1_CLOSED";
 
-            result.put(openKey, getFromExchange(exchange1Url, ticker, "open"));
-            result.put(closedKey, getFromExchange(exchange1Url, ticker, "closed"));
+            OrderBookUpdateDto book1 = getFromExchange(exchange1Url, ticker, "open", openKey);
+            OrderBookUpdateDto book2 = getFromExchange(exchange1Url, ticker, "closed", closedKey);
+
+            this.publishEvent(ticker, book1);
+            this.publishEvent(ticker, book2);
+
         }
         else{
             openKey = ticker+"_EX2_OPEN";
             closedKey = ticker+"_EX2_CLOSED";
 
-            result.put(openKey, getFromExchange(exchange2Url, ticker, "open"));
-            result.put(closedKey, getFromExchange(exchange2Url, ticker, "closed"));
-        }
+            OrderBookUpdateDto book1 = getFromExchange(exchange2Url, ticker, "open", openKey);
+            OrderBookUpdateDto book2 = getFromExchange(exchange2Url, ticker, "closed", closedKey);
 
-        return result;
+            this.publishEvent(ticker, book1);
+            this.publishEvent(ticker, book2);
+        };
     }
 }

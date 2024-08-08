@@ -1,14 +1,6 @@
-import { ComponentType } from '@angular/cdk/portal';
-import {
-  ApplicationRef,
-  ComponentFactoryResolver,
-  EmbeddedViewRef,
-  Injectable,
-  Injector,
-  ViewContainerRef,
-} from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import {ApplicationRef, ComponentFactoryResolver, EmbeddedViewRef, Injectable, Injector,} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
+import {ConfirmDialogComponent} from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 export interface ConfirmDialogData {
   title: string;

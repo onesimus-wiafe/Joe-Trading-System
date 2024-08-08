@@ -1,10 +1,8 @@
 package com.joe.trading.order_processing.entities;
 
-import com.joe.trading.order_processing.entities.dto.PortfolioResponseDTO;
 import com.joe.trading.order_processing.entities.enums.PortfolioState;
 import com.joe.trading.order_processing.entities.enums.Ticker;
 import com.joe.trading.shared.dtos.PortfolioEventDto;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +11,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter

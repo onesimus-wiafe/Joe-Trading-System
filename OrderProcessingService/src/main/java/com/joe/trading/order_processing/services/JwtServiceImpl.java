@@ -1,17 +1,15 @@
 package com.joe.trading.order_processing.services;
 
-import java.util.function.Function;
-
-import org.springframework.stereotype.Service;
-
 import com.joe.trading.order_processing.entities.User;
 import com.joe.trading.shared.auth.AccountType;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Service;
+
+import java.util.function.Function;
 
 @Getter
 @Setter

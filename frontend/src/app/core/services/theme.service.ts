@@ -1,4 +1,4 @@
-import { Injectable, computed, effect, output, signal } from '@angular/core';
+import {computed, effect, Injectable, signal} from '@angular/core';
 
 export const storageKey = 'theme';
 

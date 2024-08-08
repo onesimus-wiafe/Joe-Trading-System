@@ -1,14 +1,5 @@
 package com.joe.trading.order_processing.services.validation;
 
-import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE1;
-import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE2;
-
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joe.trading.order_processing.entities.User;
 import com.joe.trading.order_processing.entities.cache.MarketData;
@@ -17,11 +8,15 @@ import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.repositories.jpa.UserRepository;
 import com.joe.trading.order_processing.repositories.redis.dao.MarketDataDAO;
-import com.joe.trading.order_processing.services.validation.handler.FundsValidator;
-import com.joe.trading.order_processing.services.validation.handler.OwnershipValidator;
-import com.joe.trading.order_processing.services.validation.handler.PriceValidator;
-import com.joe.trading.order_processing.services.validation.handler.QuantityValidator;
-import com.joe.trading.order_processing.services.validation.handler.ValidationHandler;
+import com.joe.trading.order_processing.services.validation.handler.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+
+import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE1;
+import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE2;
 
 @Service
 public class OrderValidationServiceImpl implements OrderValidationService {

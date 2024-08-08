@@ -1,11 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import {
-  Portfolio,
-  PortfolioCreate,
-  PortfolioListResponse,
-} from '../../shared/models/portfolio.model';
-import { tap } from 'rxjs';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Portfolio, PortfolioCreate, PortfolioListResponse,} from '../../shared/models/portfolio.model';
 
 type PortfolioFilters = {
   name?: string;

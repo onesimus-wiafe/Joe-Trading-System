@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { computed, Injectable, signal } from '@angular/core';
-import { shareReplay, tap } from 'rxjs/operators';
-import { AuthResponse, Login, Register } from '../../shared/models/auth.model';
-import { add } from 'date-fns';
-import { User } from '../../shared/models/user.model';
-import { Router } from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {computed, Injectable, signal} from '@angular/core';
+import {shareReplay, tap} from 'rxjs/operators';
+import {AuthResponse, Login, Register} from '../../shared/models/auth.model';
+import {add} from 'date-fns';
+import {User} from '../../shared/models/user.model';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
