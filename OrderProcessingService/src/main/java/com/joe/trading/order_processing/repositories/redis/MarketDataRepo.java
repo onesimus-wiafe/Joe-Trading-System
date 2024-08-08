@@ -22,7 +22,7 @@ public class MarketDataRepo implements MarketDataDAO {
 
     @Override
     public void saveMarketData(MarketData data, String ticker) {
-        hashOperations.putIfAbsent(hashReference, ticker, data);
+        hashOperations.put(hashReference, ticker, data);
     }
 
     @Override

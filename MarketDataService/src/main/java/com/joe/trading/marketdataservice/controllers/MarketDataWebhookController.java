@@ -38,12 +38,12 @@ public class MarketDataWebhookController {
 
         System.out.println("Received Subscription Update: " + payload);
         if (payload.getExchange().equals("MAL1")){
-            ticker = payload.getProduct() + "_EX1";
+            ticker = payload.getProduct().toUpperCase() + "_EX1";
             exchange = "Exchange1";
             dataUpdate.put(ticker, newMarketData("exchange1", payload.getProduct()));
         }
         else {
-            ticker = payload.getProduct() + "_EX1";
+            ticker = payload.getProduct().toUpperCase() + "_EX1";
             exchange = "Exchange2";
             dataUpdate.put(ticker, newMarketData("exchange2", payload.getProduct()));
         }
