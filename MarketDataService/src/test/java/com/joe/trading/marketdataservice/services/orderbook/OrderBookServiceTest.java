@@ -54,7 +54,7 @@ class OrderBookServiceTest {
 
         orderBookService.publishOrderBook();
 
-        verify(natsService, times(8)).publish(any(), any());
+        verify(natsService, times(32)).publish(any(), any());
 
     }
 }
