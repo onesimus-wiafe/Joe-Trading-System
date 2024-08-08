@@ -27,7 +27,7 @@ class UserTest {
     @Test
     void testUserToString() {
         User user = new User(1L);
-        String expected = "User{id=1, portfolios=[]}";
+        String expected = "User(id=1, totalFunds=null, portfolios=[], createdDate=null, updatedOn=null, accountType=null)";
         assertTrue(user.toString().contains(expected));
     }
 
