@@ -23,9 +23,10 @@ public class UserServiceImpl implements UserService {
     public void userSubscriptionEvent() throws ResourceNotFoundException {
         System.out.println("Testing nats subscribe");
         try {
-            natsService.subscribe(Event.USER_CREATED, UserEventDto.class, this::saveCreateEvent);
-            natsService.subscribe(Event.USER_UPDATED, UserEventDto.class, this::saveUpdateEvent);
-            natsService.subscribe(Event.USER_DELETED, UserEventDto.class, this::saveDeleteEvent);
+            System.out.println("hereee");
+//            natsService.subscribe(Event.USER_CREATED, UserEventDto.class, this::saveCreateEvent);
+//            natsService.subscribe(Event.USER_UPDATED, UserEventDto.class, this::saveUpdateEvent);
+//            natsService.subscribe(Event.USER_DELETED, UserEventDto.class, this::saveDeleteEvent);
         } catch (Exception e) {
             throw new ResourceNotFoundException("Could not fetch from Nats Service");
         }

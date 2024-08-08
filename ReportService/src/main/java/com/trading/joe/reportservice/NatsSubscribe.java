@@ -34,8 +34,8 @@ public class NatsSubscribe {
             natsService.subscribe(Event.USER_UPDATED, UserEventDto.class, this::saveUpdateEvent);
             natsService.subscribe(Event.USER_DELETED, UserEventDto.class, this::saveDeleteEvent);
 
-            // Portfoliio event
-            natsService.subscribe(Event.PORTFOLIO_CREATED, Portfolio.class,);
+            // Portfolio event
+            natsService.subscribe(Event.PORTFOLIO_CREATED, Portfolio.class, this::saveCreatePortfolio);
 
             // Market data Events
             natsService.subscribe(Event.MARKET_DATA_UPDATE, Map.class, this::saveMarketDataUpdate);
@@ -74,7 +74,7 @@ public class NatsSubscribe {
         }
     }
 
-    public void saveCreateEvent(UserEventDto userEventDto) {
+    private void saveCreateEvent(UserEventDto userEventDto) {
         UserDto user = new UserDto();
         userRepository.save(user.userCreated(userEventDto));
     }
