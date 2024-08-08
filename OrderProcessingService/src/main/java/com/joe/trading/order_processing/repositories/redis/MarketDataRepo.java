@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class MarketDataRepo implements MarketDataDAO {
@@ -48,8 +49,8 @@ public class MarketDataRepo implements MarketDataDAO {
     }
 
     @Override
-    public MarketData getMarketData(String ticker) {
-        return hashOperations.get(hashReference, ticker);
+    public Optional<MarketData> getMarketData(String ticker) {
+        return Optional.of(hashOperations.get(hashReference, ticker));
     }
 
     @Override

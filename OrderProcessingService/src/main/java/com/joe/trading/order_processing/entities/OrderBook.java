@@ -1,10 +1,13 @@
 package com.joe.trading.order_processing.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,17 +16,30 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderBook {
+public class OrderBook implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
+    @JsonProperty
     private String id;
+    @JsonProperty
     private Double price;
+    @JsonProperty
     private String product;
+    @JsonProperty
     private Integer quantity;
+    @JsonProperty
     private Integer cumulatitiveQuantity;
+    @JsonProperty
     private String side;
+    @JsonProperty
     private String orderType;
+    @JsonProperty
     private String exchange;
 
+    @JsonProperty
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBook", orphanRemoval = true)
     private List<Executions> executions = new ArrayList<>();
 

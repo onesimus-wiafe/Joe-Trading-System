@@ -104,7 +104,7 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id="+ id +
-                "ticker=" + ticker +
+                ", ticker=" + ticker +
                 ", quantity=" + quantity +
                 ", unitPrice=" + unitPrice +
                 ", side=" + side +
