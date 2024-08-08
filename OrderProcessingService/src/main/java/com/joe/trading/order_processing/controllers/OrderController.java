@@ -38,11 +38,16 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    private User authenticate(){
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        return (User) auth.getPrincipal();
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<OrderResponseDTO> sendOrder(@RequestBody OrderRequestDTO request) {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        var principal = (User) auth.getPrincipal();
+
+        var principal = authenticate();
 
         OrderResponseDTO response = new OrderResponseDTO();
 
@@ -51,13 +56,13 @@ public class OrderController {
 
         Order order;
         if (validatedRequest.getIsValidated()) {
-            order = buildValidatedOrder(request);
+            order = buildValidatedOrder(request, principal.getId());
         } else {
             response.setMessage("Order Validation Did Not Pass");
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(response);
         }
 
-        response = orderService.saveOrder(order);
+        response = orderService.saveOrder(order, request.getPortfolioId());
 
         response.setMessage("New Order Created");
 
@@ -76,18 +81,24 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrdersPerUserId(userId, request));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<OrderResponseDTO> cancelAnOrder(@PathVariable Long id) {
-        return ResponseEntity.ok(orderService.cancelOrder(id));
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<OrderResponseDTO> cancelAnOrder(@PathVariable Long orderId) {
+        var principal = authenticate();
+
+        return ResponseEntity.ok(orderService.cancelOrder(orderId, principal.getId()));
     }
 
-    private Order buildValidatedOrder(OrderRequestDTO request) {
-        return new Order(
+    private Order buildValidatedOrder(OrderRequestDTO request, Long userId) {
+        Order order = new Order(
                 Ticker.valueOf(request.getTicker().toUpperCase()),
                 request.getQuantity(),
                 request.getUnitPrice(),
                 Side.valueOf(request.getSide().toUpperCase()),
                 AvailableExchanges.valueOf(request.getExchanges().toUpperCase()),
                 OrderType.valueOf(request.getOrderType()));
+
+        order.setUserId(userId);
+
+        return order;
     }
 }

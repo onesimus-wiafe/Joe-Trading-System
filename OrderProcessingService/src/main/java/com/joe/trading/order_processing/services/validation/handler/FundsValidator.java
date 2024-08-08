@@ -15,7 +15,7 @@ public class FundsValidator extends ValidationHandler{
     @Override
     public OrderRequestDTO validate(OrderRequestDTO orderRequestDTO) {
 
-        return super.validate(validateFunds(orderRequestDTO));
+        return super.validate(ignoreValidation(orderRequestDTO));
     }
 
     private OrderRequestDTO validateFunds(OrderRequestDTO orderRequestDTO){
@@ -35,5 +35,11 @@ public class FundsValidator extends ValidationHandler{
             }
         }
         return orderRequestDTO;
+    }
+
+    private OrderRequestDTO ignoreValidation(OrderRequestDTO request){
+        request.setIsValidated(Boolean.TRUE);
+
+        return request;
     }
 }

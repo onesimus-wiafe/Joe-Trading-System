@@ -2,6 +2,7 @@ package com.joe.trading.order_processing.services.impl;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -86,7 +87,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
         userPortfolio.remove(userDefaultPortfolio);
 
-        List<Stock> defaultStocks = userDefaultPortfolio.getStocks();
+        Set<Stock> defaultStocks = userDefaultPortfolio.getStocks();
 
         portfolioToDelete.getStocks().forEach(stock -> {
             stock.setPortfolio(userDefaultPortfolio);

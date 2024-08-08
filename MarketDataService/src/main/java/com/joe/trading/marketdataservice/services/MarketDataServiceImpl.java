@@ -8,6 +8,7 @@ import com.joe.trading.marketdataservice.services.enums.Exchange;
 import com.joe.trading.shared.events.Event;
 import com.joe.trading.shared.nats.NatsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,8 +22,12 @@ public class MarketDataServiceImpl implements MarketDataService {
     private final RestTemplate restTemplate;
     private final NatsService natsService;
 
-    private final String exchange1Url = "https://exchange.matraining.com";
-    private final String exchange2Url = "https://exchange2.matraining.com";
+    @Value("${exchange.exchange1.url}")
+    private String exchange1Url;
+    @Value("${exchange.exchange2.url}")
+    private String exchange2Url;
+    @Value("${service.market.data.url}")
+    private String serviceUrl;
 
     @Autowired
     public MarketDataServiceImpl(MarketDataRepo repo, RestTemplate restTemplate, NatsService natsService) {
@@ -112,13 +117,12 @@ public class MarketDataServiceImpl implements MarketDataService {
 
         List<String> subList = Arrays.asList(response.getBody());
 
-        String mdsUrl = "https://webhook.site/0aac56b5-d439-40ed-a29b-ec92896136e5";
-        boolean isSubbed = subList.contains(mdsUrl);
+        boolean isSubbed = subList.contains(serviceUrl);
 
         if (!isSubbed) {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<String> request = new HttpEntity<>(mdsUrl, headers);
+            HttpEntity<String> request = new HttpEntity<>(serviceUrl, headers);
 
             restTemplate.exchange(
                     subscriptionUrl,
@@ -141,7 +145,7 @@ public class MarketDataServiceImpl implements MarketDataService {
         Map<String, MarketData> marketDataMap = new HashMap<>();
 
         marketDataList.forEach(data -> {
-            String key = data.getTICKER() + "_" + data.getEXCHANGE();
+            String key = data.getTICKER().toUpperCase() + "_" + data.getEXCHANGE();
             data.setTICKER(key);
             marketDataMap.put(key, data);
         });

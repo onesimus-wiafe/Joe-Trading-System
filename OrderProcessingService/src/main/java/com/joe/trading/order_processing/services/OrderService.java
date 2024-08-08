@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface OrderService {
 
-    public OrderResponseDTO saveOrder(Order order);
+    OrderResponseDTO saveOrder(Order order, Long portfolioId);
 
-    public List<OrderResponseDTO> getAllOrders();
+    List<OrderResponseDTO> getAllOrders();
 
-    public OrderResponseDTO cancelOrder(Long id);
+    OrderResponseDTO cancelOrder(Long orderId, Long userId);
 
-    public Page<OrderResponseDTO> getAllOrdersPerUserId(Long userId, OrderRequestDTO request);
+    Page<OrderResponseDTO> getAllOrdersPerUserId(Long userId, OrderRequestDTO request);
 }
