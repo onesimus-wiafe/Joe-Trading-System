@@ -154,7 +154,7 @@ class MarketDataServiceTest {
 
     @Test
     void buildInitialCacheEntryTest() throws JsonProcessingException {
-        List<MarketData> marketDataList = Arrays.asList(new MarketData(), new MarketData());
+        List<MarketData> marketDataList = Arrays.asList(new MarketData("IBM"), new MarketData("AAPL"));
         Object[] marketDataArray = marketDataList.toArray();
 
         when(restTemplate.getForEntity(anyString(), eq(Object[].class)))

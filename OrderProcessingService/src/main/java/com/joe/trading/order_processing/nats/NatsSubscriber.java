@@ -137,6 +137,10 @@ public class NatsSubscriber {
          List<OrderBook> orderBooksForKey = books.stream()
                  .map(orderBookMapper::mapToOrderBook).toList();
 
+         if (openOrders == null){
+             return orderBooksForKey;
+         }
+
          orderBooksForKey.forEach(book -> {
              if (openOrders.contains(book.getId())){
                  internalOrders.add(book);

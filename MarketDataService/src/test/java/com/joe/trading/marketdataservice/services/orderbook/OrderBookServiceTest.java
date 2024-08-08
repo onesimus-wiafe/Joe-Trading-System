@@ -37,11 +37,11 @@ class OrderBookServiceTest {
     void testPublishOrderBook() throws JsonProcessingException {
         doNothing().when(natsService).publish(any(), any());
 
-        List<OrderBook> orderBooks = new ArrayList<>();
-        orderBooks.add(new OrderBook());
-        orderBooks.add(new OrderBook());
+        List<com.joe.trading.shared.dtos.OrderBook> orderBooks = new ArrayList<>();
+        orderBooks.add(new com.joe.trading.shared.dtos.OrderBook());
+        orderBooks.add(new com.joe.trading.shared.dtos.OrderBook());
 
-        OrderBook[] orderBookArray = new OrderBook[orderBooks.size()];
+        com.joe.trading.shared.dtos.OrderBook[] orderBookArray = new com.joe.trading.shared.dtos.OrderBook[orderBooks.size()];
         int count = 0;
 
         while (count < orderBooks.size()){
@@ -49,12 +49,12 @@ class OrderBookServiceTest {
             count += 1;;
         }
 
-        when(restTemplate.getForEntity(anyString(), eq(OrderBook[].class)))
+        when(restTemplate.getForEntity(anyString(), eq(com.joe.trading.shared.dtos.OrderBook[].class)))
                 .thenReturn(ResponseEntity.ok(orderBookArray));
 
         orderBookService.publishOrderBook();
 
-        verify(natsService, times(8)).publish(any(), any());
+        verify(natsService, times(32)).publish(any(), any());
 
     }
 }
