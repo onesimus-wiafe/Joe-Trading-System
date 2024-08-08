@@ -19,6 +19,7 @@ import com.joe.trading.order_processing.entities.dto.PortfolioResponseDTO;
 import com.joe.trading.order_processing.mappers.PortfolioMapper;
 import com.joe.trading.order_processing.services.PortfolioService;
 import com.joe.trading.shared.dtos.PaginatedResponseDto;
+import com.joe.trading.shared.exceptions.ResourceNotFoundException;
 
 import lombok.AllArgsConstructor;
 
@@ -39,12 +40,12 @@ public class PortfolioController {
         var portfolio = portfolioService.createPortfolio(principal.getId(), request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(portfolioMapper.mapToPortfolioResponseDTO(portfolio));
+                .body(portfolioMapper.toPortfolioResponseDTO(portfolio));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Boolean> deletePortfolio(@PathVariable("id") Long portfolioId) {
+    public ResponseEntity<Boolean> deletePortfolio(@PathVariable("id") Long portfolioId) throws ResourceNotFoundException {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         var principal = (User) auth.getPrincipal();
 
@@ -53,25 +54,25 @@ public class PortfolioController {
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PortfolioResponseDTO> getPortfolio(@PathVariable("id") Long portfolioId) {
+    public ResponseEntity<PortfolioResponseDTO> getPortfolio(@PathVariable("id") Long portfolioId) throws ResourceNotFoundException {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         var principal = (User) auth.getPrincipal();
 
         var portfolio = portfolioService.getPortfolio(principal.getId(), portfolioId);
 
-        return ResponseEntity.ok(portfolioMapper.mapToPortfolioResponseDTO(portfolio));
+        return ResponseEntity.ok(portfolioMapper.toPortfolioResponseDTO(portfolio));
     }
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PaginatedResponseDto<PortfolioResponseDTO>> getPortfolios(PortfolioFilterRequestDto filter) {
+    public ResponseEntity<PaginatedResponseDto<PortfolioResponseDTO>> getPortfolios(PortfolioFilterRequestDto filter) throws ResourceNotFoundException {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         var principal = (User) auth.getPrincipal();
 
         var portfolios = portfolioService.getPortfoliosByUserId(principal.getId(), filter);
 
         var response = new PaginatedResponseDto<>(
-                portfolioMapper.mapToPortfolioResponseDTOs(portfolios.getContent()),
+                portfolioMapper.toPortfolioResponseDTOs(portfolios.getContent()),
                 portfolios.getTotalPages(),
                 portfolios.getTotalElements(),
                 portfolios.getNumber() + 1

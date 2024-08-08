@@ -1,6 +1,7 @@
 package com.joe.trading.order_processing.services.impl;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +19,6 @@ import com.joe.trading.order_processing.entities.User;
 import com.joe.trading.order_processing.entities.dto.CreatePortfolioRequestDTO;
 import com.joe.trading.order_processing.entities.dto.PortfolioFilterRequestDto;
 import com.joe.trading.order_processing.entities.enums.PortfolioState;
-import com.joe.trading.order_processing.errors.InternalServerError;
 import com.joe.trading.order_processing.mappers.PortfolioMapper;
 import com.joe.trading.order_processing.repositories.jpa.PortfolioRepository;
 import com.joe.trading.order_processing.repositories.jpa.UserRepository;
@@ -26,6 +26,8 @@ import com.joe.trading.order_processing.services.PortfolioService;
 import com.joe.trading.order_processing.specifications.PortfolioSpecification;
 import com.joe.trading.shared.auth.AccountType;
 import com.joe.trading.shared.events.Event;
+import com.joe.trading.shared.exceptions.InternalServerError;
+import com.joe.trading.shared.exceptions.ResourceNotFoundException;
 import com.joe.trading.shared.nats.NatsService;
 
 import lombok.AllArgsConstructor;
@@ -40,8 +42,13 @@ public class PortfolioServiceImpl implements PortfolioService {
     private final PortfolioMapper portfolioMapper;
 
     @Override
-    public Portfolio createPortfolio(Long userId, CreatePortfolioRequestDTO portfolio) {
-        User user = userRepo.findById(userId).get();
+    public Portfolio createPortfolio(Long userId, CreatePortfolioRequestDTO portfolio) throws AccessDeniedException {
+        User user;
+        try {
+            user = userRepo.findById(userId).get();
+        } catch (NoSuchElementException e) {
+            throw new AccessDeniedException("Authenticated user does not exist");
+        }
 
         Portfolio newPortfolio = new Portfolio();
         newPortfolio.setName(portfolio.getName());
@@ -52,7 +59,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         var response = portRepo.save(newPortfolio);
 
         try {
-            natsService.publish(Event.PORTFOLIO_CREATED, portfolioMapper.mapToPortfolioEventDto(response));
+            natsService.publish(Event.PORTFOLIO_CREATED, portfolioMapper.toPortfolioEventDto(response));
         } catch (JsonProcessingException e) {
             throw new InternalServerError("Error while creating portfolio");
         }
@@ -61,8 +68,13 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Boolean deletePortfolio(Long userId, Long portfolioId) {
-        User user = userRepo.findById(userId).get();
+    public Boolean deletePortfolio(Long userId, Long portfolioId) throws AccessDeniedException {
+        User user;
+        try {
+            user = userRepo.findById(userId).get();
+        } catch (NoSuchElementException e) {
+            throw new AccessDeniedException("Authenticated user does not exist");
+        }
 
         List<Portfolio> userPortfolio = user.getPortfolios();
 
@@ -109,8 +121,13 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Portfolio getDefaultPortfolio(Long id) {
-        User user = userRepo.findById(id).get();
+    public Portfolio getDefaultPortfolio(Long id) throws AccessDeniedException {
+        User user;
+        try {
+            user = userRepo.findById(id).get();
+        } catch (NoSuchElementException e) {
+            throw new AccessDeniedException("Authenticated user does not exist");
+        }
 
         List<Portfolio> userPortfolios = user.getPortfolios();
 
@@ -119,8 +136,13 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Page<Portfolio> getPortfoliosByUserId(Long userId, PortfolioFilterRequestDto filter) {
-        var user = userRepo.findById(userId).get();
+    public Page<Portfolio> getPortfoliosByUserId(Long userId, PortfolioFilterRequestDto filter) throws AccessDeniedException {
+        User user;
+        try {
+            user = userRepo.findById(userId).get();
+        } catch (NoSuchElementException e) {
+            throw new AccessDeniedException("Authenticated user does not exist");
+        }
 
         Specification<Portfolio> spec = Specification.where(null);
 
@@ -150,16 +172,46 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Portfolio getPortfolio(Long userId, Long portfolioId) {
-        var portfolio = portRepo.findById(portfolioId).get();
-        var principal = userRepo.findById(userId).get();
+    public Portfolio getPortfolio(Long userId, Long portfolioId) throws ResourceNotFoundException, AccessDeniedException {
+        User principal;
+        try {
+            principal = userRepo.findById(userId).get();
+        } catch (NoSuchElementException e) {
+            throw new AccessDeniedException("Authenticated user does not exist");
+        }
+
+        Portfolio portfolio;
+        try {
+            portfolio = portRepo.findById(portfolioId).get();
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException("Portfolio does not exist");
+        }
 
         var user = portfolio.getUser();
 
         if (user.getId().equals(userId) || principal.getAccountType().equals(AccountType.ADMIN)) {
             return portfolio;
         }
-        
+
         throw new AccessDeniedException("User does not own this portfolio");
+    }
+
+    @Override
+    public void createDefaultPortolio(Long userId) {
+        userRepo.findById(userId).ifPresent(user -> {
+            Portfolio newPortfolio = new Portfolio("Default", PortfolioState.DEFAULT);
+            newPortfolio.setName("Default");
+            newPortfolio.setDescription("This is the default portfolio");
+
+            newPortfolio.setUser(user);
+
+            var response = portRepo.save(newPortfolio);
+
+            try {
+                natsService.publish(Event.PORTFOLIO_CREATED, portfolioMapper.toPortfolioEventDto(response));
+            } catch (JsonProcessingException e) {
+                throw new InternalServerError("Error while creating portfolio");
+            }
+        });
     }
 }

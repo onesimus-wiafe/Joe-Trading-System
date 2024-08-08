@@ -1,8 +1,7 @@
 package com.joe.trading.user_management.services.impl;
 
-import com.joe.trading.shared.dtos.PortfolioEventDto;
-import com.joe.trading.user_management.mapper.UserMapper;
-import jakarta.annotation.PostConstruct;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -10,23 +9,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.List;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.joe.trading.shared.events.Event;
+import com.joe.trading.shared.exceptions.EmailAlreadyExistsException;
+import com.joe.trading.shared.exceptions.ResourceNotFoundException;
+import com.joe.trading.shared.exceptions.UserDeletionException;
 import com.joe.trading.shared.nats.NatsService;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserFilterRequestDto;
 import com.joe.trading.user_management.entities.Portfolio;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.exceptions.EmailAlreadyExistsException;
-import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
-import com.joe.trading.user_management.exceptions.UserDeletionException;
+import com.joe.trading.user_management.mapper.UserMapper;
 import com.joe.trading.user_management.repository.PortfolioRepository;
 import com.joe.trading.user_management.repository.UserRepository;
 import com.joe.trading.user_management.services.UserService;
@@ -70,7 +67,7 @@ public class UserServiceImpl implements UserService {
         // the transactional outbox pattern is ideal for addressing the problem of data
         // consistency across multiple services.
         try {
-            natsService.publish(Event.USER_CREATED, userMapper.userEventDto(user));
+            natsService.publish(Event.USER_CREATED, userMapper.toUserEventDto(user));
         } catch (JsonProcessingException e) {
             throw new UserDeletionException("Error creating user");
         }
@@ -122,7 +119,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(existingUser);
         try {
-            natsService.publish(Event.USER_UPDATED, userMapper.userEventDto(existingUser));
+            natsService.publish(Event.USER_UPDATED, userMapper.toUserEventDto(existingUser));
         } catch (JsonProcessingException e) {
             throw new UserDeletionException("Error updating user");
         }
@@ -139,7 +136,7 @@ public class UserServiceImpl implements UserService {
         if (portfolios.isEmpty()) {
             userRepository.deleteById(userId);
             try {
-                natsService.publish(Event.USER_DELETED, userMapper.userEventDto(user));
+                natsService.publish(Event.USER_DELETED, userMapper.toUserEventDto(user));
             } catch (JsonProcessingException e) {
                 throw new UserDeletionException("Error deleting user");
             }
@@ -157,22 +154,5 @@ public class UserServiceImpl implements UserService {
 
         user.setPendingDelete(true);
         userRepository.save(user);
-    }
-
-    @PostConstruct
-    private void handlePortfolioDeleteMsg() {
-        natsService.subscribe(Event.PORTFOLIO_DELETED, PortfolioEventDto.class, this::deletePortfolio);
-    }
-
-    private void deletePortfolio(PortfolioEventDto portfolio) {
-        portfolioRepository.deleteById(portfolio.getId());
-        portfolioRepository.flush();
-
-        var user = userRepository.findById(portfolio.getUserId());
-        user.ifPresent(u -> {
-            if (u.getPortfolios().isEmpty()) {
-                userRepository.deleteById(u.getId());
-            }
-        });
     }
 }

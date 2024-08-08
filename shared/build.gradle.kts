@@ -25,9 +25,11 @@ dependencyManagement {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot")
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-autoconfigure")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("io.nats:jnats:2.19.1")
+	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")

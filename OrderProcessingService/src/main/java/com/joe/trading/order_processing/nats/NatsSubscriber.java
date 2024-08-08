@@ -15,6 +15,7 @@ import com.joe.trading.order_processing.repositories.redis.dao.InternalOpenOrder
 import com.joe.trading.order_processing.repositories.redis.dao.MarketDataDAO;
 import com.joe.trading.order_processing.repositories.redis.dao.OrderBookDAO;
 import com.joe.trading.order_processing.services.OrderBookService;
+import com.joe.trading.order_processing.services.PortfolioService;
 import com.joe.trading.shared.dtos.UserEventDto;
 import com.joe.trading.shared.events.Event;
 import com.joe.trading.shared.nats.NatsService;
@@ -32,6 +33,7 @@ public class NatsSubscriber {
     private final OrderBookService orderBookService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PortfolioService portfolioService;
 
     @PostConstruct
     public void subscribeToUserCreation(){
@@ -40,6 +42,7 @@ public class NatsSubscriber {
 
     private void saveUser(UserEventDto userEventDto){
         userRepository.save(userMapper.mapToUser(userEventDto));
+        portfolioService.createDefaultPortolio(userEventDto.getId());
     }
 
     @PostConstruct

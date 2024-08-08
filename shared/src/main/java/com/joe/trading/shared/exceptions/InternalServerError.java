@@ -1,4 +1,4 @@
-package com.joe.trading.order_processing.errors;
+package com.joe.trading.shared.exceptions;
 
 public class InternalServerError extends RuntimeException {
     public InternalServerError(String message) {

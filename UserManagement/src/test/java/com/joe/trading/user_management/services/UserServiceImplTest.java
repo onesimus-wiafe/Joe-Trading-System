@@ -22,14 +22,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.joe.trading.shared.auth.AccountType;
 import com.joe.trading.shared.events.Event;
+import com.joe.trading.shared.exceptions.EmailAlreadyExistsException;
+import com.joe.trading.shared.exceptions.ResourceNotFoundException;
+import com.joe.trading.shared.exceptions.UserDeletionException;
 import com.joe.trading.shared.nats.NatsService;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.entities.Portfolio;
 import com.joe.trading.user_management.entities.User;
-import com.joe.trading.user_management.exceptions.EmailAlreadyExistsException;
-import com.joe.trading.user_management.exceptions.ResourceNotFoundException;
-import com.joe.trading.user_management.exceptions.UserDeletionException;
 import com.joe.trading.user_management.mapper.UserMapper;
 import com.joe.trading.user_management.repository.PortfolioRepository;
 import com.joe.trading.user_management.repository.UserRepository;
@@ -111,7 +111,7 @@ class UserServiceImplTest {
         assertThat(createdUser).isEqualTo(user);
         verify(userRepository, times(1)).findByEmail(createUserRequestDto.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
-        verify(natsService, times(1)).publish(Event.USER_CREATED, userMapper.userEventDto(user));
+        verify(natsService, times(1)).publish(Event.USER_CREATED, userMapper.toUserEventDto(user));
     }
 
     @Test
@@ -137,7 +137,7 @@ class UserServiceImplTest {
         assertThat(updatedUser.getPasswordHash()).isEqualTo("new_hashed_password");
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(1)).save(user);
-        verify(natsService, times(1)).publish(Event.USER_UPDATED, userMapper.userEventDto(user));
+        verify(natsService, times(1)).publish(Event.USER_UPDATED, userMapper.toUserEventDto(user));
     }
 
     @Test
@@ -159,7 +159,7 @@ class UserServiceImplTest {
 
         verify(userRepository, times(1)).deleteById(1L);
         verify(portfolioRepository, times(1)).findByUserId(1L);
-        verify(natsService, times(1)).publish(Event.USER_DELETED, userMapper.userEventDto(user));
+        verify(natsService, times(1)).publish(Event.USER_DELETED, userMapper.toUserEventDto(user));
     }
 
     @Test

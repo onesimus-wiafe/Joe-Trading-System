@@ -19,6 +19,7 @@ public class PortfolioResponseDTO {
     private String name;
     private String description;
     private Double value;
+    private String state;
     private LocalDateTime createdAt;
     private List<Stock> stocks;
 }

@@ -1,4 +1,4 @@
-package com.joe.trading.user_management.exceptions;
+package com.joe.trading.shared.exceptions;
 
 public class EmailAlreadyExistsException extends RuntimeException {
     public EmailAlreadyExistsException(String message) {
