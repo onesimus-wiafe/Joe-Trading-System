@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Document("orderbook")
+@Document("orderbooks")
 public class OrderBooks {
 
     private String orderID;

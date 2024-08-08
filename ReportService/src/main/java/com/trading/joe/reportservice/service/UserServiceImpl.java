@@ -1,7 +1,5 @@
 package com.trading.joe.reportservice.service;
 
-import org.springframework.stereotype.Service;
-
 import com.joe.trading.shared.auth.AccountType;
 import com.joe.trading.shared.dtos.UserEventDto;
 import com.joe.trading.shared.events.Event;
@@ -10,9 +8,9 @@ import com.trading.joe.reportservice.Status;
 import com.trading.joe.reportservice.dtos.UserDto;
 import com.trading.joe.reportservice.exceptions.ResourceNotFoundException;
 import com.trading.joe.reportservice.repository.UserRepository;
-
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
@@ -53,8 +51,11 @@ public class UserServiceImpl implements UserService {
     }
 
     public void saveDeleteEvent(UserEventDto userEventDto) {
-        UserDto user = new UserDto();
-        userRepository.deleteById(userEventDto.getId());
+        var userOptional = userRepository.findById(userEventDto.getId());
+        userOptional.ifPresentOrElse(user -> {
+            userRepository.deleteById(userEventDto.getId());
+
+        }, () -> System.err.println("DATA INCONSISTENCY"));
     }
 
 }
