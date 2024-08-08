@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joe.trading.shared.auth.AccountType;
+import com.joe.trading.shared.dtos.PaginatedResponseDto;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
-import com.joe.trading.user_management.dtos.PaginatedResponseDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserFilterRequestDto;
 import com.joe.trading.user_management.dtos.UserResponseDto;
@@ -62,7 +62,8 @@ public class UserController {
         PaginatedResponseDto<UserResponseDto> userListResponseDto = new PaginatedResponseDto<>(
                 userResponseDtos,
                 pagedUsers.getTotalPages(),
-                pagedUsers.getTotalElements(), pagedUsers.getNumber());
+                pagedUsers.getTotalElements(),
+                pagedUsers.getNumber() + 1);
 
         return ResponseEntity.ok(userListResponseDto);
     }

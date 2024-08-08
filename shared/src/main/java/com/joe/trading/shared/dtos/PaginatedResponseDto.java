@@ -1,4 +1,4 @@
-package com.joe.trading.user_management.dtos;
+package com.joe.trading.shared.dtos;
 
 import java.util.List;
 

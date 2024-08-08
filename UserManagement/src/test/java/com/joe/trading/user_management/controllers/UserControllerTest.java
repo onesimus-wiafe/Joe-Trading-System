@@ -32,9 +32,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joe.trading.shared.auth.AccountType;
+import com.joe.trading.shared.dtos.PaginatedResponseDto;
 import com.joe.trading.user_management.controller.UserController;
 import com.joe.trading.user_management.dtos.CreateUserRequestDto;
-import com.joe.trading.user_management.dtos.PaginatedResponseDto;
 import com.joe.trading.user_management.dtos.UpdateUserDto;
 import com.joe.trading.user_management.dtos.UserFilterRequestDto;
 import com.joe.trading.user_management.dtos.UserResponseDto;
