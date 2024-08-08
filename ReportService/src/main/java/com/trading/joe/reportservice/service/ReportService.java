@@ -1,4 +1,8 @@
 package com.trading.joe.reportservice.service;
 
-public class ReportService {
+public interface ReportService {
+
+//    User createUser(CreateUserRequestDto createUserDto);
+//
+//    User getUserById(Long userId) throws ResourceNotFoundException;
 }
