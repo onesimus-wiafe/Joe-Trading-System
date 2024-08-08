@@ -22,7 +22,7 @@
         </button>
         <app-portfolio-form
           [defaultPortfolio]="selectedPortfolio()"
-          (submit)="handleSubmit($event)"
+          (formSubmit)="handleSubmit($event)"
         />
       </div>
     </dialog>
@@ -99,6 +99,7 @@
                 type="button"
                 class="btn btn-error btn-sm btn-square btn-outline"
                 (click)="deletePortfolio(portfolio.id)"
+                [disabled]="portfolio.state === 'DEFAULT'"
               >
                 <ng-icon name="heroTrash" size="18" />
               </button>

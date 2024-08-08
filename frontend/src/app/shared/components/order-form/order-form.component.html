@@ -10,7 +10,7 @@
       <select
         id="portfolio"
         class="select select-bordered w-full select-sm"
-        formControlName="portfolio"
+        formControlName="portfolioId"
       >
         @for (portfolio of portfolios().data; track portfolio.id) {
         <option [value]="portfolio.id">{{ portfolio.name }}</option>
@@ -25,7 +25,7 @@
       <select
         id="stock"
         class="select select-bordered w-full select-sm"
-        formControlName="stock"
+        formControlName="ticker"
       >
         <option value="MSFT">Microsoft</option>
         <option value="NFLX">Netflix</option>
@@ -38,11 +38,11 @@
       </select>
     </div>
     <div>
-      <label for="tradeType" class="label text-sm">Trade Type</label>
+      <label for="tradeType" class="label text-sm">Order Type</label>
       <select
         id="tradeType"
         class="select select-bordered w-full select-sm"
-        formControlName="tradeType"
+        formControlName="orderType"
       >
         <option value="MARKET">Market</option>
         <option value="LIMIT">Limit</option>
@@ -66,11 +66,11 @@
         type="text"
         class="input input-bordered w-full select-sm"
         placeholder="Price"
-        formControlName="price"
+        formControlName="unitPrice"
       />
-      @if (orderForm.get('price')?.touched && orderForm.get('price')?.invalid) {
+      @if (orderForm.get('unitPrice')?.touched && orderForm.get('unitPrice')?.invalid) {
       <small class="text-error">
-        {{ orderForm.get('price')?.errors?.['required']
+        {{ orderForm.get('unitPrice')?.errors?.['required']
           ? 'Price is required'
           : 'Price must be a number' }}
       </small>
@@ -94,5 +94,5 @@
       }
     </div>
   </div>
-  <button type="submit" class="btn btn-primary">Order</button>
+  <button type="submit" class="btn btn-primary" [disabled]="orderForm.invalid">Order</button>
 </form>

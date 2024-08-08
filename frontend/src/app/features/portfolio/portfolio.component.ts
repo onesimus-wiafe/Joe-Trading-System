@@ -53,9 +53,9 @@ export class PortfolioComponent implements OnInit {
     private portfolioService: PortfolioService,
     private toastService: ToastService
   ) {
-    effect(() => {
-      this.loadPortfolios();
-    });
+    // effect(() => {
+    //   this.loadPortfolios();
+    // });
   }
 
   ngOnInit(): void {
@@ -77,6 +77,7 @@ export class PortfolioComponent implements OnInit {
       })
       .subscribe({
         next: (response) => {
+          console.log(response)
           this.portfolios.set(response);
         },
         error: (error) => {
@@ -140,7 +141,21 @@ export class PortfolioComponent implements OnInit {
     message: 'Are you sure you want to delete this portfolio?',
   })
   deletePortfolio(id: number) {
-    this.portfolioService.deletePortfolio(id);
+    this.portfolioService.deletePortfolio(id).subscribe({
+      next: () => {
+        this.toastService.initiate({
+          message: 'Portfolio deleted successfully',
+          variant: ToastVariant.Success,
+        });
+        this.loadPortfolios();
+      },
+      error: () => {
+        this.toastService.initiate({
+          message: 'Failed to delete portfolio',
+          variant: ToastVariant.Error,
+        });
+      },
+    });
   }
 
   changeItemsPerPage(size: number) {

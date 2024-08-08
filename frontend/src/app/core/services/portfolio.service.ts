@@ -5,6 +5,7 @@ import {
   PortfolioCreate,
   PortfolioListResponse,
 } from '../../shared/models/portfolio.model';
+import { tap } from 'rxjs';
 
 type PortfolioFilters = {
   name?: string;

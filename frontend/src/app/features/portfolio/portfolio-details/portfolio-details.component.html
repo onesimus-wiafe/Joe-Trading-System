@@ -15,6 +15,7 @@
         type="button"
         (click)="deletePortfolio()"
         class="btn btn-error btn-sm"
+      [disabled]="portfolio().state === 'DEFAULT'"
       >
         Delete Portfolio
       </button>

@@ -36,7 +36,7 @@ export class UserFormComponent {
 
   open = input<boolean>(false);
 
-  submit = output<UserCreate & { id?: number }>();
+  formSubmit = output<UserCreate & { id?: number }>();
 
   constructor() {
     effect(() => {
@@ -102,10 +102,7 @@ export class UserFormComponent {
 
     const result = v.safeParse(schema, this.userForm.value);
     if (result.success) {
-      console.log('emitted', {
-        ...result.output,
-        id: this.defaultUser()?.id,
-      });
+      // this.formSubmit.emit({ ...result.output, id: this.defaultUser()?.id });
     } else {
       console.error(result.issues);
     }
