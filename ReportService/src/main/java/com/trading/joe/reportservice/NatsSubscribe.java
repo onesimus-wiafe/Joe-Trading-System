@@ -7,9 +7,12 @@ import com.joe.trading.shared.nats.NatsService;
 import com.trading.joe.reportservice.dtos.UserDto;
 import com.trading.joe.reportservice.entities.MarketData;
 import com.trading.joe.reportservice.entities.OrderBooks;
+import com.trading.joe.reportservice.entities.Portfolio;
 import com.trading.joe.reportservice.exceptions.ResourceNotFoundException;
 import com.trading.joe.reportservice.repository.MarketDataRepository;
 import com.trading.joe.reportservice.repository.OrderBookRepository;
+import com.trading.joe.reportservice.repository.PortfolioRepository;
+import com.trading.joe.reportservice.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 
 import java.util.Map;
@@ -18,6 +21,8 @@ public class NatsSubscribe {
     private NatsService natsService;
     private OrderBookRepository orderBookRepository;
     private MarketDataRepository marketDataRepository;
+    private UserRepository userRepository;
+    private PortfolioRepository portfolioRepository;
 
 
     @PostConstruct
@@ -30,7 +35,7 @@ public class NatsSubscribe {
             natsService.subscribe(Event.USER_DELETED, UserEventDto.class, this::saveDeleteEvent);
 
             // Portfoliio event
-            //natsService.subscribe(Ev);
+            natsService.subscribe(Event.PORTFOLIO_CREATED, Portfolio.class,);
 
             // Market data Events
             natsService.subscribe(Event.MARKET_DATA_UPDATE, Map.class, this::saveMarketDataUpdate);
@@ -56,6 +61,10 @@ public class NatsSubscribe {
         if (!order_book.isEmpty()) {
             orderBookRepository.save((OrderBooks) order_book);
         }
+    }
+
+    private void saveCreatePortfolio(Portfolio portfolio){
+        portfolioRepository.save((Portfolio) portfolio);
     }
 
     private void saveMarketDataUpdate(Map map){
