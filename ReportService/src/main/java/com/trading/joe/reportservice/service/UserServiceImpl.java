@@ -31,31 +31,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public void saveCreateEvent(UserEventDto userEventDto) {
-        UserDto user = new UserDto();
-        userRepository.save(user.userCreated(userEventDto));
-    }
 
-    public void saveUpdateEvent(UserEventDto userEventDto) {
-        var userOptional = userRepository.findById(userEventDto.getId());
-        userOptional.ifPresentOrElse(user -> {
-            user.setName(userEventDto.getName());
-            user.setEmail(userEventDto.getEmail());
-            user.setAccountType(AccountType.valueOf(userEventDto.getAccountType()));
-            user.setCreatedAt(userEventDto.getCreatedAt());
-            user.setUpdatedAt(userEventDto.getUpdatedAt());
-            user.setAction(Status.UPDATED);
-
-            userRepository.save(user);
-        }, () -> System.err.println("DATA INCONSISTENCY"));
-    }
-
-    public void saveDeleteEvent(UserEventDto userEventDto) {
-        var userOptional = userRepository.findById(userEventDto.getId());
-        userOptional.ifPresentOrElse(user -> {
-            userRepository.deleteById(userEventDto.getId());
-
-        }, () -> System.err.println("DATA INCONSISTENCY"));
-    }
 
 }
