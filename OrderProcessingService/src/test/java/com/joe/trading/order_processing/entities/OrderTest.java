@@ -6,9 +6,8 @@ import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.entities.enums.Ticker;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OrderTest {
 

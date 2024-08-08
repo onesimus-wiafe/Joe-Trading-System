@@ -1,13 +1,7 @@
-import { Injectable, signal } from '@angular/core';
-import {
-  AccountType,
-  User,
-  UserCreate,
-  UserListResponse,
-  UserUpdate,
-} from '../../shared/models/user.model';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { shareReplay } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {AccountType, User, UserCreate, UserListResponse, UserUpdate,} from '../../shared/models/user.model';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {shareReplay} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',

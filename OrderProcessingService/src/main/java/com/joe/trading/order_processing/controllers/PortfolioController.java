@@ -1,17 +1,5 @@
 package com.joe.trading.order_processing.controllers;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.joe.trading.order_processing.entities.User;
 import com.joe.trading.order_processing.entities.dto.CreatePortfolioRequestDTO;
 import com.joe.trading.order_processing.entities.dto.PortfolioFilterRequestDto;
@@ -20,8 +8,12 @@ import com.joe.trading.order_processing.mappers.PortfolioMapper;
 import com.joe.trading.order_processing.services.PortfolioService;
 import com.joe.trading.shared.dtos.PaginatedResponseDto;
 import com.joe.trading.shared.exceptions.ResourceNotFoundException;
-
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor

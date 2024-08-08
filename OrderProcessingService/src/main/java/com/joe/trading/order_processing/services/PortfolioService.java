@@ -1,12 +1,11 @@
 package com.joe.trading.order_processing.services;
 
-import org.springframework.data.domain.Page;
-import org.springframework.security.access.AccessDeniedException;
-
 import com.joe.trading.order_processing.entities.Portfolio;
 import com.joe.trading.order_processing.entities.dto.CreatePortfolioRequestDTO;
 import com.joe.trading.order_processing.entities.dto.PortfolioFilterRequestDto;
 import com.joe.trading.shared.exceptions.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.AccessDeniedException;
 
 public interface PortfolioService {
     Portfolio createPortfolio(Long userId, CreatePortfolioRequestDTO portfolio);

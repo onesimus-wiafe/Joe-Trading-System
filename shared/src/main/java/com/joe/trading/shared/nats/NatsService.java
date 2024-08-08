@@ -1,19 +1,17 @@
 package com.joe.trading.shared.nats;
 
-import java.io.IOException;
-import java.util.function.Consumer;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joe.trading.shared.events.Event;
+import io.nats.client.Connection;
+import io.nats.client.Dispatcher;
+import io.nats.client.Nats;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joe.trading.shared.events.Event;
-
-import io.nats.client.Connection;
-import io.nats.client.Dispatcher;
-import io.nats.client.Nats;
+import java.io.IOException;
+import java.util.function.Consumer;
 
 @Service
 @EnableConfigurationProperties(NatsProperties.class)

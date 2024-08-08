@@ -1,15 +1,13 @@
 package com.joe.trading.order_processing.specifications;
 
-import java.time.LocalDateTime;
-
-import org.springframework.data.jpa.domain.Specification;
-
 import com.joe.trading.order_processing.entities.Portfolio;
 import com.joe.trading.shared.auth.AccountType;
-
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import org.springframework.data.jpa.domain.Specification;
+
+import java.time.LocalDateTime;
 
 public class PortfolioSpecification {
     private PortfolioSpecification() {

@@ -1,33 +1,24 @@
 package com.joe.trading.order_processing.services.impl;
 
-import java.util.*;
-
 import com.joe.trading.order_processing.entities.*;
-import com.joe.trading.order_processing.repositories.jpa.*;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import com.joe.trading.order_processing.entities.dto.OrderRequestDTO;
 import com.joe.trading.order_processing.entities.dto.OrderResponseDTO;
 import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.OrderType;
 import com.joe.trading.order_processing.entities.enums.Side;
 import com.joe.trading.order_processing.entities.enums.TradeStatus;
+import com.joe.trading.order_processing.repositories.jpa.*;
 import com.joe.trading.order_processing.repositories.redis.dao.InternalOpenOrderDAO;
 import com.joe.trading.order_processing.repositories.redis.dao.OrderBookDAO;
 import com.joe.trading.order_processing.services.OrderService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
+import org.springframework.http.*;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {

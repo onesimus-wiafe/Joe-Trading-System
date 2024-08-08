@@ -1,13 +1,9 @@
 package com.joe.trading.order_processing.entities.dto;
 
-import java.time.LocalDateTime;
-
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter

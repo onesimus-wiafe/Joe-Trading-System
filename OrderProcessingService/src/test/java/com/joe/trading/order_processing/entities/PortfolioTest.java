@@ -3,7 +3,8 @@ package com.joe.trading.order_processing.entities;
 import com.joe.trading.order_processing.entities.enums.PortfolioState;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PortfolioTest {
     @Test

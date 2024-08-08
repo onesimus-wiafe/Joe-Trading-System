@@ -1,17 +1,5 @@
 package com.joe.trading.order_processing.services.impl;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.joe.trading.order_processing.entities.Order;
 import com.joe.trading.order_processing.entities.Portfolio;
@@ -30,8 +18,18 @@ import com.joe.trading.shared.events.Event;
 import com.joe.trading.shared.exceptions.InternalServerError;
 import com.joe.trading.shared.exceptions.ResourceNotFoundException;
 import com.joe.trading.shared.nats.NatsService;
-
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
