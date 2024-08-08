@@ -13,11 +13,13 @@ import com.joe.trading.shared.dtos.PortfolioEventDto;
 public interface PortfolioMapper {
     PortfolioMapper INSTANCE = Mappers.getMapper(PortfolioMapper.class);
 
-    Portfolio mapToPortfolioEventDto(PortfolioEventDto portfolioEventDto);
+    Portfolio mapToPortfolio(PortfolioEventDto portfolioEventDto);
 
     Portfolio mapToPortfolio(PortfolioResponseDTO portfolioResponseDTO);
 
     PortfolioResponseDTO mapToPortfolioResponseDTO(Portfolio portfolio);
 
     List<PortfolioResponseDTO> mapToPortfolioResponseDTOs(List<Portfolio> portfolios);
+
+    PortfolioEventDto mapToPortfolioEventDto(Portfolio portfolio);
 }

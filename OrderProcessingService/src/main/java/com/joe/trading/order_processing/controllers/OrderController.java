@@ -42,7 +42,6 @@ public class OrderController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<OrderResponseDTO> sendOrder(@RequestBody OrderRequestDTO request) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
-
         var principal = (User) auth.getPrincipal();
 
         OrderResponseDTO response = new OrderResponseDTO();
