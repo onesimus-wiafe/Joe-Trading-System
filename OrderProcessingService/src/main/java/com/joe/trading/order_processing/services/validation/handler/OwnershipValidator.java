@@ -25,7 +25,7 @@ public class OwnershipValidator extends ValidationHandler {
 
         if (portfolios.isEmpty()){
             super.setNext(null);
-            request.setIsValidated(Boolean.FALSE);
+            request.setIsValidated(Boolean.TRUE);
             return request;
         }
 
@@ -33,8 +33,7 @@ public class OwnershipValidator extends ValidationHandler {
                 .findFirst().orElse(null);
 
         if (portfolio == null) {
-            super.setNext(null);
-            request.setIsValidated(Boolean.FALSE);
+            request.setIsValidated(Boolean.TRUE);
         }
         else {
             request.setIsValidated(Boolean.TRUE);
