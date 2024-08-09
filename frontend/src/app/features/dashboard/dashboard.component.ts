@@ -9,6 +9,8 @@ import { StockPriceCardComponent } from '../../shared/components/stock-price-car
 import { ToastService, ToastVariant } from '../../core/services/toast.service';
 import { Stock } from '../../shared/models/stock.model';
 import { OrderRequest } from '../../shared/models/order.model';
+import { AuthService } from '../../core/services/auth.service';
+import { AccountType } from '../../shared/models/user.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,8 +29,11 @@ export class DashboardComponent {
   constructor(
     private themeService: ThemeService,
     private orderService: OrderService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private authService: AuthService
   ) {}
+
+  isAdmin = computed(() => this.authService.role() == AccountType.ADMIN);
 
   stocks: Stock[] = [
     {
@@ -90,7 +95,7 @@ export class DashboardComponent {
   ];
 
   placeOrder($event: OrderRequest) {
-    console.log("placing order", $event);
+    console.log('placing order', $event);
     this.orderService.createOrder($event).subscribe({
       next: () => {
         this.toastService.initiate({

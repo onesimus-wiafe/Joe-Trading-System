@@ -35,7 +35,10 @@ export const TradeSchema = v.object({
 export type Trade = v.InferOutput<typeof TradeSchema>;
 
 export const OrderRequestSchema = v.object({
-  portfolioId: v.pipe(v.string(), v.transform(Number.parseInt)),
+  portfolioId: v.pipe(
+    v.union([v.number(), v.string()]),
+    v.transform(Number.parseInt)
+  ),
   ticker: v.enum(StockSymbol),
   quantity: v.pipe(
     v.union([v.number(), v.string()]),
@@ -43,7 +46,7 @@ export const OrderRequestSchema = v.object({
   ),
   orderType: v.enum(OrderType),
   side: v.enum(OrderSide),
-  unitPrice: v.pipe(v.string(), v.transform(parseFloat)),
+  unitPrice: v.pipe(v.string(), v.nonEmpty(), v.transform(parseFloat)),
 });
 
 export type OrderRequest = v.InferOutput<typeof OrderRequestSchema>;
