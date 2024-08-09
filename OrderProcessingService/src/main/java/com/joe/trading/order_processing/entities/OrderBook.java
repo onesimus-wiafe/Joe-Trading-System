@@ -42,7 +42,7 @@ public class OrderBook implements Serializable {
     @JsonProperty
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderBook", orphanRemoval = true)
     private List<Executions> executions = new ArrayList<>();
-    
+
     @OneToOne
     private Trade trade;
 

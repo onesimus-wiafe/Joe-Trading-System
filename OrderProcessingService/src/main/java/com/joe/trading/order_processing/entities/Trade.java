@@ -25,9 +25,7 @@ public class Trade {
     private String side;
     private String tradeType;
 
-    @OneToOne
-    @JoinColumn(name = "exchange_url")
-    private Exchange exchange;
+    private String exchange;
 
     @Enumerated(EnumType.STRING)
     private TradeStatus status;
@@ -40,7 +38,7 @@ public class Trade {
     @JoinColumn(name = "trade_id")
     private OrderBook orderBook;
 
-    public Trade(Integer quantity, Double price, String ticker, String side, String tradeType, Exchange exchange){
+    public Trade(Integer quantity, Double price, String ticker, String side, String tradeType, String exchange){
         this.quantity = quantity;
         this.price = price;
         this.ticker = ticker;

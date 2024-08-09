@@ -30,6 +30,7 @@ public class PriceValidator extends ValidationHandler {
     }
 
     public OrderRequestDTO validatePrice(OrderRequestDTO request){
+
         List<MarketData> filter = marketData.stream().filter(
                 data -> switch (this.side){
                     case BUY ->
@@ -49,7 +50,7 @@ public class PriceValidator extends ValidationHandler {
             return request;
         }else {
             request.setIsValidated(TRUE);
-            request.setExchanges("BOTH");
+            request.setExchanges("ALL");
             return request;
         }
     }

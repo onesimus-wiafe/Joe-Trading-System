@@ -5,6 +5,7 @@ import com.joe.trading.order_processing.entities.enums.AvailableExchanges;
 import com.joe.trading.order_processing.entities.enums.Ticker;
 import com.joe.trading.order_processing.repositories.jpa.ExchangeRepository;
 import com.joe.trading.order_processing.repositories.redis.dao.MarketDataDAO;
+import com.joe.trading.order_processing.repositories.redis.dao.OrderBookDAO;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ public class MarketDataSetup {
 
     private final MarketDataDAO marketDataRepo;
     private final ExchangeRepository exchangeRepo;
+    private final OrderBookDAO orderBookRepo;
 
     @Value("${exchange.exchange1.url}")
     private String exchange1URL;
@@ -25,13 +27,16 @@ public class MarketDataSetup {
     private String exchange2URL;
 
     @Autowired
-    public MarketDataSetup(MarketDataDAO marketDataRepo, ExchangeRepository exchangeRepo) {
+    public MarketDataSetup(MarketDataDAO marketDataRepo, ExchangeRepository exchangeRepo, OrderBookDAO orderBookRepo) {
         this.marketDataRepo = marketDataRepo;
         this.exchangeRepo = exchangeRepo;
+        this.orderBookRepo = orderBookRepo;
     }
 
     @PostConstruct
     public void setUpMarketData(){
+        marketDataRepo.clearCache();
+        orderBookRepo.clearCache();
         Arrays.stream(Ticker.values()).forEach(ticker -> saveNullMarketDataToCache(String.valueOf(ticker)));
     }
 
@@ -39,8 +44,13 @@ public class MarketDataSetup {
         String keyEx1 = ticker+"_EX1";
         String keyEx2 = ticker+"_EX2";
 
+        String orderBookKeyEx1 = ticker+"_EX1_OPEN";
+        String orderBookKeyEx2 = ticker+"_EX2_OPEN";
+
         marketDataRepo.saveMarketData(null, keyEx1);
         marketDataRepo.saveMarketData(null, keyEx2);
+        orderBookRepo.saveOrderBook(orderBookKeyEx1, null);
+        orderBookRepo.saveOrderBook(orderBookKeyEx2, null);
     }
 
     @PostConstruct

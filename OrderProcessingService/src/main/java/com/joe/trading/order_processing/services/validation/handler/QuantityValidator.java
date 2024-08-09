@@ -30,8 +30,8 @@ public class QuantityValidator extends ValidationHandler{
     private OrderRequestDTO validateQuantity(OrderRequestDTO request){
 
         List<MarketData> filter = marketData.stream().filter(data -> switch (this.side) {
-            case SELL -> data.getSELL_LIMIT() < request.getQuantity();
-            case BUY -> data.getBUY_LIMIT() < request.getQuantity();
+            case SELL -> data.getSELL_LIMIT() > request.getQuantity();
+            case BUY -> data.getBUY_LIMIT() > request.getQuantity();
         }).toList();
 
         if (filter.isEmpty()){
@@ -44,7 +44,7 @@ public class QuantityValidator extends ValidationHandler{
             return request;
         }
         else{
-            request.setExchanges("BOTH");
+            request.setExchanges("ALL");
             request.setIsValidated(Boolean.TRUE);
             return request;
         }

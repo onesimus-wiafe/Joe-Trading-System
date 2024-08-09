@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +26,7 @@ import java.util.Objects;
 @Setter
 public class Order {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Ticker ticker;
@@ -49,7 +51,7 @@ public class Order {
     private LocalDateTime updatedOn;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    private List<Trade> trades;
+    private List<Trade> trades = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "order_id")

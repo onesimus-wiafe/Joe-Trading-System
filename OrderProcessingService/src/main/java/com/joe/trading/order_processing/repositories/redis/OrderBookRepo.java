@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class OrderBookRepo implements OrderBookDAO {
@@ -43,8 +44,8 @@ public class OrderBookRepo implements OrderBookDAO {
     }
 
     @Override
-    public List<OrderBook> getOrderBook(String key) {
-        return hashOperations.get(hashReference, key);
+    public Optional<List<OrderBook>> getOrderBook(String key) {
+        return Optional.ofNullable(hashOperations.get(hashReference, key));
     }
 
     @Override

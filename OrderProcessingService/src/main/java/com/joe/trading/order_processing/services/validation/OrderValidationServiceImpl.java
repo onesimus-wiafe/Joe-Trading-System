@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.joe.trading.order_processing.entities.enums.AvailableExchanges.EXCHANGE1;
@@ -77,41 +78,52 @@ public class OrderValidationServiceImpl implements OrderValidationService {
             case EXCHANGE1 -> {
                 MarketData data = callExchange(url, ticker);
                 data.setEXCHANGE(String.valueOf(EXCHANGE1));
-                yield List.of(data);
+                var list = new ArrayList<MarketData>();
+                list.add(data);
+                yield list;
             }
             case EXCHANGE2 -> {
                 MarketData data = callExchange(url2, ticker);
                 data.setEXCHANGE(String.valueOf(EXCHANGE2));
-                yield List.of(data);
+                var list = new ArrayList<MarketData>();
+                list.add(data);
+                yield list;
             }
             case ALL -> {
                 MarketData data = callExchange(url, ticker);
                 data.setEXCHANGE(String.valueOf(EXCHANGE1));
                 MarketData data1 = callExchange(url2, ticker);
                 data1.setEXCHANGE(String.valueOf(EXCHANGE2));
-                yield List.of(data, data1);
+                var list = new ArrayList<MarketData>();
+                list.add(data);
+                list.add(data1);
+                yield list;
             }
-            case NONE -> List.of(new MarketData());
+            case NONE -> {
+                yield new ArrayList<MarketData>();
+            }
         };
     }
 
     private List<MarketData> getMarketDataFromCache(String ticker, String exchanges) {
         return switch (AvailableExchanges.valueOf(exchanges.toUpperCase())) {
             case EXCHANGE1 -> {
+                List<MarketData> list = new ArrayList<>();
                 MarketData data = this.marketDataRepo.getMarketData(ticker + "_EX1").orElse(null);
-                if (data == null){
-                    yield List.of();
+                if (data != null) {
+                    list.add(data);
                 }
-                else yield List.of(data);
+                yield list;
             }
             case EXCHANGE2 -> {
+                List<MarketData> list = new ArrayList<>();
                 MarketData data = this.marketDataRepo.getMarketData(ticker + "_EX2").orElse(null);
-                if (data == null){
-                    yield List.of();
+                if (data != null) {
+                    list.add(data);
                 }
-                else yield List.of(data);
+                yield list;
             }
-            case NONE -> List.of();
+            case NONE -> new ArrayList<MarketData>();
             case ALL -> {
                 List<MarketData> data = getMarketDataFromCache(ticker, "EXCHANGE1");
                 data.addAll(getMarketDataFromCache(ticker, "EXCHANGE2"));
