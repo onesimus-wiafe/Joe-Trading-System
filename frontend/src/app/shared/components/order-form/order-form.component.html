@@ -16,8 +16,13 @@
         <option [value]="portfolio.id">{{ portfolio.name }}</option>
         }
       </select>
-      @if (orderForm.get('portfolio')?.touched && orderForm.get('portfolio')?.invalid) {
+      @if (orderForm.get('portfolioId')?.touched && orderForm.get('portfolioId')?.invalid) {
       <small class="text-error">Portfolio is required</small>
+      }
+      @if (orderForm.get('portfolioId')?.touched && orderForm.get('portfolioId')?.invalid) {
+      <small class="text-error">
+        {{ orderForm.get('portfolioId')?.errors?.['message'] }}
+      </small>
       }
     </div>
     <div>
@@ -36,6 +41,11 @@
         <option value="ORCL">Oracle</option>
         <option value="AMZN">Amazon</option>
       </select>
+      @if (orderForm.get('ticker')?.touched && orderForm.get('ticker')?.invalid) {
+      <small class="text-error">
+        {{ orderForm.get('ticker')?.errors?.['message'] }}
+      </small>
+      }
     </div>
     <div>
       <label for="tradeType" class="label text-sm">Order Type</label>
@@ -47,6 +57,11 @@
         <option value="MARKET">Market</option>
         <option value="LIMIT">Limit</option>
       </select>
+      @if (orderForm.get('orderType')?.touched && orderForm.get('orderType')?.invalid) {
+      <small class="text-error">
+        {{ orderForm.get('orderType')?.errors?.['message'] }}
+      </small>
+      }
     </div>
     <div>
       <label for="side" class="label text-sm">Side</label>
@@ -58,6 +73,11 @@
         <option value="BUY">Buy</option>
         <option value="SELL">Sell</option>
       </select>
+      @if (orderForm.get('side')?.touched && orderForm.get('side')?.invalid) {
+      <small class="text-error">
+        {{ orderForm.get('side')?.errors?.['message'] }}
+      </small>
+      }
     </div>
     <div>
       <label for="price" class="label text-sm">Price</label>
@@ -70,9 +90,7 @@
       />
       @if (orderForm.get('unitPrice')?.touched && orderForm.get('unitPrice')?.invalid) {
       <small class="text-error">
-        {{ orderForm.get('unitPrice')?.errors?.['required']
-          ? 'Price is required'
-          : 'Price must be a number' }}
+        {{ orderForm.get('unitPrice')?.errors?.['message'] }}
       </small>
       }
     </div>

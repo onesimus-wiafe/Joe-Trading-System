@@ -13,6 +13,7 @@ export class OrderService {
     return this.httpClient.post<OrderResponse>("/orders", data);
   }
 
-  cancelOrder
-  () {}
+  cancelOrder(orderId: number) {
+    return this.httpClient.delete(`/orders/${orderId}`);
+  }
 }

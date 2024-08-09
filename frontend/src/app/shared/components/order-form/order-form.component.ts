@@ -16,7 +16,12 @@ import {
 import * as v from 'valibot';
 import { PortfolioService } from '../../../core/services/portfolio.service';
 import { PortfolioListResponse } from '../../models/portfolio.model';
-import { OrderRequest, OrderRequestSchema, OrderType } from '../../models/order.model';
+import {
+  OrderRequest,
+  OrderRequestSchema,
+  OrderType,
+} from '../../models/order.model';
+import { validateField } from '../../../core/validators/validate';
 
 @Component({
   selector: 'app-order-form',
@@ -40,18 +45,27 @@ export class OrderFormComponent implements OnInit {
   defaultside = input<'BUY' | 'SELL' | undefined | null>('BUY');
 
   orderForm: FormGroup = new FormGroup({
-    portfolioId: new FormControl('', Validators.required),
-    ticker: new FormControl('', Validators.required),
-    orderType: new FormControl('MARKET', Validators.required),
-    side: new FormControl('', Validators.required),
-    unitPrice: new FormControl('', [
-      Validators.required,
-      Validators.pattern(/^[0-9]+(\.[0-9]{1,2})?$/),
-    ]),
-    quantity: new FormControl('', [
-      Validators.required,
-      Validators.pattern(/^[0-9]+$/),
-    ]),
+    portfolioId: new FormControl(
+      '',
+      validateField(OrderRequestSchema.entries.portfolioId)
+    ),
+    ticker: new FormControl(
+      '',
+      validateField(OrderRequestSchema.entries.ticker)
+    ),
+    orderType: new FormControl(
+      'MARKET',
+      validateField(OrderRequestSchema.entries.orderType)
+    ),
+    side: new FormControl('', validateField(OrderRequestSchema.entries.side)),
+    unitPrice: new FormControl(
+      '',
+      validateField(OrderRequestSchema.entries.unitPrice)
+    ),
+    quantity: new FormControl(
+      '',
+      validateField(OrderRequestSchema.entries.quantity)
+    ),
   });
 
   constructor(private portfolioService: PortfolioService) {
@@ -59,22 +73,28 @@ export class OrderFormComponent implements OnInit {
       this.orderForm = new FormGroup({
         portfolioId: new FormControl(
           this.defaultportfolio() || undefined,
-          Validators.required
+          validateField(OrderRequestSchema.entries.portfolioId)
         ),
         ticker: new FormControl(
           this.defaultstock() || 'MSFT',
-          Validators.required
+          validateField(OrderRequestSchema.entries.ticker)
         ),
-        orderType: new FormControl('MARKET', Validators.required),
-        side: new FormControl(this.defaultside() || 'BUY', Validators.required),
-        unitPrice: new FormControl('', [
-          Validators.required,
-          Validators.pattern(/^[0-9]+(\.[0-9]{1,2})?$/),
-        ]),
-        quantity: new FormControl('', [
-          Validators.required,
-          Validators.pattern(/^[0-9]+$/),
-        ]),
+        orderType: new FormControl(
+          'MARKET',
+          validateField(OrderRequestSchema.entries.orderType)
+        ),
+        side: new FormControl(
+          this.defaultside() || 'BUY',
+          validateField(OrderRequestSchema.entries.side)
+        ),
+        unitPrice: new FormControl(
+          '',
+          validateField(OrderRequestSchema.entries.unitPrice)
+        ),
+        quantity: new FormControl(
+          '',
+          validateField(OrderRequestSchema.entries.quantity)
+        ),
       });
     });
   }
@@ -106,6 +126,7 @@ export class OrderFormComponent implements OnInit {
       this.orderForm.reset();
     } else {
       console.error(result.issues);
+      console.log(this.orderForm.value);
     }
   }
 }
