@@ -31,7 +31,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    private User authenticate(){
+    private User authenticate() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         return (User) auth.getPrincipal();
     }
@@ -42,7 +42,8 @@ public class OrderController {
 
         var principal = authenticate();
 
-        // TODO: UNCOMMENT AUTHENTICATE, REMOVE PRINT, ADD PRINCIPAL.ID TO PLACES WITH 1L
+        // TODO: UNCOMMENT AUTHENTICATE, REMOVE PRINT, ADD PRINCIPAL.ID TO PLACES WITH
+
         OrderResponseDTO response = new OrderResponseDTO();
 
         // Validating Order
