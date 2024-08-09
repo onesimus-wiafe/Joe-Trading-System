@@ -36,7 +36,6 @@ public class PortfolioServiceImpl {
                 try {
                     natsService.publish(Event.USER_DELETED, userMapper.toUserEventDto(u));
                 } catch (JsonProcessingException e) {
-                    System.err.println("Error deleting user");
                     e.printStackTrace();
                 }
             }

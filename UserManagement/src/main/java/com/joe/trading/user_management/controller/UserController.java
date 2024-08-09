@@ -73,17 +73,11 @@ public class UserController {
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable("id") Long userId,
             @Valid @RequestBody UpdateUserDto updatedUser) throws ResourceNotFoundException, IllegalArgumentException {
         var auth = SecurityContextHolder.getContext().getAuthentication();
+        var principal = (User) auth.getPrincipal();
 
-        var principal = auth.getPrincipal();
-        if (principal instanceof User) {
-            var user = (User) principal;
-            if (user.getAccountType().equals(AccountType.USER)
-                    && updatedUser.getAccountType().equals(AccountType.ADMIN)) {
-                throw new IllegalArgumentException("You are not authorized to update user to admin");
-            }
-        } else {
-            // TODO: Throw a custom exception, if the principal is not an instance of User
-            throw new IllegalArgumentException("You are not authorized to update user");
+        if (principal.getAccountType().equals(AccountType.USER)
+                && updatedUser.getAccountType().equals(AccountType.ADMIN)) {
+            throw new IllegalArgumentException("You are not authorized to update user to admin");
         }
 
         User userDto = userService.updateUser(userId, updatedUser);
