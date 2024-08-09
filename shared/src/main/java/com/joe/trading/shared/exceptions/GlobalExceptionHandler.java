@@ -24,34 +24,34 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleSecurityException(Exception exception) {
         ProblemDetail errorDetail = null;
+        var descField = "description";
 
-        // TODO send this stack trace to an observability tool
         exception.printStackTrace();
 
         if (exception instanceof BadCredentialsException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
-            errorDetail.setProperty("description", "The email or password is incorrect");
+            errorDetail.setProperty(descField, "The email or password is incorrect");
             errorDetail.setTitle("Authentication Error");
             return errorDetail;
         }
 
         if (exception instanceof AccountStatusException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "The account is locked");
+            errorDetail.setProperty(descField, "The account is locked");
             errorDetail.setTitle("Account Error");
             return errorDetail;
         }
 
         if (exception instanceof AccessDeniedException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "You are not authorized to access this resource");
+            errorDetail.setProperty(descField, "You are not authorized to access this resource");
             errorDetail.setTitle("Authorization Error");
             return errorDetail;
         }
 
         if (exception instanceof SignatureException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "The JWT signature is invalid");
+            errorDetail.setProperty(descField, "The JWT signature is invalid");
             errorDetail.setTitle("JWT Error");
             return errorDetail;
         }
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
         if (exception instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException ex = (MethodArgumentNotValidException) exception;
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), "Validation error");
-            errorDetail.setProperty("description", "The request body is invalid");
+            errorDetail.setProperty(descField, "The request body is invalid");
             errorDetail.setTitle("Validation Error");
 
             Map<String, String> fieldErrors = new HashMap<>();
@@ -74,56 +74,56 @@ public class GlobalExceptionHandler {
         if (exception instanceof HttpMessageNotReadableException) {
             HttpMessageNotReadableException ex = (HttpMessageNotReadableException) exception;
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), "Malformed JSON request");
-            errorDetail.setProperty("description", ex.getMessage());
+            errorDetail.setProperty(descField, ex.getMessage());
             errorDetail.setTitle("Malformed JSON Error");
             return errorDetail;
         }
 
         if (exception instanceof ExpiredJwtException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "The JWT token has expired");
+            errorDetail.setProperty(descField, "The JWT token has expired");
             errorDetail.setTitle("JWT Error");
             return errorDetail;
         }
 
         if (exception instanceof HttpRequestMethodNotSupportedException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(405), exception.getMessage());
-            errorDetail.setProperty("description", "The HTTP method is not supported");
+            errorDetail.setProperty(descField, "The HTTP method is not supported");
             errorDetail.setTitle("Method Not Allowed");
             return errorDetail;
         }
 
         if (exception instanceof ResourceNotFoundException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), exception.getMessage());
-            errorDetail.setProperty("description", "The resource was not found");
+            errorDetail.setProperty(descField, "The resource was not found");
             errorDetail.setTitle("Resource Not Found");
             return errorDetail;
         }
 
         if (exception instanceof EmailAlreadyExistsException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(409), exception.getMessage());
-            errorDetail.setProperty("description", "The email already exists");
+            errorDetail.setProperty(descField, "The email already exists");
             errorDetail.setTitle("Conflict");
             return errorDetail;
         }
 
         if (exception instanceof UserDeletionException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
-            errorDetail.setProperty("description", "An error occurred while deleting the user");
+            errorDetail.setProperty(descField, "An error occurred while deleting the user");
             errorDetail.setTitle("User Deletion Error");
             return errorDetail;
         }
 
         if (exception instanceof NoResourceFoundException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), exception.getMessage());
-            errorDetail.setProperty("description", "The resource was not found");
+            errorDetail.setProperty(descField, "The resource was not found");
             errorDetail.setTitle("Resource Not Found");
             return errorDetail;
         }
 
         if (errorDetail == null) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
-            errorDetail.setProperty("description", "Unknown internal server error.");
+            errorDetail.setProperty(descField, "Unknown internal server error.");
             errorDetail.setTitle("Internal Server Error");
         }
 

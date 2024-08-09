@@ -2,8 +2,6 @@ package com.joe.trading.user_management.services.impl;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,11 +38,11 @@ public class UserServiceImpl implements UserService {
     private NatsService natsService;
     private UserMapper userMapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final String USER_NOT_FOUND = "User does not exist";
 
     public User getUserById(Long userId) throws ResourceNotFoundException {
         return userRepository.findById(userId).orElseThrow(
-                () -> new ResourceNotFoundException("User does not exist"));
+                () -> new ResourceNotFoundException(USER_NOT_FOUND));
     }
 
     @Override
@@ -108,7 +106,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(Long userId, UpdateUserDto updatedUser) throws ResourceNotFoundException {
         User existingUser = userRepository.findById(userId).orElseThrow(
-                () -> new ResourceNotFoundException("User does not exist"));
+                () -> new ResourceNotFoundException(USER_NOT_FOUND));
 
         existingUser.setName(updatedUser.getName());
         existingUser.setEmail(updatedUser.getEmail());
@@ -130,7 +128,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) throws RuntimeException, ResourceNotFoundException {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ResourceNotFoundException("User does not exist"));
+                () -> new ResourceNotFoundException(USER_NOT_FOUND));
         List<Portfolio> portfolios = portfolioRepository.findByUserId(userId);
 
         if (portfolios.isEmpty()) {
