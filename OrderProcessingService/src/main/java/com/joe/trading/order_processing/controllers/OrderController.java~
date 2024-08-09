@@ -37,20 +37,22 @@ public class OrderController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<OrderResponseDTO> sendOrder(@RequestBody OrderRequestDTO request) {
 
-        var principal = authenticate();
+        // var principal = authenticate();
 
         // TODO: UNCOMMENT AUTHENTICATE, REMOVE PRINT, ADD PRINCIPAL.ID TO PLACES WITH 1L
+
+        System.out.println(request);
         OrderResponseDTO response = new OrderResponseDTO();
 
         // Validating Order
-        OrderRequestDTO validatedRequest = validationService.validateOrder(principal.getId(), request);
+        OrderRequestDTO validatedRequest = validationService.validateOrder(1L, request);
 
         Order order;
         if (validatedRequest.getIsValidated()) {
-            order = buildValidatedOrder(request, principal.getId());
+            order = buildValidatedOrder(request, 1L);
         } else {
             response.setMessage("Order Validation Did Not Pass");
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(response);

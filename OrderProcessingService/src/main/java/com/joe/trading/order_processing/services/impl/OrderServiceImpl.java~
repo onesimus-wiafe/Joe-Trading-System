@@ -65,7 +65,11 @@ public class OrderServiceImpl implements OrderService {
         // TODO: REMOVE PRINT OUTS
         Portfolio portfolio = portfolioRepo.findById(portfolioId).orElseThrow();
 
+        System.out.println(portfolio);
+
         Set<Stock> stocks = portfolio.getStocks();
+
+        System.out.println(stocks);
 
         List<Exchange> exchanges = exchangeRepo.findAll();
 
